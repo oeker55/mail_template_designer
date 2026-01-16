@@ -1,0 +1,73 @@
+/* Canvas Container - Professional Design */
+.canvas-container {
+  flex: 1;
+  overflow: auto;
+  background: var(--bg-primary);
+  padding: 24px;
+  display: flex;
+  justify-content: center;
+}
+
+.canvas-wrapper {
+  max-width: 620px;
+  width: 100%;
+}
+
+.canvas {
+  background: white;
+  min-height: 600px;
+  box-shadow: var(--shadow-lg);
+  border-radius: var(--radius-lg);
+  transition: all var(--transition-normal);
+  overflow: hidden;
+  padding: 5px;
+}
+
+.canvas-dragover {
+  box-shadow: 0 8px 32px rgba(58, 65, 111, 0.25);
+  outline: 2px dashed var(--primary);
+  outline-offset: 4px;
+}
+
+.canvas-email-preview {
+  width: 100%;
+  min-height: 600px;
+}
+
+.canvas-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 600px;
+  color: var(--text-muted);
+  padding: 48px;
+  text-align: center;
+}
+
+.empty-icon {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 20px;
+  opacity: 0.3;
+  color: var(--primary);
+}
+
+.empty-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.canvas-empty h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--text-primary);
+}
+
+.canvas-empty p {
+  font-size: 13px;
+  color: var(--text-muted);
+  max-width: 300px;
+  line-height: 1.6;
+}

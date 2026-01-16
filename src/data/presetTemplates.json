@@ -1,0 +1,798 @@
+{
+  "version": "1.0",
+  "description": "Hazır e-posta şablonları - Yeni şablonlar eklemek için bu dosyaya JSON formatında ekleyin",
+  "templates": [
+    {
+      "id": "welcome-email",
+      "name": "Hoş Geldiniz E-postası",
+      "description": "Yeni üyeler için karşılama e-postası",
+      "category": "Onboarding",
+      "thumbnail": "welcome",
+      "elements": [
+        {
+          "id": "header-img",
+          "type": "image",
+          "props": {
+            "src": "https://placehold.co/600x150/3A416F/ffffff?text=Hoş+Geldiniz",
+            "alt": "Hoş Geldiniz",
+            "width": "100%",
+            "alignment": "center"
+          }
+        },
+        {
+          "id": "welcome-title",
+          "type": "heading",
+          "props": {
+            "text": "Aramıza Hoş Geldiniz, [[musteri_adi]]!",
+            "level": "h1",
+            "alignment": "center",
+            "color": "#3A416F"
+          }
+        },
+        {
+          "id": "welcome-text",
+          "type": "text",
+          "props": {
+            "text": "[[firma_adi]] ailesine katıldığınız için çok mutluyuz. Sizinle birlikte harika işler başaracağımıza inanıyoruz.",
+            "alignment": "center",
+            "color": "#5A6178"
+          }
+        },
+        {
+          "id": "divider-1",
+          "type": "divider",
+          "props": {
+            "style": "solid",
+            "color": "#E8E9ED",
+            "thickness": "1px"
+          }
+        },
+        {
+          "id": "features-title",
+          "type": "heading",
+          "props": {
+            "text": "Hizmetlerimiz",
+            "level": "h2",
+            "alignment": "center",
+            "color": "#3A416F"
+          }
+        },
+        {
+          "id": "features-text",
+          "type": "text",
+          "props": {
+            "text": "• 7/24 Müşteri Desteği\n• Hızlı ve Güvenli Teslimat\n• %100 Memnuniyet Garantisi\n• Özel İndirimler ve Kampanyalar",
+            "alignment": "left",
+            "color": "#5A6178"
+          }
+        },
+        {
+          "id": "cta-button",
+          "type": "button",
+          "props": {
+            "text": "Alışverişe Başla",
+            "url": "https://example.com",
+            "backgroundColor": "#3A416F",
+            "textColor": "#ffffff",
+            "alignment": "center",
+            "borderRadius": "6px",
+            "padding": "14px 32px"
+          }
+        },
+        {
+          "id": "spacer-1",
+          "type": "spacer",
+          "props": {
+            "height": "30px"
+          }
+        },
+        {
+          "id": "footer-text",
+          "type": "text",
+          "props": {
+            "text": "Sorularınız mı var? Bize [[destek_email]] adresinden ulaşabilirsiniz.",
+            "alignment": "center",
+            "fontSize": "12px",
+            "color": "#8B8FA3"
+          }
+        }
+      ]
+    },
+    {
+      "id": "order-confirmation",
+      "name": "Sipariş Onayı",
+      "description": "Sipariş alındığında gönderilen onay e-postası",
+      "category": "İşlemsel",
+      "thumbnail": "order",
+      "elements": [
+        {
+          "id": "logo",
+          "type": "image",
+          "props": {
+            "src": "https://placehold.co/200x60/3A416F/ffffff?text=LOGO",
+            "alt": "Firma Logo",
+            "width": "200px",
+            "alignment": "center"
+          }
+        },
+        {
+          "id": "spacer-top",
+          "type": "spacer",
+          "props": {
+            "height": "20px"
+          }
+        },
+        {
+          "id": "success-icon",
+          "type": "image",
+          "props": {
+            "src": "https://placehold.co/80x80/43A047/ffffff?text=✓",
+            "alt": "Başarılı",
+            "width": "80px",
+            "alignment": "center"
+          }
+        },
+        {
+          "id": "order-title",
+          "type": "heading",
+          "props": {
+            "text": "Siparişiniz Alındı!",
+            "level": "h1",
+            "alignment": "center",
+            "color": "#43A047"
+          }
+        },
+        {
+          "id": "order-info",
+          "type": "text",
+          "props": {
+            "text": "Sayın [[musteri_adi]], siparişiniz başarıyla oluşturuldu. Sipariş numaranız: [[siparis_no]]",
+            "alignment": "center",
+            "color": "#5A6178"
+          }
+        },
+        {
+          "id": "divider-1",
+          "type": "divider",
+          "props": {
+            "style": "solid",
+            "color": "#E8E9ED",
+            "thickness": "1px"
+          }
+        },
+        {
+          "id": "details-title",
+          "type": "heading",
+          "props": {
+            "text": "Sipariş Detayları",
+            "level": "h2",
+            "alignment": "left",
+            "color": "#3A416F"
+          }
+        },
+        {
+          "id": "order-details",
+          "type": "text",
+          "props": {
+            "text": "Ürün: [[urun_adi]]\nAdet: [[adet]]\nTutar: [[tutar]] TL\nTeslimat Adresi: [[adres]]",
+            "alignment": "left",
+            "color": "#5A6178"
+          }
+        },
+        {
+          "id": "track-button",
+          "type": "button",
+          "props": {
+            "text": "Siparişimi Takip Et",
+            "url": "https://example.com/tracking",
+            "backgroundColor": "#3A416F",
+            "textColor": "#ffffff",
+            "alignment": "center",
+            "borderRadius": "6px",
+            "padding": "14px 32px"
+          }
+        },
+        {
+          "id": "footer",
+          "type": "text",
+          "props": {
+            "text": "Bu e-posta [[firma_adi]] tarafından gönderilmiştir.\n© 2024 Tüm hakları saklıdır.",
+            "alignment": "center",
+            "fontSize": "11px",
+            "color": "#8B8FA3"
+          }
+        }
+      ]
+    },
+    {
+      "id": "newsletter",
+      "name": "Bülten / Kampanya",
+      "description": "Kampanya ve indirim duyuruları için şablon",
+      "category": "Pazarlama",
+      "thumbnail": "campaign",
+      "elements": [
+        {
+          "id": "header-banner",
+          "type": "image",
+          "props": {
+            "src": "https://placehold.co/600x200/E53935/ffffff?text=BÜYÜK+İNDİRİM",
+            "alt": "Kampanya Banner",
+            "width": "100%",
+            "alignment": "center"
+          }
+        },
+        {
+          "id": "campaign-title",
+          "type": "heading",
+          "props": {
+            "text": "[[kampanya_basligi]]",
+            "level": "h1",
+            "alignment": "center",
+            "color": "#E53935"
+          }
+        },
+        {
+          "id": "discount-text",
+          "type": "heading",
+          "props": {
+            "text": "%[[indirim_orani]] İNDİRİM",
+            "level": "h2",
+            "alignment": "center",
+            "color": "#3A416F"
+          }
+        },
+        {
+          "id": "campaign-desc",
+          "type": "text",
+          "props": {
+            "text": "Sayın [[musteri_adi]], sizin için özel hazırladığımız bu fırsatı kaçırmayın! [[kampanya_bitis]] tarihine kadar geçerli.",
+            "alignment": "center",
+            "color": "#5A6178"
+          }
+        },
+        {
+          "id": "product-image",
+          "type": "image",
+          "props": {
+            "src": "https://placehold.co/400x300/f5f5f5/3A416F?text=Ürün+Görseli",
+            "alt": "Ürün",
+            "width": "400px",
+            "alignment": "center"
+          }
+        },
+        {
+          "id": "cta-button",
+          "type": "button",
+          "props": {
+            "text": "Hemen Alışveriş Yap",
+            "url": "https://example.com/campaign",
+            "backgroundColor": "#E53935",
+            "textColor": "#ffffff",
+            "alignment": "center",
+            "borderRadius": "6px",
+            "padding": "16px 40px"
+          }
+        },
+        {
+          "id": "code-text",
+          "type": "text",
+          "props": {
+            "text": "Kupon Kodu: [[kupon_kodu]]",
+            "alignment": "center",
+            "fontWeight": "bold",
+            "color": "#3A416F"
+          }
+        },
+        {
+          "id": "divider-bottom",
+          "type": "divider",
+          "props": {
+            "style": "solid",
+            "color": "#E8E9ED",
+            "thickness": "1px"
+          }
+        },
+        {
+          "id": "unsubscribe",
+          "type": "text",
+          "props": {
+            "text": "Bu e-postayı almak istemiyorsanız buradan abonelikten çıkabilirsiniz.",
+            "alignment": "center",
+            "fontSize": "10px",
+            "color": "#8B8FA3"
+          }
+        }
+      ]
+    },
+    {
+      "id": "password-reset",
+      "name": "Şifre Sıfırlama",
+      "description": "Şifre sıfırlama talepleri için güvenlik e-postası",
+      "category": "Güvenlik",
+      "thumbnail": "security",
+      "elements": [
+        {
+          "id": "logo",
+          "type": "image",
+          "props": {
+            "src": "https://placehold.co/150x50/3A416F/ffffff?text=LOGO",
+            "alt": "Logo",
+            "width": "150px",
+            "alignment": "center"
+          }
+        },
+        {
+          "id": "spacer-1",
+          "type": "spacer",
+          "props": {
+            "height": "30px"
+          }
+        },
+        {
+          "id": "lock-icon",
+          "type": "image",
+          "props": {
+            "src": "https://placehold.co/60x60/FF9800/ffffff?text=🔒",
+            "alt": "Güvenlik",
+            "width": "60px",
+            "alignment": "center"
+          }
+        },
+        {
+          "id": "reset-title",
+          "type": "heading",
+          "props": {
+            "text": "Şifre Sıfırlama Talebi",
+            "level": "h1",
+            "alignment": "center",
+            "color": "#3A416F"
+          }
+        },
+        {
+          "id": "reset-info",
+          "type": "text",
+          "props": {
+            "text": "Merhaba [[musteri_adi]],\n\nHesabınız için şifre sıfırlama talebinde bulundunuz. Şifrenizi sıfırlamak için aşağıdaki butona tıklayın.",
+            "alignment": "center",
+            "color": "#5A6178"
+          }
+        },
+        {
+          "id": "reset-button",
+          "type": "button",
+          "props": {
+            "text": "Şifremi Sıfırla",
+            "url": "[[sifre_link]]",
+            "backgroundColor": "#FF9800",
+            "textColor": "#ffffff",
+            "alignment": "center",
+            "borderRadius": "6px",
+            "padding": "14px 32px"
+          }
+        },
+        {
+          "id": "expire-text",
+          "type": "text",
+          "props": {
+            "text": "Bu bağlantı 24 saat içinde geçerliliğini yitirecektir.",
+            "alignment": "center",
+            "fontSize": "12px",
+            "color": "#E53935"
+          }
+        },
+        {
+          "id": "divider-1",
+          "type": "divider",
+          "props": {
+            "style": "solid",
+            "color": "#E8E9ED",
+            "thickness": "1px"
+          }
+        },
+        {
+          "id": "warning-text",
+          "type": "text",
+          "props": {
+            "text": "⚠️ Bu talebi siz yapmadıysanız, bu e-postayı görmezden gelebilirsiniz. Hesabınız güvende.",
+            "alignment": "center",
+            "fontSize": "11px",
+            "color": "#8B8FA3"
+          }
+        },
+        {
+          "id": "footer",
+          "type": "text",
+          "props": {
+            "text": "[[firma_adi]] Güvenlik Ekibi",
+            "alignment": "center",
+            "fontSize": "11px",
+            "color": "#8B8FA3"
+          }
+        }
+      ]
+    },
+    {
+      "id": "shipping-notification",
+      "name": "Kargo Bildirimi",
+      "description": "Siparişin kargoya verildiğini bildiren e-posta",
+      "category": "İşlemsel",
+      "thumbnail": "shipping",
+      "elements": [
+        {
+          "id": "logo",
+          "type": "image",
+          "props": {
+            "src": "https://placehold.co/180x55/3A416F/ffffff?text=LOGO",
+            "alt": "Logo",
+            "width": "180px",
+            "alignment": "center"
+          }
+        },
+        {
+          "id": "spacer-1",
+          "type": "spacer",
+          "props": {
+            "height": "20px"
+          }
+        },
+        {
+          "id": "truck-icon",
+          "type": "image",
+          "props": {
+            "src": "https://placehold.co/70x70/2196F3/ffffff?text=🚚",
+            "alt": "Kargo",
+            "width": "70px",
+            "alignment": "center"
+          }
+        },
+        {
+          "id": "shipping-title",
+          "type": "heading",
+          "props": {
+            "text": "Siparişiniz Yola Çıktı!",
+            "level": "h1",
+            "alignment": "center",
+            "color": "#2196F3"
+          }
+        },
+        {
+          "id": "shipping-info",
+          "type": "text",
+          "props": {
+            "text": "Sayın [[musteri_adi]], [[siparis_no]] numaralı siparişiniz kargoya verildi ve tahmini [[teslim_tarihi]] tarihinde size ulaşacak.",
+            "alignment": "center",
+            "color": "#5A6178"
+          }
+        },
+        {
+          "id": "divider-1",
+          "type": "divider",
+          "props": {
+            "style": "solid",
+            "color": "#E8E9ED",
+            "thickness": "1px"
+          }
+        },
+        {
+          "id": "tracking-title",
+          "type": "heading",
+          "props": {
+            "text": "Kargo Takip Bilgileri",
+            "level": "h2",
+            "alignment": "left",
+            "color": "#3A416F"
+          }
+        },
+        {
+          "id": "tracking-info",
+          "type": "text",
+          "props": {
+            "text": "Kargo Firması: [[kargo_firma]]\nTakip No: [[takip_no]]\nTeslimat Adresi: [[adres]]",
+            "alignment": "left",
+            "color": "#5A6178"
+          }
+        },
+        {
+          "id": "track-button",
+          "type": "button",
+          "props": {
+            "text": "Kargomı Takip Et",
+            "url": "[[takip_link]]",
+            "backgroundColor": "#2196F3",
+            "textColor": "#ffffff",
+            "alignment": "center",
+            "borderRadius": "6px",
+            "padding": "14px 32px"
+          }
+        },
+        {
+          "id": "footer",
+          "type": "text",
+          "props": {
+            "text": "Sorularınız için [[destek_email]] adresinden bize ulaşabilirsiniz.\n[[firma_adi]] © 2024",
+            "alignment": "center",
+            "fontSize": "11px",
+            "color": "#8B8FA3"
+          }
+        }
+      ]
+    },{
+  "name": "Yeni Template",
+  "fcode": "DEMO_COMPANY",
+  "elements": [
+    {
+      "id": "1768301344994-oldyabjeu",
+      "type": "image",
+      "props": {
+        "src": "https://ci3.googleusercontent.com/meips/ADKq_NaYynuIjvjAFMa23LTXZMFaTj0CG3Cyd7VCRC4THnyD3kutX_Q5G_KgYXcqY4qC3qdlvya-QURQgiKNVieroU0tK7CdZvUKRwqUu5BIIjGFu9a_6Pb-mi9v51rzF4PDSyFyL6nr_h9wzG08UZ5QMKDwNlddnaPmFOHYER4=s0-d-e1-ft#https://image.playstationemail.com/lib/fe9c12717065047e76/m/1/6f92a5ed-60fb-4d1b-ad9d-2738e65138b7.png",
+        "alt": "Image",
+        "width": 600,
+        "height": 81,
+        "keepAspectRatio": true,
+        "textAlign": "center",
+        "backgroundColor": "transparent",
+        "marginTop": 0,
+        "marginRight": 0,
+        "marginBottom": 0,
+        "marginLeft": 0,
+        "paddingTop": 12,
+        "paddingRight": 0,
+        "paddingBottom": 0,
+        "paddingLeft": 0
+      }
+    },
+    {
+      "id": "1768301389762-hq1du9hpt",
+      "type": "text",
+      "props": {
+        "content": "PlayStation Store işleminiz başarıyla gerçekleştirildi. Teşekkürler!",
+        "fontSize": 28,
+        "fontWeight": "normal",
+        "fontFamily": "Arial, sans-serif",
+        "color": "#323232",
+        "backgroundColor": "transparent",
+        "textAlign": "center",
+        "lineHeight": 1.5,
+        "marginTop": 0,
+        "marginRight": 0,
+        "marginBottom": 10,
+        "marginLeft": 0,
+        "paddingTop": 29,
+        "paddingRight": 0,
+        "paddingBottom": 0,
+        "paddingLeft": 0
+      }
+    },
+    {
+      "id": "1768301439498-ljbar7oe8",
+      "type": "text",
+      "props": {
+        "content": "İşlem bilgilerinizin bir nüshası, geçerli koşulların yer aldığı sayfanın bağlantısıyla birlikte aşağıda sunulmuştur. Daha sonra da inceleyebilmek için lütfen bu mesajın çıktısını alın ve güvenli bir yerde saklayın.",
+        "fontSize": 14,
+        "fontWeight": "normal",
+        "fontFamily": "Arial, sans-serif",
+        "color": "#323232",
+        "backgroundColor": "transparent",
+        "textAlign": "left",
+        "lineHeight": 1.5,
+        "marginTop": 0,
+        "marginRight": 0,
+        "marginBottom": 10,
+        "marginLeft": 0,
+        "paddingTop": 20,
+        "paddingRight": 18,
+        "paddingBottom": 0,
+        "paddingLeft": 18
+      }
+    },
+    {
+      "id": "1768301506974-7nt1avrmy",
+      "type": "multi_column",
+      "props": {
+        "gap": 0,
+        "padding": "0",
+        "backgroundColor": "transparent",
+        "columns": [
+          {
+            "width": "50%",
+            "type": "text",
+            "content": "Sipariş Numarası: 786993840058118<br>makbuzunuz için <a href=\"https://www.google.com/\" style=\"color: #007bff; text-decoration: underline;\">tıklayın</a>",
+            "fontSize": 16,
+            "fontWeight": "normal",
+            "fontFamily": "Arial, sans-serif",
+            "color": "#000000",
+            "textAlign": "center",
+            "lineHeight": 1.5,
+            "backgroundColor": "transparent",
+            "paddingTop": 20,
+            "paddingRight": 0,
+            "paddingBottom": 0,
+            "paddingLeft": 0,
+            "marginTop": 0,
+            "marginRight": 0,
+            "marginBottom": 0,
+            "marginLeft": 0,
+            "borderTop": "1px solid #d2d2d2",
+            "borderBottom": "",
+            "borderLeft": "",
+            "borderRight": "",
+            "src": "https://via.placeholder.com/300x200",
+            "alt": "Resim",
+            "imgWidth": 300,
+            "imgHeight": "",
+            "imgKeepAspectRatio": true,
+            "imgAlign": "center",
+            "imgBackgroundColor": "transparent",
+            "imgPaddingTop": 0,
+            "imgPaddingRight": 0,
+            "imgPaddingBottom": 0,
+            "imgPaddingLeft": 0,
+            "imgMarginTop": 0,
+            "imgMarginRight": 0,
+            "imgMarginBottom": 0,
+            "imgMarginLeft": 0,
+            "btnText": "Buton",
+            "btnLink": "#",
+            "btnBg": "#3A416F",
+            "btnColor": "#ffffff",
+            "btnFontSize": 16,
+            "btnBorderRadius": 4,
+            "btnPadding": "12px 24px"
+          },
+          {
+            "width": "50%",
+            "type": "text",
+            "content": "Ad: [[müşteri_adı]]<br>\nÇevrimiçi Kimlik: [[müşteri_email]]<br>\nSatın Alma Tarihi: [[sipariş_tarihi]]",
+            "fontSize": 13,
+            "fontWeight": "normal",
+            "fontFamily": "Arial, sans-serif",
+            "color": "#000000",
+            "textAlign": "right",
+            "lineHeight": 1.5,
+            "backgroundColor": "#d2d2d2",
+            "paddingTop": 16,
+            "paddingRight": 19,
+            "paddingBottom": 16,
+            "paddingLeft": 0,
+            "marginTop": 0,
+            "marginRight": 0,
+            "marginBottom": 0,
+            "marginLeft": 0,
+            "borderTop": "",
+            "borderBottom": "",
+            "borderLeft": "",
+            "borderRight": "",
+            "src": "https://via.placeholder.com/300x200",
+            "alt": "Resim",
+            "imgWidth": 300,
+            "imgHeight": "",
+            "imgKeepAspectRatio": true,
+            "imgAlign": "center",
+            "imgBackgroundColor": "transparent",
+            "imgPaddingTop": 0,
+            "imgPaddingRight": 0,
+            "imgPaddingBottom": 0,
+            "imgPaddingLeft": 0,
+            "imgMarginTop": 0,
+            "imgMarginRight": 0,
+            "imgMarginBottom": 0,
+            "imgMarginLeft": 0,
+            "btnText": "Buton",
+            "btnLink": "#",
+            "btnBg": "#3A416F",
+            "btnColor": "#ffffff",
+            "btnFontSize": 16,
+            "btnBorderRadius": 4,
+            "btnPadding": "12px 24px"
+          }
+        ]
+      }
+    },
+    {
+      "id": "1768301833652-0fgwi5xa4",
+      "type": "multi_column",
+      "props": {
+        "gap": 0,
+        "padding": "10px 0px 10px 0px",
+        "backgroundColor": "transparent",
+        "columns": [
+          {
+            "width": "50%",
+            "type": "text",
+            "content": "<strong>Ayrıntılar</strong>",
+            "fontSize": 13,
+            "fontWeight": "normal",
+            "fontFamily": "Arial, sans-serif",
+            "color": "#ffffff",
+            "textAlign": "left",
+            "lineHeight": 1.5,
+            "backgroundColor": "#000000",
+            "paddingTop": 0,
+            "paddingRight": 0,
+            "paddingBottom": 0,
+            "paddingLeft": 0,
+            "marginTop": 0,
+            "marginRight": 0,
+            "marginBottom": 0,
+            "marginLeft": 0,
+            "borderTop": "",
+            "borderBottom": "",
+            "borderLeft": "",
+            "borderRight": "",
+            "src": "https://via.placeholder.com/300x200",
+            "alt": "Resim",
+            "imgWidth": 300,
+            "imgHeight": "",
+            "imgKeepAspectRatio": true,
+            "imgAlign": "center",
+            "imgBackgroundColor": "transparent",
+            "imgPaddingTop": 0,
+            "imgPaddingRight": 0,
+            "imgPaddingBottom": 0,
+            "imgPaddingLeft": 0,
+            "imgMarginTop": 0,
+            "imgMarginRight": 0,
+            "imgMarginBottom": 0,
+            "imgMarginLeft": 0,
+            "btnText": "Buton",
+            "btnLink": "#",
+            "btnBg": "#3A416F",
+            "btnColor": "#ffffff",
+            "btnFontSize": 16,
+            "btnBorderRadius": 4,
+            "btnPadding": "12px 24px"
+          },
+          {
+            "width": "50%",
+            "type": "text",
+            "content": "Fiyat",
+            "fontSize": 13,
+            "fontWeight": "normal",
+            "fontFamily": "Arial, sans-serif",
+            "color": "#ffffff",
+            "textAlign": "right",
+            "lineHeight": 1.5,
+            "backgroundColor": "#000000",
+            "paddingTop": 0,
+            "paddingRight": 0,
+            "paddingBottom": 0,
+            "paddingLeft": 0,
+            "marginTop": 0,
+            "marginRight": 0,
+            "marginBottom": 0,
+            "marginLeft": 0,
+            "borderTop": "",
+            "borderBottom": "",
+            "borderLeft": "",
+            "borderRight": "",
+            "src": "https://via.placeholder.com/300x200",
+            "alt": "Resim",
+            "imgWidth": 300,
+            "imgHeight": "",
+            "imgKeepAspectRatio": true,
+            "imgAlign": "center",
+            "imgBackgroundColor": "transparent",
+            "imgPaddingTop": 0,
+            "imgPaddingRight": 0,
+            "imgPaddingBottom": 0,
+            "imgPaddingLeft": 0,
+            "imgMarginTop": 0,
+            "imgMarginRight": 0,
+            "imgMarginBottom": 0,
+            "imgMarginLeft": 0,
+            "btnText": "Buton",
+            "btnLink": "#",
+            "btnBg": "#3A416F",
+            "btnColor": "#ffffff",
+            "btnFontSize": 16,
+            "btnBorderRadius": 4,
+            "btnPadding": "12px 24px"
+          }
+        ]
+      }
+    }
+  ],
+  "exportedAt": "2026-01-13T15:40:29.141Z"
+}
+  ]
+}

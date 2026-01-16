@@ -1,0 +1,172 @@
+/* Element Palette - Professional Design */
+.element-palette {
+  width: 220px;
+  min-width: 220px;
+  background: var(--bg-secondary);
+  border-right: 1px solid var(--border-light);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  box-shadow: var(--shadow-sm);
+}
+
+.palette-header {
+  padding: 16px;
+  border-bottom: 1px solid var(--border-light);
+  background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
+}
+
+.palette-header h3 {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.palette-hint {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.palette-elements {
+  padding: 12px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.palette-element {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--bg-tertiary);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  cursor: grab;
+  transition: all var(--transition-fast);
+  user-select: none;
+}
+
+.palette-element:hover {
+  background: var(--bg-secondary);
+  border-color: var(--primary);
+  box-shadow: var(--shadow-sm);
+  transform: translateX(3px);
+}
+
+.palette-element:active {
+  cursor: grabbing;
+  transform: scale(0.98);
+}
+
+.palette-element.dragging {
+  opacity: 0.5;
+  border-color: var(--primary);
+}
+
+.element-icon {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--primary);
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+}
+
+.element-icon svg {
+  width: 14px;
+  height: 14px;
+  color: white;
+  stroke-width: 2;
+}
+
+.element-name {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-primary);
+  letter-spacing: -0.2px;
+}
+
+.palette-footer {
+  padding: 12px;
+  border-top: 1px solid var(--border-light);
+  background: var(--bg-tertiary);
+}
+
+.palette-info {
+  font-size: 10px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-bottom: 8px;
+}
+
+.palette-info:last-child {
+  margin-bottom: 0;
+}
+
+.palette-info strong {
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+/* Palette Section Titles */
+.palette-section-title {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  padding: 8px 4px 6px;
+  margin-top: 8px;
+}
+
+.palette-section-title:first-child {
+  margin-top: 0;
+}
+
+/* Flying Ghost Element Animation */
+.element-fly-ghost {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+  border: 2px solid var(--primary);
+  border-radius: var(--radius-md);
+  box-shadow: 0 8px 32px rgba(58, 65, 111, 0.35), 0 4px 16px rgba(58, 65, 111, 0.2);
+  pointer-events: none;
+  user-select: none;
+}
+
+.element-fly-ghost .ghost-icon {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+}
+
+.element-fly-ghost .ghost-icon svg {
+  width: 14px;
+  height: 14px;
+  color: white;
+  stroke-width: 2;
+}
+
+.element-fly-ghost .ghost-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: white;
+  letter-spacing: -0.2px;
+}

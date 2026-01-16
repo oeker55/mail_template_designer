@@ -1,0 +1,195 @@
+/* Professional Design System */
+:root {
+  /* Primary Colors */
+  --primary: #3A416F;
+  --primary-dark: #2D3356;
+  --primary-light: #4A5180;
+  
+  /* Secondary Colors */
+  --secondary: #5E6A8D;
+  --secondary-light: #7B809A;
+  --secondary-lighter: #A0A4B8;
+  
+  /* Accent Colors */
+  --accent: #4CAF50;
+  --accent-hover: #43A047;
+  --warning: #FB8C00;
+  --danger: #E53935;
+  --info: #1E88E5;
+  
+  /* Neutral Colors */
+  --bg-primary: #F4F6F8;
+  --bg-secondary: #FFFFFF;
+  --bg-tertiary: #EEF0F4;
+  
+  /* Text Colors */
+  --text-primary: #344767;
+  --text-secondary: #67748E;
+  --text-muted: #8392AB;
+  
+  /* Border Colors */
+  --border-light: #E9ECEF;
+  --border-medium: #DEE2E6;
+  --border-dark: #CED4DA;
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(58, 65, 111, 0.08);
+  --shadow-md: 0 4px 12px rgba(58, 65, 111, 0.12);
+  --shadow-lg: 0 8px 24px rgba(58, 65, 111, 0.16);
+  --shadow-xl: 0 12px 40px rgba(58, 65, 111, 0.2);
+  
+  /* Transitions */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.25s ease;
+  --transition-slow: 0.4s ease;
+  
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --radius-xl: 16px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+code {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 12px;
+}
+
+/* Global Button Styles */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 16px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-decoration: none;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(58, 65, 111, 0.25);
+}
+
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(58, 65, 111, 0.35);
+}
+
+.btn-secondary {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-medium);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: var(--border-light);
+  border-color: var(--border-dark);
+}
+
+.btn-success {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+  color: white;
+}
+
+.btn-danger {
+  background: linear-gradient(135deg, var(--danger) 0%, #C62828 100%);
+  color: white;
+}
+
+/* Global Input Styles */
+input, select, textarea {
+  font-family: inherit;
+  font-size: 12px;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-tertiary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--secondary-lighter);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--secondary);
+}
+
+/* Animation Keyframes */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
