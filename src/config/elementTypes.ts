@@ -13,6 +13,7 @@ export const ICONS: Record<string, string> = {
   section: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>`,
   column: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="9" y="3" width="6" height="18" rx="1"/></svg>`,
   social: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="9"/><path d="M12 3a15.3 15.3 0 0 1 4 9 15.3 15.3 0 0 1-4 9 15.3 15.3 0 0 1-4-9 15.3 15.3 0 0 1 4-9z"/><path d="M3 12h18"/></svg>`,
+  product_row: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="2" y="3" width="20" height="18" rx="2"/><path d="M2 9h20M2 15h20M8 9v12M16 9v12"/><circle cx="5" cy="12" r="1.5" fill="currentColor"/><circle cx="5" cy="18" r="1.5" fill="currentColor"/></svg>`,
 }
 
 export const ELEMENT_TYPES: Record<string, ElementTypeConfig> = {
@@ -282,6 +283,122 @@ export const ELEMENT_TYPES: Record<string, ElementTypeConfig> = {
       gap: 10,
       align: 'center',
       padding: '10px 0'
+    }
+  },
+  PRODUCT_ROW: {
+    id: 'product_row',
+    name: 'Ürün Satırı',
+    icon: 'product_row',
+    component: 'ProductRow',
+    defaultProps: {
+      // Repeater ayarları - Backend'de bu element çoğaltılacak
+      isRepeatable: true,
+      repeatKey: 'order_items',  // Backend'de kullanılacak array key
+      repeatItemAlias: 'item',    // Her item için alias (örn: item.name, item.price)
+      
+      // Görünüm Modu: 'table' veya 'card'
+      displayMode: 'card',
+      
+      // === KART MODU AYARLARI ===
+      cardLayout: 'horizontal',  // horizontal veya vertical
+      cardBgColor: '#ffffff',
+      cardBorderColor: '#eeeeee',
+      cardBorderRadius: 8,
+      cardPadding: '12px',
+      cardGap: 12,
+      cardShadow: false,
+      
+      // Resim ayarları (kart modu)
+      cardImgWidth: 80,
+      cardImgHeight: 80,
+      cardImgBorderRadius: 4,
+      cardImgVariableKey: 'item.image_url',
+      
+      // Başlık (ürün adı)
+      cardTitleVariableKey: 'item.name',
+      cardTitleFontSize: 14,
+      cardTitleFontWeight: 'normal',
+      cardTitleColor: '#333333',
+      
+      // Alt bilgi (adet, beden vb.)
+      cardSubtitleVariableKey: 'item.details',
+      cardSubtitleFontSize: 13,
+      cardSubtitleColor: '#666666',
+      
+      // Fiyat
+      cardPriceVariableKey: 'item.price',
+      cardPriceFontSize: 15,
+      cardPriceFontWeight: 'bold',
+      cardPriceColor: '#f57c00',
+      
+      // === TABLO MODU AYARLARI ===
+      // Tablo başlık stilleri
+      showHeader: true,
+      headerBgColor: '#f8f9fa',
+      headerTextColor: '#333333',
+      headerFontSize: 14,
+      headerFontWeight: 'bold',
+      
+      // Satır stilleri
+      rowBgColor: '#ffffff',
+      rowAltBgColor: '#f9f9f9',
+      rowBorderColor: '#e0e0e0',
+      
+      // Kolonlar - varsayılan sipariş satırı yapısı
+      columns: [
+        {
+          id: 'product_image',
+          label: 'Ürün',
+          variableKey: 'item.image_url',
+          width: '80px',
+          type: 'image',
+          fontSize: 14,
+          fontWeight: 'normal',
+          color: '#333333',
+          textAlign: 'center',
+          imgWidth: 60,
+          imgHeight: 60
+        },
+        {
+          id: 'product_name',
+          label: 'Ürün Adı',
+          variableKey: 'item.name',
+          width: 'auto',
+          type: 'text',
+          fontSize: 14,
+          fontWeight: 'normal',
+          color: '#333333',
+          textAlign: 'left'
+        },
+        {
+          id: 'product_quantity',
+          label: 'Adet',
+          variableKey: 'item.quantity',
+          width: '60px',
+          type: 'text',
+          fontSize: 14,
+          fontWeight: 'normal',
+          color: '#333333',
+          textAlign: 'center'
+        },
+        {
+          id: 'product_price',
+          label: 'Fiyat',
+          variableKey: 'item.price',
+          width: '100px',
+          type: 'price',
+          fontSize: 14,
+          fontWeight: 'bold',
+          color: '#333333',
+          textAlign: 'right'
+        }
+      ],
+      
+      // Genel stiller
+      padding: '0',
+      borderRadius: 4,
+      tableBorderColor: '#e0e0e0',
+      tableWidth: '100%'
     }
   }
 }

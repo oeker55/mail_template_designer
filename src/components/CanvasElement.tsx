@@ -379,6 +379,236 @@ const CanvasElement: React.FC<CanvasElementComponentProps> = ({
           </div>
         )
 
+      case 'product_row':
+        const productColumns = p.columns as Array<Record<string, unknown>>
+        const displayMode = (p.displayMode as string) || 'card'
+        const sampleData = {
+          'item.image_url': 'https://via.placeholder.com/80x80?text=Ürün',
+          'item.name': '3 İplik Şardonsuz Yakası Ribanalı Sweatshirt - Ekru',
+          'item.details': 'Adet : 1 - Beden : L',
+          'item.quantity': '1',
+          'item.price': '150,00 TL',
+          'item.sku': 'SKU-001',
+          'item.total': '150,00 TL'
+        }
+        
+        // KART GÖRÜNÜMÜ
+        if (displayMode === 'card') {
+          return (
+            <div style={{ 
+              padding: p.padding as string,
+              width: p.tableWidth as string
+            }}>
+              {/* Repeatable indicator badge */}
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                marginBottom: '8px',
+                padding: '6px 10px',
+                backgroundColor: '#e3f2fd',
+                borderRadius: '4px',
+                fontSize: '11px',
+                color: '#1565c0'
+              }}>
+                <span style={{ fontSize: '14px' }}>🔄</span>
+                <span><strong>Tekrarlanabilir Element</strong> - Backend'de <code style={{ backgroundColor: '#bbdefb', padding: '2px 4px', borderRadius: '2px' }}>[[{String(p.repeatKey)}]]</code> array'ine göre çoğaltılır</span>
+              </div>
+
+              {/* Örnek kartlar */}
+              {[0, 1].map((rowIdx) => (
+                <div key={rowIdx} style={{
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  gap: `${p.cardGap || 12}px`,
+                  padding: (p.cardPadding as string) || '12px',
+                  backgroundColor: (p.cardBgColor as string) || '#ffffff',
+                  border: `1px solid ${(p.cardBorderColor as string) || '#eeeeee'}`,
+                  borderRadius: `${p.cardBorderRadius || 8}px`,
+                  marginBottom: '8px',
+                  boxShadow: p.cardShadow ? '0 2px 4px rgba(0,0,0,0.1)' : 'none'
+                }}>
+                  {/* Ürün Resmi */}
+                  <div style={{ flexShrink: 0 }}>
+                    <img 
+                      src={sampleData['item.image_url']}
+                      alt="Ürün"
+                      width={(p.cardImgWidth as number) || 80}
+                      height={(p.cardImgHeight as number) || 80}
+                      style={{
+                        display: 'block',
+                        borderRadius: `${p.cardImgBorderRadius || 4}px`,
+                        objectFit: 'cover'
+                      }}
+                    />
+                    <div style={{ 
+                      fontSize: '9px', 
+                      color: '#9e9e9e', 
+                      textAlign: 'center',
+                      marginTop: '4px'
+                    }}>
+                      [[{String(p.cardImgVariableKey)}]]
+                    </div>
+                  </div>
+                  
+                  {/* Ürün Bilgileri */}
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    {/* Başlık */}
+                    <div style={{
+                      fontSize: `${p.cardTitleFontSize || 14}px`,
+                      fontWeight: (p.cardTitleFontWeight as string) || 'normal',
+                      color: (p.cardTitleColor as string) || '#333333',
+                      marginBottom: '4px',
+                      lineHeight: 1.4
+                    }}>
+                      <span style={{ color: '#9e9e9e', fontSize: '9px' }}>[[{String(p.cardTitleVariableKey)}]]</span>
+                      <br />
+                      {sampleData['item.name']}
+                    </div>
+                    
+                    {/* Alt bilgi */}
+                    <div style={{
+                      fontSize: `${p.cardSubtitleFontSize || 13}px`,
+                      color: (p.cardSubtitleColor as string) || '#666666',
+                      marginBottom: '6px'
+                    }}>
+                      <span style={{ color: '#9e9e9e', fontSize: '9px' }}>[[{String(p.cardSubtitleVariableKey)}]]</span>
+                      <br />
+                      {sampleData['item.details']}
+                    </div>
+                    
+                    {/* Fiyat */}
+                    <div style={{
+                      fontSize: `${p.cardPriceFontSize || 15}px`,
+                      fontWeight: (p.cardPriceFontWeight as string) || 'bold',
+                      color: (p.cardPriceColor as string) || '#f57c00'
+                    }}>
+                      <span style={{ color: '#9e9e9e', fontSize: '9px' }}>[[{String(p.cardPriceVariableKey)}]]</span>
+                      <br />
+                      {sampleData['item.price']}
+                    </div>
+                  </div>
+                </div>
+              ))}
+              
+              {/* More rows indicator */}
+              <div style={{
+                padding: '8px',
+                textAlign: 'center',
+                color: '#9e9e9e',
+                fontSize: '12px',
+                fontStyle: 'italic',
+                backgroundColor: '#fafafa',
+                borderRadius: '4px'
+              }}>
+                ⋮ Diğer ürünler backend'de otomatik eklenir ⋮
+              </div>
+            </div>
+          )
+        }
+        
+        // TABLO GÖRÜNÜMÜ
+        return (
+          <div style={{ 
+            padding: p.padding as string,
+            width: p.tableWidth as string
+          }}>
+            {/* Repeatable indicator badge */}
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              marginBottom: '8px',
+              padding: '6px 10px',
+              backgroundColor: '#e3f2fd',
+              borderRadius: '4px',
+              fontSize: '11px',
+              color: '#1565c0'
+            }}>
+              <span style={{ fontSize: '14px' }}>🔄</span>
+              <span><strong>Tekrarlanabilir Element</strong> - Backend'de <code style={{ backgroundColor: '#bbdefb', padding: '2px 4px', borderRadius: '2px' }}>[[{String(p.repeatKey)}]]</code> array'ine göre çoğaltılır</span>
+            </div>
+            
+            <table style={{
+              width: '100%',
+              borderCollapse: 'collapse',
+              border: `1px solid ${p.tableBorderColor as string}`,
+              borderRadius: `${p.borderRadius}px`
+            }}>
+              {/* Header */}
+              {Boolean(p.showHeader) && (
+                <thead>
+                  <tr style={{
+                    backgroundColor: p.headerBgColor as string
+                  }}>
+                    {productColumns.map((col, idx) => (
+                      <th key={idx} style={{
+                        padding: '10px 8px',
+                        textAlign: (col.textAlign as 'left' | 'center' | 'right') || 'left',
+                        fontSize: `${p.headerFontSize}px`,
+                        fontWeight: p.headerFontWeight as string,
+                        color: p.headerTextColor as string,
+                        borderBottom: `2px solid ${p.tableBorderColor as string}`,
+                        width: col.width as string
+                      }}>
+                        {String(col.label)}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+              )}
+              {/* Sample rows to show design */}
+              <tbody>
+                {[0, 1].map((rowIdx) => (
+                  <tr key={rowIdx} style={{
+                    backgroundColor: rowIdx % 2 === 0 ? p.rowBgColor as string : p.rowAltBgColor as string
+                  }}>
+                    {productColumns.map((col, colIdx) => (
+                      <td key={colIdx} style={{
+                        padding: '10px 8px',
+                        textAlign: (col.textAlign as 'left' | 'center' | 'right') || 'left',
+                        fontSize: `${col.fontSize}px`,
+                        fontWeight: col.fontWeight as string,
+                        color: col.color as string,
+                        borderBottom: `1px solid ${p.rowBorderColor as string}`,
+                        width: col.width as string
+                      }}>
+                        {col.type === 'image' ? (
+                          <img 
+                            src={sampleData['item.image_url']} 
+                            alt="Ürün"
+                            width={col.imgWidth as number || 60}
+                            height={col.imgHeight as number || 60}
+                            style={{ display: 'block', margin: col.textAlign === 'center' ? '0 auto' : '0' }}
+                          />
+                        ) : (
+                          <span>
+                            <span style={{ color: '#9e9e9e', fontSize: '10px' }}>[[{String(col.variableKey)}]]</span>
+                            <br />
+                            {sampleData[col.variableKey as keyof typeof sampleData] || `Örnek ${String(col.label)}`}
+                          </span>
+                        )}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+                {/* More rows indicator */}
+                <tr style={{ backgroundColor: '#fafafa' }}>
+                  <td colSpan={productColumns.length} style={{
+                    padding: '8px',
+                    textAlign: 'center',
+                    color: '#9e9e9e',
+                    fontSize: '12px',
+                    fontStyle: 'italic'
+                  }}>
+                    ⋮ Diğer ürünler backend'de otomatik eklenir ⋮
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        )
+
       default:
         return <div>Unknown Element</div>
     }

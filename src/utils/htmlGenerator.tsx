@@ -358,6 +358,220 @@ const renderElement = (element: CanvasElement): React.ReactNode => {
           {p.content as string}
         </Section>
       )
+
+    case 'product_row':
+      // Product Row - Tekrarlanabilir Ürün Satırı
+      // Bu element backend'de repeatKey array'ine göre çoğaltılacak
+      const productColumns = p.columns as Array<Record<string, unknown>>
+      const repeatKey = String(p.repeatKey || 'order_items')
+      const itemAlias = String(p.repeatItemAlias || 'item')
+      const productDisplayMode = (p.displayMode as string) || 'card'
+      
+      // KART GÖRÜNÜMÜ için HTML
+      if (productDisplayMode === 'card') {
+        return (
+          <Section style={{ padding: p.padding as string }}>
+            {/* Repeater başlangıç yorumu - Backend bu yorumu arayacak */}
+            {`<!-- REPEAT_START:${repeatKey}:${itemAlias} -->`}
+            {`<!-- REPEAT_ROW_START -->`}
+            
+            {/* Outlook uyumlu tablo tabanlı kart yapısı */}
+            <table
+              role="presentation"
+              cellPadding="0"
+              cellSpacing="0"
+              style={{
+                width: '100%',
+                backgroundColor: (p.cardBgColor as string) || '#ffffff',
+                border: `1px solid ${(p.cardBorderColor as string) || '#eeeeee'}`,
+                borderRadius: ((p.cardBorderRadius as number) || 8) + 'px',
+                marginBottom: '8px'
+              }}
+            >
+              <tr>
+                {/* Ürün Resmi Kolonu */}
+                <td
+                  style={{
+                    width: ((p.cardImgWidth as number) || 80) + 'px',
+                    padding: (p.cardPadding as string) || '12px',
+                    verticalAlign: 'top'
+                  }}
+                >
+                  <Img
+                    src={`[[${String(p.cardImgVariableKey)}]]`}
+                    alt="Ürün"
+                    width={(p.cardImgWidth as number) || 80}
+                    height={(p.cardImgHeight as number) || 80}
+                    style={{
+                      display: 'block',
+                      borderRadius: ((p.cardImgBorderRadius as number) || 4) + 'px',
+                      border: 'none',
+                      outline: 'none'
+                    }}
+                  />
+                </td>
+                
+                {/* Ürün Bilgileri Kolonu */}
+                <td
+                  style={{
+                    padding: (p.cardPadding as string) || '12px',
+                    paddingLeft: '0',
+                    verticalAlign: 'top'
+                  }}
+                >
+                  {/* Ürün Adı */}
+                  <Text
+                    style={{
+                      margin: '0 0 4px 0',
+                      padding: 0,
+                      fontSize: ((p.cardTitleFontSize as number) || 14) + 'px',
+                      fontWeight: (p.cardTitleFontWeight as string) || 'normal',
+                      color: (p.cardTitleColor as string) || '#333333',
+                      fontFamily: 'Arial, Helvetica, sans-serif',
+                      lineHeight: '1.4'
+                    }}
+                  >
+                    {`[[${String(p.cardTitleVariableKey)}]]`}
+                  </Text>
+                  
+                  {/* Alt Bilgi (Adet, Beden vb.) */}
+                  <Text
+                    style={{
+                      margin: '0 0 6px 0',
+                      padding: 0,
+                      fontSize: ((p.cardSubtitleFontSize as number) || 13) + 'px',
+                      color: (p.cardSubtitleColor as string) || '#666666',
+                      fontFamily: 'Arial, Helvetica, sans-serif'
+                    }}
+                  >
+                    {`[[${String(p.cardSubtitleVariableKey)}]]`}
+                  </Text>
+                  
+                  {/* Fiyat */}
+                  <Text
+                    style={{
+                      margin: 0,
+                      padding: 0,
+                      fontSize: ((p.cardPriceFontSize as number) || 15) + 'px',
+                      fontWeight: (p.cardPriceFontWeight as string) || 'bold',
+                      color: (p.cardPriceColor as string) || '#f57c00',
+                      fontFamily: 'Arial, Helvetica, sans-serif'
+                    }}
+                  >
+                    {`[[${String(p.cardPriceVariableKey)}]]`}
+                  </Text>
+                </td>
+              </tr>
+            </table>
+            
+            {`<!-- REPEAT_ROW_END -->`}
+            {`<!-- REPEAT_END:${repeatKey} -->`}
+          </Section>
+        )
+      }
+      
+      // TABLO GÖRÜNÜMÜ için HTML
+      return (
+        <Section style={{ padding: p.padding as string }}>
+          {/* Repeater başlangıç yorumu - Backend bu yorumu arayacak */}
+          {`<!-- REPEAT_START:${repeatKey}:${itemAlias} -->`}
+          
+          <table
+            role="presentation"
+            cellPadding="0"
+            cellSpacing="0"
+            style={{
+              width: (p.tableWidth as string) || '100%',
+              borderCollapse: 'collapse',
+              border: `1px solid ${(p.tableBorderColor as string) || '#e0e0e0'}`,
+              borderRadius: ((p.borderRadius as number) || 0) + 'px'
+            }}
+          >
+            {/* Tablo Başlığı */}
+            {Boolean(p.showHeader) && (
+              <thead>
+                <tr style={{ backgroundColor: (p.headerBgColor as string) || '#f8f9fa' }}>
+                  {productColumns.map((col, idx) => (
+                    <th
+                      key={idx}
+                      style={{
+                        padding: '12px 10px',
+                        textAlign: (col.textAlign as 'left' | 'center' | 'right') || 'left',
+                        fontSize: ((p.headerFontSize as number) || 14) + 'px',
+                        fontWeight: (p.headerFontWeight as string) || 'bold',
+                        fontFamily: 'Arial, Helvetica, sans-serif',
+                        color: (p.headerTextColor as string) || '#333333',
+                        borderBottom: `2px solid ${(p.tableBorderColor as string) || '#e0e0e0'}`,
+                        width: col.width as string
+                      }}
+                    >
+                      {String(col.label)}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+            )}
+            
+            {/* Ürün Satırı - Bu kısım backend'de her item için tekrarlanacak */}
+            <tbody>
+              {/* Satır başlangıç yorumu */}
+              {`<!-- REPEAT_ROW_START -->`}
+              <tr style={{ backgroundColor: (p.rowBgColor as string) || '#ffffff' }}>
+                {productColumns.map((col, colIdx) => (
+                  <td
+                    key={colIdx}
+                    style={{
+                      padding: '12px 10px',
+                      textAlign: (col.textAlign as 'left' | 'center' | 'right') || 'left',
+                      fontSize: ((col.fontSize as number) || 14) + 'px',
+                      fontWeight: (col.fontWeight as string) || 'normal',
+                      fontFamily: 'Arial, Helvetica, sans-serif',
+                      color: (col.color as string) || '#333333',
+                      borderBottom: `1px solid ${(p.rowBorderColor as string) || '#e0e0e0'}`,
+                      width: col.width as string,
+                      verticalAlign: 'middle'
+                    }}
+                  >
+                    {col.type === 'image' ? (
+                      <Img
+                        src={`[[${String(col.variableKey)}]]`}
+                        alt="Ürün"
+                        width={(col.imgWidth as number) || 60}
+                        height={(col.imgHeight as number) || 60}
+                        style={{
+                          display: 'block',
+                          margin: col.textAlign === 'center' ? '0 auto' : '0',
+                          border: 'none',
+                          outline: 'none'
+                        }}
+                      />
+                    ) : (
+                      <Text
+                        style={{
+                          margin: 0,
+                          padding: 0,
+                          fontSize: ((col.fontSize as number) || 14) + 'px',
+                          fontWeight: (col.fontWeight as string) || 'normal',
+                          color: (col.color as string) || '#333333',
+                          fontFamily: 'Arial, Helvetica, sans-serif',
+                          textAlign: (col.textAlign as 'left' | 'center' | 'right') || 'left'
+                        }}
+                      >
+                        {`[[${String(col.variableKey)}]]`}
+                      </Text>
+                    )}
+                  </td>
+                ))}
+              </tr>
+              {/* Satır bitiş yorumu */}
+              {`<!-- REPEAT_ROW_END -->`}
+            </tbody>
+          </table>
+          
+          {/* Repeater bitiş yorumu */}
+          {`<!-- REPEAT_END:${repeatKey} -->`}
+        </Section>
+      )
     
     default:
       return null

@@ -159,6 +159,49 @@ export interface SocialProps {
   padding: string
 }
 
+// Product Row Props (Tekrarlanabilir ürün satırı)
+export interface ProductRowColumnData {
+  id: string
+  label: string
+  variableKey: string
+  width: string
+  type: 'text' | 'image' | 'price'
+  fontSize: number
+  fontWeight: string
+  color: string
+  textAlign: 'left' | 'center' | 'right'
+  // Image specific
+  imgWidth?: number
+  imgHeight?: number
+}
+
+export interface ProductRowProps {
+  // Repeater ayarları
+  isRepeatable: boolean
+  repeatKey: string  // Backend'de kullanılacak array key (örn: "order_items", "products")
+  repeatItemAlias: string  // Her item için alias (örn: "item", "product")
+  
+  // Tablo stilleri
+  showHeader: boolean
+  headerBgColor: string
+  headerTextColor: string
+  headerFontSize: number
+  headerFontWeight: string
+  
+  rowBgColor: string
+  rowAltBgColor: string
+  rowBorderColor: string
+  
+  // Kolonlar
+  columns: ProductRowColumnData[]
+  
+  // Genel stiller
+  padding: string
+  borderRadius: number
+  tableBorderColor: string
+  tableWidth: string
+}
+
 // Union type for all element props
 export type ElementProps = 
   | TextProps 
@@ -171,6 +214,7 @@ export type ElementProps =
   | SectionProps 
   | ColumnProps 
   | SocialProps
+  | ProductRowProps
 
 // Element type
 export type ElementType = 
@@ -184,6 +228,7 @@ export type ElementType =
   | 'section' 
   | 'column' 
   | 'social'
+  | 'product_row'
 
 // Canvas Element
 export interface CanvasElement {

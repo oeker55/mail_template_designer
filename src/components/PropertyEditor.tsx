@@ -627,6 +627,546 @@ const PropertyEditor: React.FC<PropertyEditorProps> = ({ element, onUpdateElemen
     </>
   )
 
+  // Product Row için kolon değişiklik fonksiyonu
+  const handleProductColumnChange = (index: number, field: string, value: unknown) => {
+    const columns = element.props.columns as Array<Record<string, unknown>>
+    const newColumns = [...columns]
+    newColumns[index] = { ...newColumns[index], [field]: value }
+    handleChange('columns', newColumns)
+  }
+
+  const addProductColumn = () => {
+    const columns = (element.props.columns || []) as Array<Record<string, unknown>>
+    const newColumns = [...columns, {
+      id: `col_${Date.now()}`,
+      label: 'Yeni Kolon',
+      variableKey: 'item.new_field',
+      width: 'auto',
+      type: 'text',
+      fontSize: 14,
+      fontWeight: 'normal',
+      color: '#333333',
+      textAlign: 'left',
+      imgWidth: 60,
+      imgHeight: 60
+    }]
+    handleChange('columns', newColumns)
+  }
+
+  const removeProductColumn = (index: number) => {
+    const columns = element.props.columns as Array<Record<string, unknown>>
+    const newColumns = columns.filter((_: unknown, i: number) => i !== index)
+    handleChange('columns', newColumns)
+  }
+
+  // Product Row özellikleri düzenleme arayüzü
+  const renderProductRowProperties = () => {
+    const displayMode = (element.props.displayMode as string) || 'card'
+    
+    return (
+    <>
+      {/* Görünüm Modu Seçimi */}
+      <div className="property-section-divider">
+        <span className="divider-icon">🎨</span>
+        <span className="divider-text">Görünüm Modu</span>
+      </div>
+      
+      <div className="property-item">
+        <label className="property-label">Görünüm Tipi</label>
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <button
+            type="button"
+            onClick={() => handleChange('displayMode', 'card')}
+            style={{
+              flex: 1,
+              padding: '12px 8px',
+              border: displayMode === 'card' ? '2px solid #1976d2' : '1px solid #ddd',
+              borderRadius: '8px',
+              backgroundColor: displayMode === 'card' ? '#e3f2fd' : '#fff',
+              cursor: 'pointer',
+              textAlign: 'center'
+            }}
+          >
+            <div style={{ fontSize: '24px', marginBottom: '4px' }}>🃏</div>
+            <div style={{ fontSize: '12px', fontWeight: displayMode === 'card' ? 'bold' : 'normal' }}>Kart</div>
+            <div style={{ fontSize: '10px', color: '#666' }}>Resim + Bilgi yan yana</div>
+          </button>
+          <button
+            type="button"
+            onClick={() => handleChange('displayMode', 'table')}
+            style={{
+              flex: 1,
+              padding: '12px 8px',
+              border: displayMode === 'table' ? '2px solid #1976d2' : '1px solid #ddd',
+              borderRadius: '8px',
+              backgroundColor: displayMode === 'table' ? '#e3f2fd' : '#fff',
+              cursor: 'pointer',
+              textAlign: 'center'
+            }}
+          >
+            <div style={{ fontSize: '24px', marginBottom: '4px' }}>📊</div>
+            <div style={{ fontSize: '12px', fontWeight: displayMode === 'table' ? 'bold' : 'normal' }}>Tablo</div>
+            <div style={{ fontSize: '10px', color: '#666' }}>Kolonlu liste</div>
+          </button>
+        </div>
+      </div>
+      
+      {/* Repeater Ayarları Bölümü */}
+      <div className="property-section-divider">
+        <span className="divider-icon">🔄</span>
+        <span className="divider-text">Tekrarlama Ayarları</span>
+      </div>
+      
+      <div className="property-info-box" style={{ 
+        backgroundColor: '#e3f2fd', 
+        padding: '12px', 
+        borderRadius: '8px', 
+        marginBottom: '16px',
+        fontSize: '12px',
+        lineHeight: '1.6'
+      }}>
+        <p style={{ margin: '0 0 8px 0', fontWeight: 'bold', color: '#1565c0' }}>
+          ℹ️ Tekrarlanabilir Element
+        </p>
+        <p style={{ margin: 0, color: '#333' }}>
+          Bu element, e-posta gönderilirken backend tarafından belirlenen <strong>repeatKey</strong> array'ine göre otomatik olarak çoğaltılır. 
+          Her satır için <strong>repeatItemAlias</strong> kullanarak değişkenlere erişebilirsiniz.
+        </p>
+      </div>
+
+      <div className="property-item">
+        <label className="property-label">🔑 Array Key (repeatKey)</label>
+        <input 
+          type="text" 
+          value={(element.props.repeatKey as string) || 'order_items'} 
+          onChange={(e) => handleChange('repeatKey', e.target.value)} 
+          className="property-input" 
+          placeholder="order_items, products, cart_items"
+        />
+        <small style={{ color: '#666', fontSize: '11px', display: 'block', marginTop: '4px' }}>
+          Backend'den gelecek array adı (örn: order_items, products)
+        </small>
+      </div>
+
+      <div className="property-item">
+        <label className="property-label">📝 Item Alias (repeatItemAlias)</label>
+        <input 
+          type="text" 
+          value={(element.props.repeatItemAlias as string) || 'item'} 
+          onChange={(e) => handleChange('repeatItemAlias', e.target.value)} 
+          className="property-input" 
+          placeholder="item, product"
+        />
+        <small style={{ color: '#666', fontSize: '11px', display: 'block', marginTop: '4px' }}>
+          Kolonlarda kullanılacak alias (örn: item.name, item.price)
+        </small>
+      </div>
+
+      {/* KART MODU AYARLARI */}
+      {displayMode === 'card' && (
+        <>
+          <div className="property-section-divider">
+            <span className="divider-icon">🖼️</span>
+            <span className="divider-text">Ürün Resmi</span>
+          </div>
+          
+          <div className="property-item">
+            <label className="property-label">Resim Değişkeni</label>
+            <input 
+              type="text" 
+              value={(element.props.cardImgVariableKey as string) || 'item.image_url'} 
+              onChange={(e) => handleChange('cardImgVariableKey', e.target.value)} 
+              className="property-input" 
+              placeholder="item.image_url"
+            />
+          </div>
+          
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <div className="property-item" style={{ flex: 1 }}>
+              <label className="property-label">Genişlik (px)</label>
+              <input type="number" value={(element.props.cardImgWidth as number) || 80} onChange={(e) => handleChange('cardImgWidth', parseInt(e.target.value) || 80)} className="property-input" />
+            </div>
+            <div className="property-item" style={{ flex: 1 }}>
+              <label className="property-label">Yükseklik (px)</label>
+              <input type="number" value={(element.props.cardImgHeight as number) || 80} onChange={(e) => handleChange('cardImgHeight', parseInt(e.target.value) || 80)} className="property-input" />
+            </div>
+          </div>
+          
+          <div className="property-item">
+            <label className="property-label">Resim Köşe Yuvarlaklığı</label>
+            <input type="number" value={(element.props.cardImgBorderRadius as number) || 4} onChange={(e) => handleChange('cardImgBorderRadius', parseInt(e.target.value) || 0)} className="property-input" />
+          </div>
+
+          <div className="property-section-divider">
+            <span className="divider-icon">📝</span>
+            <span className="divider-text">Ürün Başlığı</span>
+          </div>
+          
+          <div className="property-item">
+            <label className="property-label">Başlık Değişkeni</label>
+            <input 
+              type="text" 
+              value={(element.props.cardTitleVariableKey as string) || 'item.name'} 
+              onChange={(e) => handleChange('cardTitleVariableKey', e.target.value)} 
+              className="property-input" 
+              placeholder="item.name"
+            />
+          </div>
+          
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <div className="property-item" style={{ flex: 1 }}>
+              <label className="property-label">Font Boyutu</label>
+              <input type="number" value={(element.props.cardTitleFontSize as number) || 14} onChange={(e) => handleChange('cardTitleFontSize', parseInt(e.target.value) || 14)} className="property-input" />
+            </div>
+            <div className="property-item" style={{ flex: 1 }}>
+              <label className="property-label">Font Kalınlığı</label>
+              <select value={(element.props.cardTitleFontWeight as string) || 'normal'} onChange={(e) => handleChange('cardTitleFontWeight', e.target.value)} className="property-input property-select">
+                <option value="normal">Normal</option>
+                <option value="bold">Kalın</option>
+              </select>
+            </div>
+          </div>
+          
+          <div className="property-item">
+            <label className="property-label">Başlık Rengi</label>
+            <div className="color-input-wrapper">
+              <input type="color" value={(element.props.cardTitleColor as string) || '#333333'} onChange={(e) => handleChange('cardTitleColor', e.target.value)} className="property-color-input" />
+              <input type="text" value={(element.props.cardTitleColor as string) || '#333333'} onChange={(e) => handleChange('cardTitleColor', e.target.value)} className="property-input property-color-text" />
+            </div>
+          </div>
+
+          <div className="property-section-divider">
+            <span className="divider-icon">📄</span>
+            <span className="divider-text">Alt Bilgi (Adet, Beden vb.)</span>
+          </div>
+          
+          <div className="property-item">
+            <label className="property-label">Alt Bilgi Değişkeni</label>
+            <input 
+              type="text" 
+              value={(element.props.cardSubtitleVariableKey as string) || 'item.details'} 
+              onChange={(e) => handleChange('cardSubtitleVariableKey', e.target.value)} 
+              className="property-input" 
+              placeholder="item.details"
+            />
+            <small style={{ color: '#666', fontSize: '11px', display: 'block', marginTop: '4px' }}>
+              Backend'de birleştirilmiş string: "Adet : 1 - Beden : L"
+            </small>
+          </div>
+          
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <div className="property-item" style={{ flex: 1 }}>
+              <label className="property-label">Font Boyutu</label>
+              <input type="number" value={(element.props.cardSubtitleFontSize as number) || 13} onChange={(e) => handleChange('cardSubtitleFontSize', parseInt(e.target.value) || 13)} className="property-input" />
+            </div>
+            <div className="property-item" style={{ flex: 1 }}>
+              <label className="property-label">Renk</label>
+              <div className="color-input-wrapper">
+                <input type="color" value={(element.props.cardSubtitleColor as string) || '#666666'} onChange={(e) => handleChange('cardSubtitleColor', e.target.value)} className="property-color-input" />
+                <input type="text" value={(element.props.cardSubtitleColor as string) || '#666666'} onChange={(e) => handleChange('cardSubtitleColor', e.target.value)} className="property-input property-color-text" />
+              </div>
+            </div>
+          </div>
+
+          <div className="property-section-divider">
+            <span className="divider-icon">💰</span>
+            <span className="divider-text">Fiyat</span>
+          </div>
+          
+          <div className="property-item">
+            <label className="property-label">Fiyat Değişkeni</label>
+            <input 
+              type="text" 
+              value={(element.props.cardPriceVariableKey as string) || 'item.price'} 
+              onChange={(e) => handleChange('cardPriceVariableKey', e.target.value)} 
+              className="property-input" 
+              placeholder="item.price"
+            />
+          </div>
+          
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <div className="property-item" style={{ flex: 1 }}>
+              <label className="property-label">Font Boyutu</label>
+              <input type="number" value={(element.props.cardPriceFontSize as number) || 15} onChange={(e) => handleChange('cardPriceFontSize', parseInt(e.target.value) || 15)} className="property-input" />
+            </div>
+            <div className="property-item" style={{ flex: 1 }}>
+              <label className="property-label">Font Kalınlığı</label>
+              <select value={(element.props.cardPriceFontWeight as string) || 'bold'} onChange={(e) => handleChange('cardPriceFontWeight', e.target.value)} className="property-input property-select">
+                <option value="normal">Normal</option>
+                <option value="bold">Kalın</option>
+              </select>
+            </div>
+          </div>
+          
+          <div className="property-item">
+            <label className="property-label">Fiyat Rengi</label>
+            <div className="color-input-wrapper">
+              <input type="color" value={(element.props.cardPriceColor as string) || '#f57c00'} onChange={(e) => handleChange('cardPriceColor', e.target.value)} className="property-color-input" />
+              <input type="text" value={(element.props.cardPriceColor as string) || '#f57c00'} onChange={(e) => handleChange('cardPriceColor', e.target.value)} className="property-input property-color-text" />
+            </div>
+          </div>
+
+          <div className="property-section-divider">
+            <span className="divider-icon">🎴</span>
+            <span className="divider-text">Kart Stili</span>
+          </div>
+          
+          <div className="property-item">
+            <label className="property-label">Kart Arkaplan</label>
+            <div className="color-input-wrapper">
+              <input type="color" value={(element.props.cardBgColor as string) || '#ffffff'} onChange={(e) => handleChange('cardBgColor', e.target.value)} className="property-color-input" />
+              <input type="text" value={(element.props.cardBgColor as string) || '#ffffff'} onChange={(e) => handleChange('cardBgColor', e.target.value)} className="property-input property-color-text" />
+            </div>
+          </div>
+          
+          <div className="property-item">
+            <label className="property-label">Kenarlık Rengi</label>
+            <div className="color-input-wrapper">
+              <input type="color" value={(element.props.cardBorderColor as string) || '#eeeeee'} onChange={(e) => handleChange('cardBorderColor', e.target.value)} className="property-color-input" />
+              <input type="text" value={(element.props.cardBorderColor as string) || '#eeeeee'} onChange={(e) => handleChange('cardBorderColor', e.target.value)} className="property-input property-color-text" />
+            </div>
+          </div>
+          
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <div className="property-item" style={{ flex: 1 }}>
+              <label className="property-label">Köşe Yuvarlaklığı</label>
+              <input type="number" value={(element.props.cardBorderRadius as number) || 8} onChange={(e) => handleChange('cardBorderRadius', parseInt(e.target.value) || 0)} className="property-input" />
+            </div>
+            <div className="property-item" style={{ flex: 1 }}>
+              <label className="property-label">İç Boşluk</label>
+              <input type="text" value={(element.props.cardPadding as string) || '12px'} onChange={(e) => handleChange('cardPadding', e.target.value)} className="property-input" placeholder="12px" />
+            </div>
+          </div>
+          
+          <div className="property-item">
+            <label className="property-label">Gölge Efekti</label>
+            <input 
+              type="checkbox" 
+              checked={(element.props.cardShadow as boolean) || false} 
+              onChange={(e) => handleChange('cardShadow', e.target.checked)} 
+              className="property-checkbox" 
+            />
+          </div>
+        </>
+      )}
+
+      {/* TABLO MODU AYARLARI */}
+      {displayMode === 'table' && (
+        <>
+          {/* Tablo Başlık Ayarları */}
+          <div className="property-section-divider">
+            <span className="divider-icon">📋</span>
+            <span className="divider-text">Tablo Başlık Ayarları</span>
+          </div>
+
+          <div className="property-item">
+            <label className="property-label">Başlık Göster</label>
+            <input 
+              type="checkbox" 
+              checked={(element.props.showHeader as boolean) !== false} 
+              onChange={(e) => handleChange('showHeader', e.target.checked)} 
+              className="property-checkbox" 
+            />
+          </div>
+
+          {(element.props.showHeader as boolean) !== false && (
+            <>
+              <div className="property-item">
+                <label className="property-label">Başlık Arkaplan</label>
+                <div className="color-input-wrapper">
+                  <input type="color" value={(element.props.headerBgColor as string) || '#f8f9fa'} onChange={(e) => handleChange('headerBgColor', e.target.value)} className="property-color-input" />
+                  <input type="text" value={(element.props.headerBgColor as string) || '#f8f9fa'} onChange={(e) => handleChange('headerBgColor', e.target.value)} className="property-input property-color-text" />
+                </div>
+              </div>
+              <div className="property-item">
+                <label className="property-label">Başlık Yazı Rengi</label>
+                <div className="color-input-wrapper">
+                  <input type="color" value={(element.props.headerTextColor as string) || '#333333'} onChange={(e) => handleChange('headerTextColor', e.target.value)} className="property-color-input" />
+                  <input type="text" value={(element.props.headerTextColor as string) || '#333333'} onChange={(e) => handleChange('headerTextColor', e.target.value)} className="property-input property-color-text" />
+                </div>
+              </div>
+              <div className="property-item">
+                <label className="property-label">Başlık Font Boyutu</label>
+                <input type="number" value={(element.props.headerFontSize as number) || 14} onChange={(e) => handleChange('headerFontSize', parseInt(e.target.value) || 14)} className="property-input" />
+              </div>
+            </>
+          )}
+
+          {/* Satır Stilleri */}
+          <div className="property-section-divider">
+            <span className="divider-icon">📊</span>
+            <span className="divider-text">Satır Stilleri</span>
+          </div>
+
+          <div className="property-item">
+            <label className="property-label">Satır Arkaplan</label>
+            <div className="color-input-wrapper">
+              <input type="color" value={(element.props.rowBgColor as string) || '#ffffff'} onChange={(e) => handleChange('rowBgColor', e.target.value)} className="property-color-input" />
+              <input type="text" value={(element.props.rowBgColor as string) || '#ffffff'} onChange={(e) => handleChange('rowBgColor', e.target.value)} className="property-input property-color-text" />
+            </div>
+          </div>
+
+          <div className="property-item">
+            <label className="property-label">Alternatif Satır Arkaplan</label>
+            <div className="color-input-wrapper">
+              <input type="color" value={(element.props.rowAltBgColor as string) || '#f9f9f9'} onChange={(e) => handleChange('rowAltBgColor', e.target.value)} className="property-color-input" />
+              <input type="text" value={(element.props.rowAltBgColor as string) || '#f9f9f9'} onChange={(e) => handleChange('rowAltBgColor', e.target.value)} className="property-input property-color-text" />
+            </div>
+          </div>
+
+          <div className="property-item">
+            <label className="property-label">Satır Kenarlık Rengi</label>
+            <div className="color-input-wrapper">
+              <input type="color" value={(element.props.rowBorderColor as string) || '#e0e0e0'} onChange={(e) => handleChange('rowBorderColor', e.target.value)} className="property-color-input" />
+              <input type="text" value={(element.props.rowBorderColor as string) || '#e0e0e0'} onChange={(e) => handleChange('rowBorderColor', e.target.value)} className="property-input property-color-text" />
+            </div>
+          </div>
+
+          {/* Kolonlar */}
+          <div className="property-section-divider">
+            <span className="divider-icon">📏</span>
+            <span className="divider-text">Kolonlar</span>
+          </div>
+
+          <div className="columns-editor">
+            {((element.props.columns || []) as Array<Record<string, unknown>>).map((col, index) => (
+              <div key={index} className="column-item" style={{ 
+            border: '1px solid #e0e0e0', 
+            padding: '12px', 
+            marginBottom: '12px', 
+            borderRadius: '8px',
+            backgroundColor: '#fafafa'
+          }}>
+            <div className="column-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+              <h4 style={{ margin: 0, fontSize: '14px', color: '#333' }}>
+                {col.type === 'image' ? '🖼️' : col.type === 'price' ? '💰' : '📝'} Kolon {index + 1}: {col.label as string}
+              </h4>
+              <button onClick={() => removeProductColumn(index)} style={{ background: '#ff4444', color: 'white', border: 'none', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer', fontSize: '12px' }}>Sil</button>
+            </div>
+
+            <div className="property-item">
+              <label className="property-label">Başlık Etiketi</label>
+              <input type="text" value={(col.label as string) || ''} onChange={(e) => handleProductColumnChange(index, 'label', e.target.value)} className="property-input" placeholder="Ürün Adı" />
+            </div>
+
+            <div className="property-item">
+              <label className="property-label">Tip</label>
+              <select value={(col.type as string) || 'text'} onChange={(e) => handleProductColumnChange(index, 'type', e.target.value)} className="property-input property-select">
+                <option value="text">Metin</option>
+                <option value="image">Resim</option>
+                <option value="price">Fiyat</option>
+              </select>
+            </div>
+
+            <div className="property-item">
+              <label className="property-label">🔗 Değişken Anahtarı</label>
+              <input 
+                type="text" 
+                value={(col.variableKey as string) || ''} 
+                onChange={(e) => handleProductColumnChange(index, 'variableKey', e.target.value)} 
+                className="property-input" 
+                placeholder="item.name, item.price"
+              />
+              <small style={{ color: '#666', fontSize: '11px', display: 'block', marginTop: '4px' }}>
+                Backend'den gelecek veri yolu (örn: item.name, item.quantity)
+              </small>
+            </div>
+
+            <div className="property-item">
+              <label className="property-label">Genişlik</label>
+              <input type="text" value={(col.width as string) || 'auto'} onChange={(e) => handleProductColumnChange(index, 'width', e.target.value)} className="property-input" placeholder="100px, 20%, auto" />
+            </div>
+
+            <div className="property-item">
+              <label className="property-label">Hizalama</label>
+              <select value={(col.textAlign as string) || 'left'} onChange={(e) => handleProductColumnChange(index, 'textAlign', e.target.value)} className="property-input property-select">
+                <option value="left">Sol</option>
+                <option value="center">Orta</option>
+                <option value="right">Sağ</option>
+              </select>
+            </div>
+
+            {col.type !== 'image' && (
+              <>
+                <div className="property-item">
+                  <label className="property-label">Font Boyutu</label>
+                  <input type="number" value={(col.fontSize as number) || 14} onChange={(e) => handleProductColumnChange(index, 'fontSize', parseInt(e.target.value) || 14)} className="property-input" />
+                </div>
+                <div className="property-item">
+                  <label className="property-label">Font Kalınlığı</label>
+                  <select value={(col.fontWeight as string) || 'normal'} onChange={(e) => handleProductColumnChange(index, 'fontWeight', e.target.value)} className="property-input property-select">
+                    <option value="normal">Normal</option>
+                    <option value="bold">Kalın</option>
+                  </select>
+                </div>
+                <div className="property-item">
+                  <label className="property-label">Yazı Rengi</label>
+                  <div className="color-input-wrapper">
+                    <input type="color" value={(col.color as string) || '#333333'} onChange={(e) => handleProductColumnChange(index, 'color', e.target.value)} className="property-color-input" />
+                    <input type="text" value={(col.color as string) || '#333333'} onChange={(e) => handleProductColumnChange(index, 'color', e.target.value)} className="property-input property-color-text" />
+                  </div>
+                </div>
+              </>
+            )}
+
+            {col.type === 'image' && (
+              <>
+                <div className="property-item">
+                  <label className="property-label">Resim Genişliği (px)</label>
+                  <input type="number" value={(col.imgWidth as number) || 60} onChange={(e) => handleProductColumnChange(index, 'imgWidth', parseInt(e.target.value) || 60)} className="property-input" />
+                </div>
+                <div className="property-item">
+                  <label className="property-label">Resim Yüksekliği (px)</label>
+                  <input type="number" value={(col.imgHeight as number) || 60} onChange={(e) => handleProductColumnChange(index, 'imgHeight', parseInt(e.target.value) || 60)} className="property-input" />
+                </div>
+              </>
+            )}
+          </div>
+        ))}
+          <button onClick={addProductColumn} style={{ 
+            width: '100%', 
+            padding: '10px', 
+            background: '#4CAF50', 
+            color: 'white', 
+            border: 'none', 
+            borderRadius: '6px', 
+            cursor: 'pointer',
+            fontWeight: 'bold',
+            fontSize: '14px'
+          }}>
+            + Kolon Ekle
+          </button>
+          </div>
+
+          {/* Genel Stiller */}
+          <div className="property-section-divider">
+            <span className="divider-icon">🎨</span>
+            <span className="divider-text">Genel Stiller</span>
+          </div>
+
+          <div className="property-item">
+            <label className="property-label">Tablo Genişliği</label>
+            <input type="text" value={(element.props.tableWidth as string) || '100%'} onChange={(e) => handleChange('tableWidth', e.target.value)} className="property-input" placeholder="100%, 600px" />
+          </div>
+
+          <div className="property-item">
+            <label className="property-label">Tablo Kenarlık Rengi</label>
+            <div className="color-input-wrapper">
+              <input type="color" value={(element.props.tableBorderColor as string) || '#e0e0e0'} onChange={(e) => handleChange('tableBorderColor', e.target.value)} className="property-color-input" />
+              <input type="text" value={(element.props.tableBorderColor as string) || '#e0e0e0'} onChange={(e) => handleChange('tableBorderColor', e.target.value)} className="property-input property-color-text" />
+            </div>
+          </div>
+
+          <div className="property-item">
+            <label className="property-label">Köşe Yuvarlaklığı (px)</label>
+            <input type="number" value={(element.props.borderRadius as number) || 4} onChange={(e) => handleChange('borderRadius', parseInt(e.target.value) || 0)} className="property-input" />
+          </div>
+        </>
+      )}
+    </>
+  )
+  }
+
   const elementType = ELEMENT_TYPES[element.type.toUpperCase()]
 
   return (
@@ -638,7 +1178,9 @@ const PropertyEditor: React.FC<PropertyEditorProps> = ({ element, onUpdateElemen
         </h3>
       </div>
       <div className="property-list">
-        {element.type === 'text' ? renderTextElementProperties() : element.type === 'image' ? renderImageElementProperties() : (
+        {element.type === 'text' ? renderTextElementProperties() : 
+         element.type === 'image' ? renderImageElementProperties() : 
+         element.type === 'product_row' ? renderProductRowProperties() : (
           Object.entries(element.props).map(([propName, propValue]) => {
             const input = renderPropertyInput(propName, propValue)
             if (!input) return null
