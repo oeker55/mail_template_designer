@@ -14,6 +14,7 @@ export const ICONS: Record<string, string> = {
   column: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="9" y="3" width="6" height="18" rx="1"/></svg>`,
   social: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="9"/><path d="M12 3a15.3 15.3 0 0 1 4 9 15.3 15.3 0 0 1-4 9 15.3 15.3 0 0 1-4-9 15.3 15.3 0 0 1 4-9z"/><path d="M3 12h18"/></svg>`,
   product_row: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="2" y="3" width="20" height="18" rx="2"/><path d="M2 9h20M2 15h20M8 9v12M16 9v12"/><circle cx="5" cy="12" r="1.5" fill="currentColor"/><circle cx="5" cy="18" r="1.5" fill="currentColor"/></svg>`,
+  info_table: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M12 9v12"/><path d="M7 13h2M7 17h2M15 13h2M15 17h2"/></svg>`,
 }
 
 export const ELEMENT_TYPES: Record<string, ElementTypeConfig> = {
@@ -399,6 +400,84 @@ export const ELEMENT_TYPES: Record<string, ElementTypeConfig> = {
       borderRadius: 4,
       tableBorderColor: '#e0e0e0',
       tableWidth: '100%'
+    }
+  },
+  INFO_TABLE: {
+    id: 'info_table',
+    name: 'Bilgi Tablosu',
+    icon: 'info_table',
+    component: 'InfoTable',
+    defaultProps: {
+      // Başlık ayarları
+      showTitle: true,
+      title: 'Sipariş Özeti',
+      titleFontSize: 14,
+      titleFontWeight: 'bold',
+      titleColor: '#333333',
+      titleBgColor: '#f5f5f5',
+      titlePadding: '12px 16px',
+      titleBorderBottom: '1px solid #e0e0e0',
+      
+      // Tablo stilleri
+      tableBgColor: '#ffffff',
+      tableBorderColor: '#e0e0e0',
+      tableBorderRadius: 0,
+      tableWidth: '100%',
+      
+      // Satır stilleri
+      rowPadding: '8px 16px',
+      rowBorderBottom: '1px solid #f0f0f0',
+      
+      // Etiket stilleri (sol kolon)
+      labelWidth: '50%',
+      labelFontSize: 14,
+      labelFontWeight: 'normal',
+      labelColor: '#333333',
+      labelAlign: 'left',
+      
+      // Değer stilleri (sağ kolon)
+      valueWidth: '50%',
+      valueFontSize: 14,
+      valueFontWeight: 'normal',
+      valueColor: '#333333',
+      valueAlign: 'right',
+      
+      // Satırlar
+      rows: [
+        {
+          id: 'row_1',
+          label: 'Ürün Toplamı',
+          valueKey: 'order.subtotal',
+          labelStyle: 'normal',
+          valueStyle: 'normal',
+          valueColor: '#333333'
+        },
+        {
+          id: 'row_2',
+          label: 'Kampanya',
+          valueKey: 'order.discount',
+          labelStyle: 'normal',
+          valueStyle: 'strikethrough',
+          valueColor: '#999999'
+        },
+        {
+          id: 'row_3',
+          label: 'Ara Toplam',
+          valueKey: 'order.subtotal_after_discount',
+          labelStyle: 'normal',
+          valueStyle: 'normal',
+          valueColor: '#333333'
+        },
+        {
+          id: 'row_4',
+          label: 'Toplam',
+          valueKey: 'order.total',
+          labelStyle: 'bold',
+          valueStyle: 'bold',
+          valueColor: '#333333',
+          valueFontSize: 16
+        }
+      ]
     }
   }
 }

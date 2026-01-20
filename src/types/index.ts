@@ -202,6 +202,56 @@ export interface ProductRowProps {
   tableWidth: string
 }
 
+// Info Table Props (Bilgi Tablosu - Sipariş özeti, adres vb.)
+export interface InfoTableRowData {
+  id: string
+  label: string
+  valueKey: string
+  labelStyle: 'normal' | 'bold' | 'italic'
+  valueStyle: 'normal' | 'bold' | 'italic' | 'strikethrough'
+  valueColor?: string
+  valueFontSize?: number
+}
+
+export interface InfoTableProps {
+  // Başlık ayarları
+  showTitle: boolean
+  title: string
+  titleFontSize: number
+  titleFontWeight: string
+  titleColor: string
+  titleBgColor: string
+  titlePadding: string
+  titleBorderBottom: string
+  
+  // Tablo stilleri
+  tableBgColor: string
+  tableBorderColor: string
+  tableBorderRadius: number
+  tableWidth: string
+  
+  // Satır stilleri
+  rowPadding: string
+  rowBorderBottom: string
+  
+  // Etiket stilleri (sol kolon)
+  labelWidth: string
+  labelFontSize: number
+  labelFontWeight: string
+  labelColor: string
+  labelAlign: 'left' | 'center' | 'right'
+  
+  // Değer stilleri (sağ kolon)
+  valueWidth: string
+  valueFontSize: number
+  valueFontWeight: string
+  valueColor: string
+  valueAlign: 'left' | 'center' | 'right'
+  
+  // Satırlar
+  rows: InfoTableRowData[]
+}
+
 // Union type for all element props
 export type ElementProps = 
   | TextProps 
@@ -215,6 +265,7 @@ export type ElementProps =
   | ColumnProps 
   | SocialProps
   | ProductRowProps
+  | InfoTableProps
 
 // Element type
 export type ElementType = 
@@ -229,6 +280,7 @@ export type ElementType =
   | 'column' 
   | 'social'
   | 'product_row'
+  | 'info_table'
 
 // Canvas Element
 export interface CanvasElement {

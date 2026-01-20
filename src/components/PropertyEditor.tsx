@@ -1167,6 +1167,332 @@ const PropertyEditor: React.FC<PropertyEditorProps> = ({ element, onUpdateElemen
   )
   }
 
+  // ==================== INFO TABLE ====================
+  const renderInfoTableProperties = () => {
+    const rows = (element.props.rows as Array<Record<string, unknown>>) || []
+
+    const handleRowChange = (rowIndex: number, field: string, value: unknown) => {
+      const newRows = [...rows]
+      newRows[rowIndex] = { ...newRows[rowIndex], [field]: value }
+      handleChange('rows', newRows)
+    }
+
+    const addRow = () => {
+      const newRows = [...rows, {
+        id: `row_${Date.now()}`,
+        label: 'Yeni Satır',
+        valueKey: 'variable.key',
+        labelStyle: 'normal',
+        valueStyle: 'normal',
+        valueColor: '#333333'
+      }]
+      handleChange('rows', newRows)
+    }
+
+    const removeRow = (rowIndex: number) => {
+      const newRows = rows.filter((_, idx) => idx !== rowIndex)
+      handleChange('rows', newRows)
+    }
+
+    const moveRow = (fromIndex: number, toIndex: number) => {
+      if (toIndex < 0 || toIndex >= rows.length) return
+      const newRows = [...rows]
+      const [movedRow] = newRows.splice(fromIndex, 1)
+      newRows.splice(toIndex, 0, movedRow)
+      handleChange('rows', newRows)
+    }
+
+    return (
+      <>
+        {/* Başlık Ayarları */}
+        <div className="property-section-divider">
+          <span className="divider-icon">📋</span>
+          <span className="divider-text">Başlık Ayarları</span>
+        </div>
+
+        <div className="property-item">
+          <label className="property-label">Başlık Göster</label>
+          <input 
+            type="checkbox" 
+            checked={(element.props.showTitle as boolean) !== false} 
+            onChange={(e) => handleChange('showTitle', e.target.checked)} 
+            className="property-checkbox" 
+          />
+        </div>
+
+        {(element.props.showTitle as boolean) !== false && (
+          <>
+            <div className="property-item">
+              <label className="property-label">Başlık Metni</label>
+              <input 
+                type="text" 
+                value={(element.props.title as string) || 'Sipariş Özeti'} 
+                onChange={(e) => handleChange('title', e.target.value)} 
+                className="property-input" 
+                placeholder="Sipariş Özeti"
+              />
+            </div>
+            
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <div className="property-item" style={{ flex: 1 }}>
+                <label className="property-label">Font Boyutu</label>
+                <input type="number" value={(element.props.titleFontSize as number) || 14} onChange={(e) => handleChange('titleFontSize', parseInt(e.target.value) || 14)} className="property-input" />
+              </div>
+              <div className="property-item" style={{ flex: 1 }}>
+                <label className="property-label">Font Kalınlığı</label>
+                <select value={(element.props.titleFontWeight as string) || 'bold'} onChange={(e) => handleChange('titleFontWeight', e.target.value)} className="property-input property-select">
+                  <option value="normal">Normal</option>
+                  <option value="bold">Kalın</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="property-item">
+              <label className="property-label">Başlık Rengi</label>
+              <div className="color-input-wrapper">
+                <input type="color" value={(element.props.titleColor as string) || '#333333'} onChange={(e) => handleChange('titleColor', e.target.value)} className="property-color-input" />
+                <input type="text" value={(element.props.titleColor as string) || '#333333'} onChange={(e) => handleChange('titleColor', e.target.value)} className="property-input property-color-text" />
+              </div>
+            </div>
+            
+            <div className="property-item">
+              <label className="property-label">Başlık Arkaplanı</label>
+              <div className="color-input-wrapper">
+                <input type="color" value={(element.props.titleBgColor as string) || '#f5f5f5'} onChange={(e) => handleChange('titleBgColor', e.target.value)} className="property-color-input" />
+                <input type="text" value={(element.props.titleBgColor as string) || '#f5f5f5'} onChange={(e) => handleChange('titleBgColor', e.target.value)} className="property-input property-color-text" />
+              </div>
+            </div>
+          </>
+        )}
+
+        {/* Tablo Stilleri */}
+        <div className="property-section-divider">
+          <span className="divider-icon">🎨</span>
+          <span className="divider-text">Tablo Stilleri</span>
+        </div>
+
+        <div className="property-item">
+          <label className="property-label">Tablo Arkaplanı</label>
+          <div className="color-input-wrapper">
+            <input type="color" value={(element.props.tableBgColor as string) || '#ffffff'} onChange={(e) => handleChange('tableBgColor', e.target.value)} className="property-color-input" />
+            <input type="text" value={(element.props.tableBgColor as string) || '#ffffff'} onChange={(e) => handleChange('tableBgColor', e.target.value)} className="property-input property-color-text" />
+          </div>
+        </div>
+
+        <div className="property-item">
+          <label className="property-label">Kenarlık Rengi</label>
+          <div className="color-input-wrapper">
+            <input type="color" value={(element.props.tableBorderColor as string) || '#e0e0e0'} onChange={(e) => handleChange('tableBorderColor', e.target.value)} className="property-color-input" />
+            <input type="text" value={(element.props.tableBorderColor as string) || '#e0e0e0'} onChange={(e) => handleChange('tableBorderColor', e.target.value)} className="property-input property-color-text" />
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <div className="property-item" style={{ flex: 1 }}>
+            <label className="property-label">Tablo Genişliği</label>
+            <input type="text" value={(element.props.tableWidth as string) || '100%'} onChange={(e) => handleChange('tableWidth', e.target.value)} className="property-input" placeholder="100%" />
+          </div>
+          <div className="property-item" style={{ flex: 1 }}>
+            <label className="property-label">Köşe Yuvarlaklığı</label>
+            <input type="number" value={(element.props.tableBorderRadius as number) || 0} onChange={(e) => handleChange('tableBorderRadius', parseInt(e.target.value) || 0)} className="property-input" />
+          </div>
+        </div>
+
+        {/* Kolon Ayarları */}
+        <div className="property-section-divider">
+          <span className="divider-icon">📊</span>
+          <span className="divider-text">Kolon Ayarları</span>
+        </div>
+
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <div className="property-item" style={{ flex: 1 }}>
+            <label className="property-label">Etiket Genişliği</label>
+            <input type="text" value={(element.props.labelWidth as string) || '50%'} onChange={(e) => handleChange('labelWidth', e.target.value)} className="property-input" placeholder="50%" />
+          </div>
+          <div className="property-item" style={{ flex: 1 }}>
+            <label className="property-label">Değer Genişliği</label>
+            <input type="text" value={(element.props.valueWidth as string) || '50%'} onChange={(e) => handleChange('valueWidth', e.target.value)} className="property-input" placeholder="50%" />
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <div className="property-item" style={{ flex: 1 }}>
+            <label className="property-label">Etiket Hizalama</label>
+            <select value={(element.props.labelAlign as string) || 'left'} onChange={(e) => handleChange('labelAlign', e.target.value)} className="property-input property-select">
+              <option value="left">Sol</option>
+              <option value="center">Orta</option>
+              <option value="right">Sağ</option>
+            </select>
+          </div>
+          <div className="property-item" style={{ flex: 1 }}>
+            <label className="property-label">Değer Hizalama</label>
+            <select value={(element.props.valueAlign as string) || 'right'} onChange={(e) => handleChange('valueAlign', e.target.value)} className="property-input property-select">
+              <option value="left">Sol</option>
+              <option value="center">Orta</option>
+              <option value="right">Sağ</option>
+            </select>
+          </div>
+        </div>
+
+        <div className="property-item">
+          <label className="property-label">Satır İç Boşluğu</label>
+          <input type="text" value={(element.props.rowPadding as string) || '8px 16px'} onChange={(e) => handleChange('rowPadding', e.target.value)} className="property-input" placeholder="8px 16px" />
+        </div>
+
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <div className="property-item" style={{ flex: 1 }}>
+            <label className="property-label">Etiket Font</label>
+            <input type="number" value={(element.props.labelFontSize as number) || 14} onChange={(e) => handleChange('labelFontSize', parseInt(e.target.value) || 14)} className="property-input" />
+          </div>
+          <div className="property-item" style={{ flex: 1 }}>
+            <label className="property-label">Değer Font</label>
+            <input type="number" value={(element.props.valueFontSize as number) || 14} onChange={(e) => handleChange('valueFontSize', parseInt(e.target.value) || 14)} className="property-input" />
+          </div>
+        </div>
+
+        {/* Satırlar */}
+        <div className="property-section-divider">
+          <span className="divider-icon">📝</span>
+          <span className="divider-text">Satırlar ({rows.length})</span>
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          {rows.map((row, index) => (
+            <div key={row.id as string || index} style={{
+              padding: '12px',
+              backgroundColor: '#f8f9fa',
+              borderRadius: '8px',
+              border: '1px solid #e0e0e0'
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                <span style={{ fontWeight: 'bold', fontSize: '13px', color: '#333' }}>Satır {index + 1}</span>
+                <div style={{ display: 'flex', gap: '4px' }}>
+                  <button 
+                    onClick={() => moveRow(index, index - 1)} 
+                    disabled={index === 0}
+                    style={{ 
+                      padding: '4px 8px', 
+                      background: index === 0 ? '#ccc' : '#2196F3', 
+                      color: 'white', 
+                      border: 'none', 
+                      borderRadius: '4px', 
+                      cursor: index === 0 ? 'not-allowed' : 'pointer',
+                      fontSize: '12px'
+                    }}
+                  >↑</button>
+                  <button 
+                    onClick={() => moveRow(index, index + 1)} 
+                    disabled={index === rows.length - 1}
+                    style={{ 
+                      padding: '4px 8px', 
+                      background: index === rows.length - 1 ? '#ccc' : '#2196F3', 
+                      color: 'white', 
+                      border: 'none', 
+                      borderRadius: '4px', 
+                      cursor: index === rows.length - 1 ? 'not-allowed' : 'pointer',
+                      fontSize: '12px'
+                    }}
+                  >↓</button>
+                  <button 
+                    onClick={() => removeRow(index)} 
+                    style={{ 
+                      padding: '4px 8px', 
+                      background: '#f44336', 
+                      color: 'white', 
+                      border: 'none', 
+                      borderRadius: '4px', 
+                      cursor: 'pointer',
+                      fontSize: '12px'
+                    }}
+                  >×</button>
+                </div>
+              </div>
+
+              <div className="property-item">
+                <label className="property-label">Etiket</label>
+                <input 
+                  type="text" 
+                  value={(row.label as string) || ''} 
+                  onChange={(e) => handleRowChange(index, 'label', e.target.value)} 
+                  className="property-input" 
+                  placeholder="Ürün Toplamı"
+                />
+              </div>
+
+              <div className="property-item">
+                <label className="property-label">Değer Değişkeni</label>
+                <input 
+                  type="text" 
+                  value={(row.valueKey as string) || ''} 
+                  onChange={(e) => handleRowChange(index, 'valueKey', e.target.value)} 
+                  className="property-input" 
+                  placeholder="order.subtotal"
+                />
+                <small style={{ color: '#666', fontSize: '10px' }}>Çıktıda: [[{String(row.valueKey || 'order.subtotal')}]]</small>
+              </div>
+
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <div className="property-item" style={{ flex: 1 }}>
+                  <label className="property-label">Etiket Stili</label>
+                  <select 
+                    value={(row.labelStyle as string) || 'normal'} 
+                    onChange={(e) => handleRowChange(index, 'labelStyle', e.target.value)} 
+                    className="property-input property-select"
+                  >
+                    <option value="normal">Normal</option>
+                    <option value="bold">Kalın</option>
+                    <option value="italic">İtalik</option>
+                  </select>
+                </div>
+                <div className="property-item" style={{ flex: 1 }}>
+                  <label className="property-label">Değer Stili</label>
+                  <select 
+                    value={(row.valueStyle as string) || 'normal'} 
+                    onChange={(e) => handleRowChange(index, 'valueStyle', e.target.value)} 
+                    className="property-input property-select"
+                  >
+                    <option value="normal">Normal</option>
+                    <option value="bold">Kalın</option>
+                    <option value="italic">İtalik</option>
+                    <option value="strikethrough">Üstü Çizili</option>
+                  </select>
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <div className="property-item" style={{ flex: 1 }}>
+                  <label className="property-label">Değer Rengi</label>
+                  <div className="color-input-wrapper">
+                    <input type="color" value={(row.valueColor as string) || '#333333'} onChange={(e) => handleRowChange(index, 'valueColor', e.target.value)} className="property-color-input" />
+                    <input type="text" value={(row.valueColor as string) || '#333333'} onChange={(e) => handleRowChange(index, 'valueColor', e.target.value)} className="property-input property-color-text" />
+                  </div>
+                </div>
+                <div className="property-item" style={{ flex: 1 }}>
+                  <label className="property-label">Değer Font</label>
+                  <input type="number" value={(row.valueFontSize as number) || ''} onChange={(e) => handleRowChange(index, 'valueFontSize', e.target.value ? parseInt(e.target.value) : undefined)} className="property-input" placeholder="Varsayılan" />
+                </div>
+              </div>
+            </div>
+          ))}
+
+          <button onClick={addRow} style={{ 
+            width: '100%', 
+            padding: '10px', 
+            background: '#4CAF50', 
+            color: 'white', 
+            border: 'none', 
+            borderRadius: '6px', 
+            cursor: 'pointer',
+            fontWeight: 'bold',
+            fontSize: '14px'
+          }}>
+            + Yeni Satır Ekle
+          </button>
+        </div>
+      </>
+    )
+  }
+
   const elementType = ELEMENT_TYPES[element.type.toUpperCase()]
 
   return (
@@ -1180,7 +1506,8 @@ const PropertyEditor: React.FC<PropertyEditorProps> = ({ element, onUpdateElemen
       <div className="property-list">
         {element.type === 'text' ? renderTextElementProperties() : 
          element.type === 'image' ? renderImageElementProperties() : 
-         element.type === 'product_row' ? renderProductRowProperties() : (
+         element.type === 'product_row' ? renderProductRowProperties() :
+         element.type === 'info_table' ? renderInfoTableProperties() : (
           Object.entries(element.props).map(([propName, propValue]) => {
             const input = renderPropertyInput(propName, propValue)
             if (!input) return null

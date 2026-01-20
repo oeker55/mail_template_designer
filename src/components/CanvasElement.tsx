@@ -609,6 +609,136 @@ const CanvasElement: React.FC<CanvasElementComponentProps> = ({
           </div>
         )
 
+      case 'info_table':
+        const tableRows = (p.rows as Array<Record<string, unknown>>) || []
+        
+        // Örnek değerler
+        const sampleValues: Record<string, string> = {
+          'order.subtotal': '299,99 TL',
+          'order.discount': '- 135,00 TL',
+          'order.shipping': '- 150,00 TL',
+          'order.subtotal_after_discount': '149,99 TL',
+          'order.total': '14,99 TL',
+          'address.title': 'Whatsapp',
+          'address.line1': '- Farktör yazılım ve danışmanlık',
+          'address.line2': 'Efe apt 30/1 - 100062 105288 / 105298',
+          'address.phone': '5425837168'
+        }
+        
+        const getValueStyle = (style: string, color?: string, fontSize?: number): React.CSSProperties => {
+          const baseStyle: React.CSSProperties = {}
+          if (color) baseStyle.color = color
+          if (fontSize) baseStyle.fontSize = `${fontSize}px`
+          
+          switch (style) {
+            case 'bold':
+              return { ...baseStyle, fontWeight: 'bold' }
+            case 'italic':
+              return { ...baseStyle, fontStyle: 'italic' }
+            case 'strikethrough':
+              return { ...baseStyle, textDecoration: 'line-through' }
+            default:
+              return baseStyle
+          }
+        }
+        
+        const getLabelStyle = (style: string): React.CSSProperties => {
+          switch (style) {
+            case 'bold':
+              return { fontWeight: 'bold' }
+            case 'italic':
+              return { fontStyle: 'italic' }
+            default:
+              return {}
+          }
+        }
+        
+        return (
+          <div style={{ 
+            width: (p.tableWidth as string) || '100%'
+          }}>
+            <table style={{
+              width: '100%',
+              borderCollapse: 'collapse',
+              backgroundColor: (p.tableBgColor as string) || '#ffffff',
+              border: `1px solid ${(p.tableBorderColor as string) || '#e0e0e0'}`,
+              borderRadius: `${p.tableBorderRadius || 0}px`,
+              overflow: 'hidden'
+            }}>
+              {/* Başlık */}
+              {Boolean(p.showTitle) && (
+                <thead>
+                  <tr>
+                    <th 
+                      colSpan={2}
+                      style={{
+                        padding: (p.titlePadding as string) || '12px 16px',
+                        backgroundColor: (p.titleBgColor as string) || '#f5f5f5',
+                        borderBottom: (p.titleBorderBottom as string) || '1px solid #e0e0e0',
+                        fontSize: `${p.titleFontSize || 14}px`,
+                        fontWeight: (p.titleFontWeight as string) || 'bold',
+                        color: (p.titleColor as string) || '#333333',
+                        textAlign: 'left'
+                      }}
+                    >
+                      {String(p.title) || 'Sipariş Özeti'}
+                    </th>
+                  </tr>
+                </thead>
+              )}
+              <tbody>
+                {tableRows.map((row, idx) => (
+                  <tr key={row.id as string || idx}>
+                    {/* Etiket (Sol kolon) */}
+                    <td style={{
+                      width: (p.labelWidth as string) || '50%',
+                      padding: (p.rowPadding as string) || '8px 16px',
+                      borderBottom: idx < tableRows.length - 1 ? ((p.rowBorderBottom as string) || '1px solid #f0f0f0') : 'none',
+                      fontSize: `${p.labelFontSize || 14}px`,
+                      fontWeight: (p.labelFontWeight as string) || 'normal',
+                      color: (p.labelColor as string) || '#333333',
+                      textAlign: (p.labelAlign as 'left' | 'center' | 'right') || 'left',
+                      ...getLabelStyle(row.labelStyle as string)
+                    }}>
+                      {String(row.label)}
+                    </td>
+                    {/* Değer (Sağ kolon) */}
+                    <td style={{
+                      width: (p.valueWidth as string) || '50%',
+                      padding: (p.rowPadding as string) || '8px 16px',
+                      borderBottom: idx < tableRows.length - 1 ? ((p.rowBorderBottom as string) || '1px solid #f0f0f0') : 'none',
+                      fontSize: `${row.valueFontSize || p.valueFontSize || 14}px`,
+                      fontWeight: (p.valueFontWeight as string) || 'normal',
+                      color: (row.valueColor as string) || (p.valueColor as string) || '#333333',
+                      textAlign: (p.valueAlign as 'left' | 'center' | 'right') || 'right',
+                      ...getValueStyle(row.valueStyle as string, row.valueColor as string, row.valueFontSize as number)
+                    }}>
+                      <span style={{ color: '#9e9e9e', fontSize: '9px', display: 'block' }}>
+                        [[{String(row.valueKey)}]]
+                      </span>
+                      {sampleValues[row.valueKey as string] || `Örnek değer`}
+                    </td>
+                  </tr>
+                ))}
+                
+                {/* Satır yoksa placeholder */}
+                {tableRows.length === 0 && (
+                  <tr>
+                    <td colSpan={2} style={{
+                      padding: '16px',
+                      textAlign: 'center',
+                      color: '#9e9e9e',
+                      fontStyle: 'italic'
+                    }}>
+                      Satır eklemek için sağ panelden "Yeni Satır Ekle" butonuna tıklayın
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        )
+
       default:
         return <div>Unknown Element</div>
     }

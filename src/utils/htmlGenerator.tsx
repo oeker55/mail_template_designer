@@ -572,6 +572,148 @@ const renderElement = (element: CanvasElement): React.ReactNode => {
           {`<!-- REPEAT_END:${repeatKey} -->`}
         </Section>
       )
+
+    case 'info_table':
+      // Info Table - Bilgi Tablosu (Sipariş Özeti, Adres vb.)
+      const infoRows = (p.rows as Array<Record<string, unknown>>) || []
+      
+      // Stil hesaplamaları
+      const getInfoValueStyle = (row: Record<string, unknown>): React.CSSProperties => {
+        const style: React.CSSProperties = {
+          margin: 0,
+          padding: 0,
+          fontFamily: 'Arial, Helvetica, sans-serif'
+        }
+        
+        // Font boyutu
+        style.fontSize = ((row.valueFontSize as number) || (p.valueFontSize as number) || 14) + 'px'
+        
+        // Renk
+        style.color = (row.valueColor as string) || (p.valueColor as string) || '#333333'
+        
+        // Stil türü
+        switch (row.valueStyle as string) {
+          case 'bold':
+            style.fontWeight = 'bold'
+            break
+          case 'italic':
+            style.fontStyle = 'italic'
+            break
+          case 'strikethrough':
+            style.textDecoration = 'line-through'
+            break
+          default:
+            style.fontWeight = 'normal'
+        }
+        
+        return style
+      }
+      
+      const getInfoLabelStyle = (row: Record<string, unknown>): React.CSSProperties => {
+        const style: React.CSSProperties = {
+          margin: 0,
+          padding: 0,
+          fontFamily: 'Arial, Helvetica, sans-serif',
+          fontSize: ((p.labelFontSize as number) || 14) + 'px',
+          color: (p.labelColor as string) || '#333333'
+        }
+        
+        switch (row.labelStyle as string) {
+          case 'bold':
+            style.fontWeight = 'bold'
+            break
+          case 'italic':
+            style.fontStyle = 'italic'
+            break
+          default:
+            style.fontWeight = (p.labelFontWeight as string) || 'normal'
+        }
+        
+        return style
+      }
+      
+      return (
+        <Section>
+          <table
+            role="presentation"
+            cellPadding="0"
+            cellSpacing="0"
+            style={{
+              width: (p.tableWidth as string) || '100%',
+              borderCollapse: 'collapse',
+              backgroundColor: (p.tableBgColor as string) || '#ffffff',
+              border: `1px solid ${(p.tableBorderColor as string) || '#e0e0e0'}`,
+              borderRadius: ((p.tableBorderRadius as number) || 0) + 'px',
+              overflow: 'hidden'
+            }}
+          >
+            {/* Başlık Satırı */}
+            {Boolean(p.showTitle) && (
+              <thead>
+                <tr>
+                  <th
+                    colSpan={2}
+                    style={{
+                      padding: (p.titlePadding as string) || '12px 16px',
+                      backgroundColor: (p.titleBgColor as string) || '#f5f5f5',
+                      borderBottom: (p.titleBorderBottom as string) || '1px solid #e0e0e0',
+                      fontSize: ((p.titleFontSize as number) || 14) + 'px',
+                      fontWeight: (p.titleFontWeight as string) || 'bold',
+                      color: (p.titleColor as string) || '#333333',
+                      textAlign: 'left',
+                      fontFamily: 'Arial, Helvetica, sans-serif'
+                    }}
+                  >
+                    {String(p.title) || 'Sipariş Özeti'}
+                  </th>
+                </tr>
+              </thead>
+            )}
+            
+            <tbody>
+              {infoRows.map((row, idx) => (
+                <tr key={row.id as string || idx}>
+                  {/* Etiket (Sol kolon) */}
+                  <td
+                    style={{
+                      width: (p.labelWidth as string) || '50%',
+                      padding: (p.rowPadding as string) || '8px 16px',
+                      borderBottom: idx < infoRows.length - 1 
+                        ? ((p.rowBorderBottom as string) || '1px solid #f0f0f0') 
+                        : 'none',
+                      textAlign: (p.labelAlign as 'left' | 'center' | 'right') || 'left',
+                      verticalAlign: 'middle',
+                      fontFamily: 'Arial, Helvetica, sans-serif'
+                    }}
+                  >
+                    <Text style={getInfoLabelStyle(row)}>
+                      {String(row.label)}
+                    </Text>
+                  </td>
+                  
+                  {/* Değer (Sağ kolon) */}
+                  <td
+                    style={{
+                      width: (p.valueWidth as string) || '50%',
+                      padding: (p.rowPadding as string) || '8px 16px',
+                      borderBottom: idx < infoRows.length - 1 
+                        ? ((p.rowBorderBottom as string) || '1px solid #f0f0f0') 
+                        : 'none',
+                      textAlign: (p.valueAlign as 'left' | 'center' | 'right') || 'right',
+                      verticalAlign: 'middle',
+                      fontFamily: 'Arial, Helvetica, sans-serif'
+                    }}
+                  >
+                    <Text style={getInfoValueStyle(row)}>
+                      {`[[${String(row.valueKey)}]]`}
+                    </Text>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </Section>
+      )
     
     default:
       return null
