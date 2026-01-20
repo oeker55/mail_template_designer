@@ -516,15 +516,112 @@ const PropertyEditor: React.FC<PropertyEditorProps> = ({ element, onUpdateElemen
     </>
   )
 
+  const [showUrlVariableDropdown, setShowUrlVariableDropdown] = useState(false)
+  const [showLinkUrlVariableDropdown, setShowLinkUrlVariableDropdown] = useState(false)
+
+  const insertUrlVariable = (variableKey: string) => {
+    handleChange('src', formatVariable(variableKey))
+    setShowUrlVariableDropdown(false)
+  }
+
+  const insertLinkUrlVariable = (variableKey: string) => {
+    handleChange('linkUrl', formatVariable(variableKey))
+    setShowLinkUrlVariableDropdown(false)
+  }
+
+  // URL değişkenleri için filtreleme (logo ve link değişkenleri)
+  const getUrlVariables = () => {
+    const urlVars: Array<{ key: string; label: string; example: string; categoryIcon: string }> = []
+    Object.entries(TEMPLATE_VARIABLES).forEach(([_catKey, category]) => {
+      category.variables.forEach(v => {
+        if (v.key.toLowerCase().includes('url') || v.key.toLowerCase().includes('logo') || v.key.toLowerCase().includes('link') || v.key.toLowerCase().includes('web')) {
+          urlVars.push({ ...v, categoryIcon: category.icon })
+        }
+      })
+    })
+    return urlVars
+  }
+
   const renderImageElementProperties = () => (
     <>
-      <div className="property-item"><label className="property-label">Resim URL</label><input type="text" value={(element.props.src as string) || ''} onChange={(e) => handleChange('src', e.target.value)} className="property-input" placeholder="https://example.com/image.jpg" /></div>
+      <div className="property-item">
+        <label className="property-label">Resim URL</label>
+        <div className="url-input-with-variable">
+          <input type="text" value={(element.props.src as string) || ''} onChange={(e) => handleChange('src', e.target.value)} className="property-input url-input" placeholder="https://example.com/image.jpg" />
+          <div className="url-variable-wrapper">
+            <button type="button" className={`url-variable-btn ${showUrlVariableDropdown ? 'active' : ''}`} onClick={() => setShowUrlVariableDropdown(!showUrlVariableDropdown)} title="Değişken Seç">
+              <span className="variable-icon">{`{{x}}`}</span>
+            </button>
+            {showUrlVariableDropdown && (
+              <div className="url-variable-dropdown">
+                <div className="url-variable-header">
+                  <span>🔗 URL Değişkeni Seç</span>
+                  <button type="button" className="url-variable-close" onClick={() => setShowUrlVariableDropdown(false)}>✕</button>
+                </div>
+                <div className="url-variable-list">
+                  {getUrlVariables().map((v, idx) => (
+                    <button key={idx} type="button" className="url-variable-item" onClick={() => insertUrlVariable(v.key)}>
+                      <span className="var-icon">{v.categoryIcon}</span>
+                      <span className="var-label">{v.label}</span>
+                      <span className="var-key">[[{v.key}]]</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
       <div className="property-item"><label className="property-label">Alternatif Metin</label><input type="text" value={(element.props.alt as string) || ''} onChange={(e) => handleChange('alt', e.target.value)} className="property-input" placeholder="Resim açıklaması" /></div>
       <div className="property-item"><label className="property-label">Genişlik (px)</label><input type="number" value={(element.props.width as number) || 600} onChange={(e) => handleChange('width', parseInt(e.target.value) || 600)} className="property-input" disabled={element.props.keepAspectRatio as boolean} /></div>
       <div className="property-item"><label className="property-label">Yükseklik (px)</label><input type="number" value={(element.props.height as number) || 300} onChange={(e) => handleChange('height', parseInt(e.target.value) || 300)} className="property-input" /></div>
       <div className="property-item"><label className="property-label">En/Boy Oranını Koru</label><input type="checkbox" checked={(element.props.keepAspectRatio as boolean) !== false} onChange={(e) => handleChange('keepAspectRatio', e.target.checked)} className="property-checkbox" /></div>
       <div className="property-item"><label className="property-label">Hizalama</label><select value={(element.props.textAlign as string) || 'center'} onChange={(e) => handleChange('textAlign', e.target.value)} className="property-input property-select"><option value="left">Sol</option><option value="center">Orta</option><option value="right">Sağ</option></select></div>
       <div className="property-item"><label className="property-label">Arkaplan Rengi</label><div className="color-input-wrapper"><input type="color" value={(element.props.backgroundColor as string) === 'transparent' ? '#ffffff' : ((element.props.backgroundColor as string) || '#ffffff')} onChange={(e) => handleChange('backgroundColor', e.target.value)} className="property-color-input" /><input type="text" value={(element.props.backgroundColor as string) || 'transparent'} onChange={(e) => handleChange('backgroundColor', e.target.value)} className="property-input property-color-text" placeholder="transparent" /></div></div>
+      
+      {/* Linkli Resim Bölümü */}
+      <div className="property-section-divider">
+        <span className="divider-icon">🔗</span>
+        <span className="divider-text">Linkli Resim</span>
+      </div>
+      <div className="property-item">
+        <label className="property-label">Linkli Resim</label>
+        <div className="checkbox-with-label">
+          <input type="checkbox" checked={(element.props.isLinked as boolean) || false} onChange={(e) => handleChange('isLinked', e.target.checked)} className="property-checkbox" />
+          <span className="checkbox-description">Resme tıklandığında linke yönlendir</span>
+        </div>
+      </div>
+      {(element.props.isLinked as boolean) && (
+        <div className="property-item">
+          <label className="property-label">Link URL</label>
+          <div className="url-input-with-variable">
+            <input type="text" value={(element.props.linkUrl as string) || ''} onChange={(e) => handleChange('linkUrl', e.target.value)} className="property-input url-input" placeholder="https://example.com" />
+            <div className="url-variable-wrapper">
+              <button type="button" className={`url-variable-btn ${showLinkUrlVariableDropdown ? 'active' : ''}`} onClick={() => setShowLinkUrlVariableDropdown(!showLinkUrlVariableDropdown)} title="Değişken Seç">
+                <span className="variable-icon">{`{{x}}`}</span>
+              </button>
+              {showLinkUrlVariableDropdown && (
+                <div className="url-variable-dropdown">
+                  <div className="url-variable-header">
+                    <span>🔗 Link Değişkeni Seç</span>
+                    <button type="button" className="url-variable-close" onClick={() => setShowLinkUrlVariableDropdown(false)}>✕</button>
+                  </div>
+                  <div className="url-variable-list">
+                    {getUrlVariables().map((v, idx) => (
+                      <button key={idx} type="button" className="url-variable-item" onClick={() => insertLinkUrlVariable(v.key)}>
+                        <span className="var-icon">{v.categoryIcon}</span>
+                        <span className="var-label">{v.label}</span>
+                        <span className="var-key">[[{v.key}]]</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+      
       <SpacingInput label="İç Boşluk (Padding)" icon="📦" values={{ top: (element.props.paddingTop as number) || 0, right: (element.props.paddingRight as number) || 0, bottom: (element.props.paddingBottom as number) || 0, left: (element.props.paddingLeft as number) || 0 }} onChange={(side, value) => handleChange(`padding${side.charAt(0).toUpperCase() + side.slice(1)}`, value)} />
       <SpacingInput label="Dış Boşluk (Margin)" icon="↔️" values={{ top: (element.props.marginTop as number) || 0, right: (element.props.marginRight as number) || 0, bottom: (element.props.marginBottom as number) || 0, left: (element.props.marginLeft as number) || 0 }} onChange={(side, value) => handleChange(`margin${side.charAt(0).toUpperCase() + side.slice(1)}`, value)} />
     </>

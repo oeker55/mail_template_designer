@@ -56,6 +56,7 @@ export const TEMPLATE_VARIABLES: TemplateVariableCategories = {
       { key: 'şirket_telefon', label: 'Şirket Telefon', example: '+90 212 123 4567' },
       { key: 'şirket_adres', label: 'Şirket Adresi', example: 'İstanbul, Türkiye' },
       { key: 'şirket_web', label: 'Web Sitesi', example: 'www.abctech.com' },
+      { key: 'logo_url', label: 'Logo URL', example: 'https://example.com/logo.png' },
     ]
   },
   date: {

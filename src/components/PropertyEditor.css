@@ -851,3 +851,184 @@
   color: var(--text-muted);
   font-size: 12px;
 }
+
+/* URL Input with Variable Selector */
+.url-input-with-variable {
+  display: flex;
+  gap: 6px;
+  align-items: flex-start;
+}
+
+.url-input-with-variable .url-input {
+  flex: 1;
+  min-width: 0;
+}
+
+.url-variable-wrapper {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.url-variable-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  background: var(--bg-tertiary);
+  color: var(--primary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.url-variable-btn:hover {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.url-variable-btn.active {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.url-variable-btn .variable-icon {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.url-variable-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  width: 280px;
+  background: white;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.url-variable-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
+  border-bottom: 1px solid var(--border-light);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.url-variable-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  font-size: 12px;
+}
+
+.url-variable-close:hover {
+  background: rgba(231, 76, 60, 0.1);
+  color: #E74C3C;
+}
+
+.url-variable-list {
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.url-variable-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  border-radius: var(--radius-md);
+  background: transparent;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-align: left;
+  gap: 8px;
+}
+
+.url-variable-item:hover {
+  background: rgba(58, 65, 111, 0.08);
+}
+
+.url-variable-item .var-icon {
+  font-size: 14px;
+}
+
+.url-variable-item .var-label {
+  flex: 1;
+  font-size: 12px;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.url-variable-item .var-key {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--primary);
+  background: rgba(58, 65, 111, 0.1);
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(58, 65, 111, 0.15);
+}
+
+/* Property Section Divider */
+.property-section-divider {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 16px 0 12px 0;
+  padding: 8px 0;
+  border-top: 1px solid var(--border-light);
+}
+
+.property-section-divider .divider-icon {
+  font-size: 14px;
+}
+
+.property-section-divider .divider-text {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Checkbox with Label */
+.checkbox-with-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.checkbox-with-label .property-checkbox {
+  margin: 0;
+}
+
+.checkbox-with-label .checkbox-description {
+  font-size: 11px;
+  color: var(--text-muted);
+  flex: 1;
+}

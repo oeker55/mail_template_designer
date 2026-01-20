@@ -191,6 +191,9 @@ export const ELEMENT_TYPES: Record<string, ElementTypeConfig> = {
       keepAspectRatio: true,
       textAlign: 'center',
       backgroundColor: 'transparent',
+      // Linkli resim özellikleri
+      isLinked: false,
+      linkUrl: '',
       // Margin (4 yönlü)
       marginTop: 0,
       marginRight: 0,

@@ -273,6 +273,16 @@ const renderElement = (element: CanvasElement): React.ReactNode => {
       const imgPadding = `${p.paddingTop || 0}px ${p.paddingRight || 0}px ${p.paddingBottom || 0}px ${p.paddingLeft || 0}px`
       const imgBgColor = p.backgroundColor && p.backgroundColor !== 'transparent' ? p.backgroundColor as string : undefined
       
+      const imgElement = (
+        <Img
+          src={p.src as string}
+          alt={p.alt as string}
+          height={p.height as number || undefined}
+          width={p.keepAspectRatio ? undefined : (p.width as number || undefined)}
+          style={{ display: 'block', maxWidth: '100%', ...(p.style as React.CSSProperties || {}) }}
+        />
+      )
+      
       return (
         <Section style={{ 
           margin: imgMargin,
@@ -281,13 +291,13 @@ const renderElement = (element: CanvasElement): React.ReactNode => {
         }}>
           <Row>
             <Column align={(p.textAlign as 'left' | 'center' | 'right') || 'center'}>
-              <Img
-                src={p.src as string}
-                alt={p.alt as string}
-                height={p.height as number || undefined}
-                width={p.keepAspectRatio ? undefined : (p.width as number || undefined)}
-                style={{ display: 'block', maxWidth: '100%', ...(p.style as React.CSSProperties || {}) }}
-              />
+              {p.isLinked && p.linkUrl ? (
+                <Link href={p.linkUrl as string} target="_blank" style={{ textDecoration: 'none' }}>
+                  {imgElement}
+                </Link>
+              ) : (
+                imgElement
+              )}
             </Column>
           </Row>
         </Section>
