@@ -398,18 +398,35 @@ const renderElement = (element: CanvasElement): React.ReactNode => {
                     verticalAlign: 'top'
                   }}
                 >
-                  <Img
-                    src={`[[${String(p.cardImgVariableKey)}]]`}
-                    alt="Ürün"
-                    width={(p.cardImgWidth as number) || 80}
-                    height={(p.cardImgHeight as number) || 80}
-                    style={{
-                      display: 'block',
-                      borderRadius: ((p.cardImgBorderRadius as number) || 4) + 'px',
-                      border: 'none',
-                      outline: 'none'
-                    }}
-                  />
+                  {Boolean(p.cardImgLinkEnabled) ? (
+                    <Link href={`[[${(p.cardImgLinkVariableKey as string) || 'item.url'}]]`} style={{ display: 'block' }}>
+                      <Img
+                        src={`[[${(p.cardImgVariableKey as string) || 'item.image_url'}]]`}
+                        alt="Ürün"
+                        width={(p.cardImgWidth as number) || 80}
+                        height={(p.cardImgHeight as number) || 80}
+                        style={{
+                          display: 'block',
+                          borderRadius: ((p.cardImgBorderRadius as number) || 4) + 'px',
+                          border: 'none',
+                          outline: 'none'
+                        }}
+                      />
+                    </Link>
+                  ) : (
+                    <Img
+                      src={`[[${(p.cardImgVariableKey as string) || 'item.image_url'}]]`}
+                      alt="Ürün"
+                      width={(p.cardImgWidth as number) || 80}
+                      height={(p.cardImgHeight as number) || 80}
+                      style={{
+                        display: 'block',
+                        borderRadius: ((p.cardImgBorderRadius as number) || 4) + 'px',
+                        border: 'none',
+                        outline: 'none'
+                      }}
+                    />
+                  )}
                 </td>
                 
                 {/* Ürün Bilgileri Kolonu */}
@@ -432,7 +449,7 @@ const renderElement = (element: CanvasElement): React.ReactNode => {
                       lineHeight: '1.4'
                     }}
                   >
-                    {`[[${String(p.cardTitleVariableKey)}]]`}
+                    {`[[${(p.cardTitleVariableKey as string) || 'item.name'}]]`}
                   </Text>
                   
                   {/* Alt Bilgi (Adet, Beden vb.) */}
@@ -445,7 +462,7 @@ const renderElement = (element: CanvasElement): React.ReactNode => {
                       fontFamily: 'Arial, Helvetica, sans-serif'
                     }}
                   >
-                    {`[[${String(p.cardSubtitleVariableKey)}]]`}
+                    {`[[${(p.cardSubtitleVariableKey as string) || 'item.details'}]]`}
                   </Text>
                   
                   {/* Fiyat */}
@@ -459,7 +476,7 @@ const renderElement = (element: CanvasElement): React.ReactNode => {
                       fontFamily: 'Arial, Helvetica, sans-serif'
                     }}
                   >
-                    {`[[${String(p.cardPriceVariableKey)}]]`}
+                    {`[[${(p.cardPriceVariableKey as string) || 'item.price'}]]`}
                   </Text>
                 </td>
               </tr>
@@ -505,7 +522,7 @@ const renderElement = (element: CanvasElement): React.ReactNode => {
                         width: col.width as string
                       }}
                     >
-                      {String(col.label)}
+                      {(col.label as string) || 'Kolon'}
                     </th>
                   ))}
                 </tr>
@@ -531,18 +548,35 @@ const renderElement = (element: CanvasElement): React.ReactNode => {
                     }}
                   >
                     {col.type === 'image' ? (
-                      <Img
-                        src={`[[${String(col.variableKey)}]]`}
-                        alt="Ürün"
-                        width={(col.imgWidth as number) || 60}
-                        height={(col.imgHeight as number) || 60}
-                        style={{
-                          display: 'block',
-                          margin: col.textAlign === 'center' ? '0 auto' : '0',
-                          border: 'none',
-                          outline: 'none'
-                        }}
-                      />
+                      Boolean(col.linkEnabled) ? (
+                        <Link href={`[[${(col.linkVariableKey as string) || 'item.url'}]]`} style={{ display: 'block' }}>
+                          <Img
+                            src={`[[${(col.variableKey as string) || 'item.image_url'}]]`}
+                            alt="Ürün"
+                            width={(col.imgWidth as number) || 60}
+                            height={(col.imgHeight as number) || 60}
+                            style={{
+                              display: 'block',
+                              margin: col.textAlign === 'center' ? '0 auto' : '0',
+                              border: 'none',
+                              outline: 'none'
+                            }}
+                          />
+                        </Link>
+                      ) : (
+                        <Img
+                          src={`[[${(col.variableKey as string) || 'item.image_url'}]]`}
+                          alt="Ürün"
+                          width={(col.imgWidth as number) || 60}
+                          height={(col.imgHeight as number) || 60}
+                          style={{
+                            display: 'block',
+                            margin: col.textAlign === 'center' ? '0 auto' : '0',
+                            border: 'none',
+                            outline: 'none'
+                          }}
+                        />
+                      )
                     ) : (
                       <Text
                         style={{
@@ -555,7 +589,7 @@ const renderElement = (element: CanvasElement): React.ReactNode => {
                           textAlign: (col.textAlign as 'left' | 'center' | 'right') || 'left'
                         }}
                       >
-                        {`[[${String(col.variableKey)}]]`}
+                        {`[[${(col.variableKey as string) || 'item.value'}]]`}
                       </Text>
                     )}
                   </td>
@@ -680,7 +714,7 @@ const renderElement = (element: CanvasElement): React.ReactNode => {
                     }}
                   >
                     <Text style={getInfoLabelStyle(row)}>
-                      {String(row.label)}
+                      {(row.label as string) || 'Etiket'}
                     </Text>
                   </td>
                   
@@ -698,7 +732,7 @@ const renderElement = (element: CanvasElement): React.ReactNode => {
                     }}
                   >
                     <Text style={getInfoValueStyle(row)}>
-                      {`[[${String(row.valueKey)}]]`}
+                      {`[[${(row.valueKey as string) || 'variable.key'}]]`}
                     </Text>
                   </td>
                 </tr>

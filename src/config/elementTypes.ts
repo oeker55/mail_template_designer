@@ -314,6 +314,8 @@ export const ELEMENT_TYPES: Record<string, ElementTypeConfig> = {
       cardImgHeight: 80,
       cardImgBorderRadius: 4,
       cardImgVariableKey: 'item.image_url',
+      cardImgLinkEnabled: false,
+      cardImgLinkVariableKey: 'item.url',
       
       // Başlık (ürün adı)
       cardTitleVariableKey: 'item.name',
@@ -358,7 +360,9 @@ export const ELEMENT_TYPES: Record<string, ElementTypeConfig> = {
           color: '#333333',
           textAlign: 'center',
           imgWidth: 60,
-          imgHeight: 60
+          imgHeight: 60,
+          linkEnabled: false,
+          linkVariableKey: 'item.url'
         },
         {
           id: 'product_name',

@@ -85,6 +85,7 @@ export const TEMPLATE_VARIABLES: TemplateVariableCategories = {
     icon: '🔄',
     variables: [
       { key: 'item.image_url', label: 'Ürün Resmi URL', example: 'https://cdn.site.com/urun.jpg' },
+      { key: 'item.url', label: 'Ürün Sayfası Linki', example: 'https://site.com/urun/abc' },
       { key: 'item.name', label: 'Ürün Adı', example: '3 İplik Şardonsuz Sweatshirt' },
       { key: 'item.details', label: 'Ürün Detayları', example: 'Adet: 1 - Beden: L' },
       { key: 'item.quantity', label: 'Ürün Adedi', example: '2' },

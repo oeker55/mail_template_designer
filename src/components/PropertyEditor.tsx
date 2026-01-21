@@ -923,6 +923,30 @@ const PropertyEditor: React.FC<PropertyEditorProps> = ({ element, onUpdateElemen
             <input type="number" value={(element.props.cardImgBorderRadius as number) || 4} onChange={(e) => handleChange('cardImgBorderRadius', parseInt(e.target.value) || 0)} className="property-input" />
           </div>
 
+          <div className="property-item">
+            <label className="property-label" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <input 
+                type="checkbox" 
+                checked={Boolean(element.props.cardImgLinkEnabled)} 
+                onChange={(e) => handleChange('cardImgLinkEnabled', e.target.checked)}
+                style={{ width: '16px', height: '16px' }}
+              />
+              Resme Link Ekle
+            </label>
+          </div>
+          
+          {Boolean(element.props.cardImgLinkEnabled) && (
+            <div className="property-item">
+              <label className="property-label">Link Değişkeni</label>
+              <VariableSelector
+                value={(element.props.cardImgLinkVariableKey as string) || 'item.url'}
+                onChange={(val) => handleChange('cardImgLinkVariableKey', val)}
+                placeholder="item.url"
+                filterCategories={['product_item']}
+              />
+            </div>
+          )}
+
           <div className="property-section-divider">
             <span className="divider-icon">📝</span>
             <span className="divider-text">Ürün Başlığı</span>
@@ -1242,6 +1266,28 @@ const PropertyEditor: React.FC<PropertyEditorProps> = ({ element, onUpdateElemen
                   <label className="property-label">Resim Yüksekliği (px)</label>
                   <input type="number" value={(col.imgHeight as number) || 60} onChange={(e) => handleProductColumnChange(index, 'imgHeight', parseInt(e.target.value) || 60)} className="property-input" />
                 </div>
+                <div className="property-item">
+                  <label className="property-label" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <input 
+                      type="checkbox" 
+                      checked={Boolean(col.linkEnabled)} 
+                      onChange={(e) => handleProductColumnChange(index, 'linkEnabled', e.target.checked)}
+                      style={{ width: '16px', height: '16px' }}
+                    />
+                    Resme Link Ekle
+                  </label>
+                </div>
+                {Boolean(col.linkEnabled) && (
+                  <div className="property-item">
+                    <label className="property-label">Link Değişkeni</label>
+                    <VariableSelector
+                      value={(col.linkVariableKey as string) || 'item.url'}
+                      onChange={(val) => handleProductColumnChange(index, 'linkVariableKey', val)}
+                      placeholder="item.url"
+                      filterCategories={['product_item']}
+                    />
+                  </div>
+                )}
               </>
             )}
           </div>
