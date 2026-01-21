@@ -382,15 +382,6 @@ const CanvasElement: React.FC<CanvasElementComponentProps> = ({
       case 'product_row':
         const productColumns = p.columns as Array<Record<string, unknown>>
         const displayMode = (p.displayMode as string) || 'card'
-        const sampleData = {
-          'item.image_url': 'https://via.placeholder.com/80x80?text=Ürün',
-          'item.name': '3 İplik Şardonsuz Yakası Ribanalı Sweatshirt - Ekru',
-          'item.details': 'Adet : 1 - Beden : L',
-          'item.quantity': '1',
-          'item.price': '150,00 TL',
-          'item.sku': 'SKU-001',
-          'item.total': '150,00 TL'
-        }
         
         // KART GÖRÜNÜMÜ
         if (displayMode === 'card') {
@@ -415,84 +406,87 @@ const CanvasElement: React.FC<CanvasElementComponentProps> = ({
                 <span><strong>Tekrarlanabilir Element</strong> - Backend'de <code style={{ backgroundColor: '#bbdefb', padding: '2px 4px', borderRadius: '2px' }}>[[{String(p.repeatKey)}]]</code> array'ine göre çoğaltılır</span>
               </div>
 
-              {/* Örnek kartlar */}
-              {[0, 1].map((rowIdx) => (
-                <div key={rowIdx} style={{
+              {/* Tek kart önizlemesi - sadece placeholder'lar */}
+              <div style={{
+                display: 'flex',
+                alignItems: 'flex-start',
+                gap: `${p.cardGap || 12}px`,
+                padding: (p.cardPadding as string) || '12px',
+                backgroundColor: (p.cardBgColor as string) || '#ffffff',
+                border: `1px solid ${(p.cardBorderColor as string) || '#eeeeee'}`,
+                borderRadius: `${p.cardBorderRadius || 8}px`,
+                boxShadow: p.cardShadow ? '0 2px 4px rgba(0,0,0,0.1)' : 'none'
+              }}>
+                {/* Ürün Resmi Placeholder */}
+                <div style={{ 
+                  flexShrink: 0,
+                  width: (p.cardImgWidth as number) || 80,
+                  height: (p.cardImgHeight as number) || 80,
+                  backgroundColor: '#f0f0f0',
+                  borderRadius: `${p.cardImgBorderRadius || 4}px`,
                   display: 'flex',
-                  alignItems: 'flex-start',
-                  gap: `${p.cardGap || 12}px`,
-                  padding: (p.cardPadding as string) || '12px',
-                  backgroundColor: (p.cardBgColor as string) || '#ffffff',
-                  border: `1px solid ${(p.cardBorderColor as string) || '#eeeeee'}`,
-                  borderRadius: `${p.cardBorderRadius || 8}px`,
-                  marginBottom: '8px',
-                  boxShadow: p.cardShadow ? '0 2px 4px rgba(0,0,0,0.1)' : 'none'
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  border: '2px dashed #ccc'
                 }}>
-                  {/* Ürün Resmi */}
-                  <div style={{ flexShrink: 0 }}>
-                    <img 
-                      src={sampleData['item.image_url']}
-                      alt="Ürün"
-                      width={(p.cardImgWidth as number) || 80}
-                      height={(p.cardImgHeight as number) || 80}
-                      style={{
-                        display: 'block',
-                        borderRadius: `${p.cardImgBorderRadius || 4}px`,
-                        objectFit: 'cover'
-                      }}
-                    />
-                    <div style={{ 
-                      fontSize: '9px', 
-                      color: '#9e9e9e', 
-                      textAlign: 'center',
-                      marginTop: '4px'
-                    }}>
-                      [[{String(p.cardImgVariableKey)}]]
-                    </div>
+                  <span style={{ 
+                    fontSize: '10px', 
+                    color: '#666',
+                    textAlign: 'center',
+                    padding: '4px',
+                    wordBreak: 'break-all'
+                  }}>
+                    [[{String(p.cardImgVariableKey)}]]
+                  </span>
+                </div>
+                
+                {/* Ürün Bilgileri Placeholder'ları */}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  {/* Başlık Placeholder */}
+                  <div style={{
+                    fontSize: `${p.cardTitleFontSize || 14}px`,
+                    fontWeight: (p.cardTitleFontWeight as string) || 'normal',
+                    color: (p.cardTitleColor as string) || '#333333',
+                    marginBottom: '6px',
+                    padding: '6px 10px',
+                    backgroundColor: '#fff3e0',
+                    borderRadius: '4px',
+                    border: '1px dashed #ffb74d'
+                  }}>
+                    [[{String(p.cardTitleVariableKey)}]]
                   </div>
                   
-                  {/* Ürün Bilgileri */}
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    {/* Başlık */}
-                    <div style={{
-                      fontSize: `${p.cardTitleFontSize || 14}px`,
-                      fontWeight: (p.cardTitleFontWeight as string) || 'normal',
-                      color: (p.cardTitleColor as string) || '#333333',
-                      marginBottom: '4px',
-                      lineHeight: 1.4
-                    }}>
-                      <span style={{ color: '#9e9e9e', fontSize: '9px' }}>[[{String(p.cardTitleVariableKey)}]]</span>
-                      <br />
-                      {sampleData['item.name']}
-                    </div>
-                    
-                    {/* Alt bilgi */}
-                    <div style={{
-                      fontSize: `${p.cardSubtitleFontSize || 13}px`,
-                      color: (p.cardSubtitleColor as string) || '#666666',
-                      marginBottom: '6px'
-                    }}>
-                      <span style={{ color: '#9e9e9e', fontSize: '9px' }}>[[{String(p.cardSubtitleVariableKey)}]]</span>
-                      <br />
-                      {sampleData['item.details']}
-                    </div>
-                    
-                    {/* Fiyat */}
-                    <div style={{
-                      fontSize: `${p.cardPriceFontSize || 15}px`,
-                      fontWeight: (p.cardPriceFontWeight as string) || 'bold',
-                      color: (p.cardPriceColor as string) || '#f57c00'
-                    }}>
-                      <span style={{ color: '#9e9e9e', fontSize: '9px' }}>[[{String(p.cardPriceVariableKey)}]]</span>
-                      <br />
-                      {sampleData['item.price']}
-                    </div>
+                  {/* Alt bilgi Placeholder */}
+                  <div style={{
+                    fontSize: `${p.cardSubtitleFontSize || 13}px`,
+                    color: (p.cardSubtitleColor as string) || '#666666',
+                    marginBottom: '6px',
+                    padding: '6px 10px',
+                    backgroundColor: '#e8f5e9',
+                    borderRadius: '4px',
+                    border: '1px dashed #81c784'
+                  }}>
+                    [[{String(p.cardSubtitleVariableKey)}]]
+                  </div>
+                  
+                  {/* Fiyat Placeholder */}
+                  <div style={{
+                    fontSize: `${p.cardPriceFontSize || 15}px`,
+                    fontWeight: (p.cardPriceFontWeight as string) || 'bold',
+                    color: (p.cardPriceColor as string) || '#f57c00',
+                    padding: '6px 10px',
+                    backgroundColor: '#fce4ec',
+                    borderRadius: '4px',
+                    border: '1px dashed #f48fb1'
+                  }}>
+                    [[{String(p.cardPriceVariableKey)}]]
                   </div>
                 </div>
-              ))}
+              </div>
               
               {/* More rows indicator */}
               <div style={{
+                marginTop: '8px',
                 padding: '8px',
                 textAlign: 'center',
                 color: '#9e9e9e',
@@ -501,7 +495,7 @@ const CanvasElement: React.FC<CanvasElementComponentProps> = ({
                 backgroundColor: '#fafafa',
                 borderRadius: '4px'
               }}>
-                ⋮ Diğer ürünler backend'de otomatik eklenir ⋮
+                ⋮ Her ürün için bu kart tekrarlanacak ⋮
               </div>
             </div>
           )
@@ -557,41 +551,53 @@ const CanvasElement: React.FC<CanvasElementComponentProps> = ({
                   </tr>
                 </thead>
               )}
-              {/* Sample rows to show design */}
+              {/* Tek satır - sadece placeholder'lar */}
               <tbody>
-                {[0, 1].map((rowIdx) => (
-                  <tr key={rowIdx} style={{
-                    backgroundColor: rowIdx % 2 === 0 ? p.rowBgColor as string : p.rowAltBgColor as string
-                  }}>
-                    {productColumns.map((col, colIdx) => (
-                      <td key={colIdx} style={{
-                        padding: '10px 8px',
-                        textAlign: (col.textAlign as 'left' | 'center' | 'right') || 'left',
-                        fontSize: `${col.fontSize}px`,
-                        fontWeight: col.fontWeight as string,
-                        color: col.color as string,
-                        borderBottom: `1px solid ${p.rowBorderColor as string}`,
-                        width: col.width as string
-                      }}>
-                        {col.type === 'image' ? (
-                          <img 
-                            src={sampleData['item.image_url']} 
-                            alt="Ürün"
-                            width={col.imgWidth as number || 60}
-                            height={col.imgHeight as number || 60}
-                            style={{ display: 'block', margin: col.textAlign === 'center' ? '0 auto' : '0' }}
-                          />
-                        ) : (
-                          <span>
-                            <span style={{ color: '#9e9e9e', fontSize: '10px' }}>[[{String(col.variableKey)}]]</span>
-                            <br />
-                            {sampleData[col.variableKey as keyof typeof sampleData] || `Örnek ${String(col.label)}`}
-                          </span>
-                        )}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
+                <tr style={{ backgroundColor: p.rowBgColor as string }}>
+                  {productColumns.map((col, colIdx) => (
+                    <td key={colIdx} style={{
+                      padding: '10px 8px',
+                      textAlign: (col.textAlign as 'left' | 'center' | 'right') || 'left',
+                      fontSize: `${col.fontSize}px`,
+                      fontWeight: col.fontWeight as string,
+                      color: col.color as string,
+                      borderBottom: `1px solid ${p.rowBorderColor as string}`,
+                      width: col.width as string
+                    }}>
+                      {col.type === 'image' ? (
+                        <div style={{
+                          width: col.imgWidth as number || 60,
+                          height: col.imgHeight as number || 60,
+                          backgroundColor: '#f0f0f0',
+                          border: '2px dashed #ccc',
+                          borderRadius: '4px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          margin: col.textAlign === 'center' ? '0 auto' : '0',
+                          fontSize: '9px',
+                          color: '#666',
+                          textAlign: 'center',
+                          padding: '4px',
+                          wordBreak: 'break-all'
+                        }}>
+                          [[{String(col.variableKey)}]]
+                        </div>
+                      ) : (
+                        <span style={{
+                          display: 'inline-block',
+                          padding: '4px 8px',
+                          backgroundColor: '#e3f2fd',
+                          borderRadius: '4px',
+                          border: '1px dashed #90caf9',
+                          fontSize: '11px'
+                        }}>
+                          [[{String(col.variableKey)}]]
+                        </span>
+                      )}
+                    </td>
+                  ))}
+                </tr>
                 {/* More rows indicator */}
                 <tr style={{ backgroundColor: '#fafafa' }}>
                   <td colSpan={productColumns.length} style={{
@@ -601,7 +607,7 @@ const CanvasElement: React.FC<CanvasElementComponentProps> = ({
                     fontSize: '12px',
                     fontStyle: 'italic'
                   }}>
-                    ⋮ Diğer ürünler backend'de otomatik eklenir ⋮
+                    ⋮ Her ürün için bu satır tekrarlanacak ⋮
                   </td>
                 </tr>
               </tbody>
@@ -611,19 +617,6 @@ const CanvasElement: React.FC<CanvasElementComponentProps> = ({
 
       case 'info_table':
         const tableRows = (p.rows as Array<Record<string, unknown>>) || []
-        
-        // Örnek değerler
-        const sampleValues: Record<string, string> = {
-          'order.subtotal': '299,99 TL',
-          'order.discount': '- 135,00 TL',
-          'order.shipping': '- 150,00 TL',
-          'order.subtotal_after_discount': '149,99 TL',
-          'order.total': '14,99 TL',
-          'address.title': 'Whatsapp',
-          'address.line1': '- Farktör yazılım ve danışmanlık',
-          'address.line2': 'Efe apt 30/1 - 100062 105288 / 105298',
-          'address.phone': '5425837168'
-        }
         
         const getValueStyle = (style: string, color?: string, fontSize?: number): React.CSSProperties => {
           const baseStyle: React.CSSProperties = {}
@@ -713,10 +706,16 @@ const CanvasElement: React.FC<CanvasElementComponentProps> = ({
                       textAlign: (p.valueAlign as 'left' | 'center' | 'right') || 'right',
                       ...getValueStyle(row.valueStyle as string, row.valueColor as string, row.valueFontSize as number)
                     }}>
-                      <span style={{ color: '#9e9e9e', fontSize: '9px', display: 'block' }}>
+                      <span style={{ 
+                        display: 'inline-block',
+                        padding: '4px 8px',
+                        backgroundColor: '#e8f5e9',
+                        borderRadius: '4px',
+                        border: '1px dashed #81c784',
+                        fontSize: '11px'
+                      }}>
                         [[{String(row.valueKey)}]]
                       </span>
-                      {sampleValues[row.valueKey as string] || `Örnek değer`}
                     </td>
                   </tr>
                 ))}

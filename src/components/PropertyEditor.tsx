@@ -8,6 +8,156 @@ interface ExtendedVariable extends TemplateVariable {
   categoryIcon: string
 }
 
+// Değişken Seçici Bileşeni
+interface VariableSelectorProps {
+  value: string
+  onChange: (value: string) => void
+  placeholder?: string
+  filterCategories?: string[]  // Sadece belirli kategorileri göster
+}
+
+const VariableSelector: React.FC<VariableSelectorProps> = ({ value, onChange, placeholder, filterCategories }) => {
+  const [isOpen, setIsOpen] = useState(false)
+  const [activeCategory, setActiveCategory] = useState<string | null>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  const filteredCategories = filterCategories 
+    ? Object.entries(TEMPLATE_VARIABLES).filter(([key]) => filterCategories.includes(key))
+    : Object.entries(TEMPLATE_VARIABLES)
+
+  const selectVariable = (variableKey: string) => {
+    onChange(variableKey)
+    setIsOpen(false)
+    setActiveCategory(null)
+  }
+
+  return (
+    <div style={{ position: 'relative' }}>
+      <div style={{ display: 'flex', gap: '4px' }}>
+        <input
+          ref={inputRef}
+          type="text"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className="property-input"
+          placeholder={placeholder || 'item.name'}
+          style={{ flex: 1 }}
+        />
+        <button
+          type="button"
+          onClick={() => setIsOpen(!isOpen)}
+          style={{
+            padding: '6px 10px',
+            background: isOpen ? '#1976d2' : '#e3f2fd',
+            color: isOpen ? 'white' : '#1976d2',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            fontSize: '16px',
+            transition: 'all 0.2s'
+          }}
+          title="Değişken Seç"
+        >
+          📋
+        </button>
+      </div>
+      
+      {isOpen && (
+        <div style={{
+          position: 'absolute',
+          top: '100%',
+          left: 0,
+          right: 0,
+          backgroundColor: 'white',
+          border: '1px solid #e0e0e0',
+          borderRadius: '8px',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+          zIndex: 1000,
+          maxHeight: '300px',
+          overflow: 'hidden'
+        }}>
+          {/* Kategori listesi */}
+          {!activeCategory && (
+            <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
+              {filteredCategories.map(([catKey, category]) => (
+                <div
+                  key={catKey}
+                  onClick={() => setActiveCategory(catKey)}
+                  style={{
+                    padding: '10px 12px',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    borderBottom: '1px solid #f0f0f0',
+                    transition: 'background 0.2s'
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.background = '#f5f5f5'}
+                  onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                >
+                  <span style={{ fontSize: '16px' }}>{category.icon}</span>
+                  <span style={{ flex: 1, fontWeight: 500 }}>{category.label}</span>
+                  <span style={{ color: '#9e9e9e' }}>→</span>
+                </div>
+              ))}
+            </div>
+          )}
+          
+          {/* Değişken listesi */}
+          {activeCategory && (
+            <div>
+              <div
+                onClick={() => setActiveCategory(null)}
+                style={{
+                  padding: '10px 12px',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  borderBottom: '1px solid #e0e0e0',
+                  backgroundColor: '#f5f5f5'
+                }}
+              >
+                <span>←</span>
+                <span style={{ fontWeight: 500 }}>{TEMPLATE_VARIABLES[activeCategory]?.label}</span>
+              </div>
+              <div style={{ maxHeight: '250px', overflowY: 'auto' }}>
+                {TEMPLATE_VARIABLES[activeCategory]?.variables.map((variable) => (
+                  <div
+                    key={variable.key}
+                    onClick={() => selectVariable(variable.key)}
+                    style={{
+                      padding: '10px 12px',
+                      cursor: 'pointer',
+                      borderBottom: '1px solid #f0f0f0',
+                      transition: 'background 0.2s'
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.background = '#e3f2fd'}
+                    onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                  >
+                    <div style={{ fontWeight: 500, marginBottom: '2px' }}>{variable.label}</div>
+                    <div style={{ fontSize: '11px', color: '#666' }}>
+                      <code style={{ 
+                        backgroundColor: '#f5f5f5', 
+                        padding: '2px 6px', 
+                        borderRadius: '3px',
+                        marginRight: '8px'
+                      }}>
+                        [[{variable.key}]]
+                      </code>
+                      <span style={{ color: '#9e9e9e' }}>Örn: {variable.example}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
+
 // Zengin Metin Editörü Komponenti (Değişken desteği ile)
 const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange }) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null)
@@ -772,12 +922,11 @@ const PropertyEditor: React.FC<PropertyEditorProps> = ({ element, onUpdateElemen
           
           <div className="property-item">
             <label className="property-label">Resim Değişkeni</label>
-            <input 
-              type="text" 
-              value={(element.props.cardImgVariableKey as string) || 'item.image_url'} 
-              onChange={(e) => handleChange('cardImgVariableKey', e.target.value)} 
-              className="property-input" 
+            <VariableSelector
+              value={(element.props.cardImgVariableKey as string) || 'item.image_url'}
+              onChange={(val) => handleChange('cardImgVariableKey', val)}
               placeholder="item.image_url"
+              filterCategories={['product_item']}
             />
           </div>
           
@@ -804,12 +953,11 @@ const PropertyEditor: React.FC<PropertyEditorProps> = ({ element, onUpdateElemen
           
           <div className="property-item">
             <label className="property-label">Başlık Değişkeni</label>
-            <input 
-              type="text" 
-              value={(element.props.cardTitleVariableKey as string) || 'item.name'} 
-              onChange={(e) => handleChange('cardTitleVariableKey', e.target.value)} 
-              className="property-input" 
+            <VariableSelector
+              value={(element.props.cardTitleVariableKey as string) || 'item.name'}
+              onChange={(val) => handleChange('cardTitleVariableKey', val)}
               placeholder="item.name"
+              filterCategories={['product_item']}
             />
           </div>
           
@@ -842,12 +990,11 @@ const PropertyEditor: React.FC<PropertyEditorProps> = ({ element, onUpdateElemen
           
           <div className="property-item">
             <label className="property-label">Alt Bilgi Değişkeni</label>
-            <input 
-              type="text" 
-              value={(element.props.cardSubtitleVariableKey as string) || 'item.details'} 
-              onChange={(e) => handleChange('cardSubtitleVariableKey', e.target.value)} 
-              className="property-input" 
+            <VariableSelector
+              value={(element.props.cardSubtitleVariableKey as string) || 'item.details'}
+              onChange={(val) => handleChange('cardSubtitleVariableKey', val)}
               placeholder="item.details"
+              filterCategories={['product_item']}
             />
             <small style={{ color: '#666', fontSize: '11px', display: 'block', marginTop: '4px' }}>
               Backend'de birleştirilmiş string: "Adet : 1 - Beden : L"
@@ -875,12 +1022,11 @@ const PropertyEditor: React.FC<PropertyEditorProps> = ({ element, onUpdateElemen
           
           <div className="property-item">
             <label className="property-label">Fiyat Değişkeni</label>
-            <input 
-              type="text" 
-              value={(element.props.cardPriceVariableKey as string) || 'item.price'} 
-              onChange={(e) => handleChange('cardPriceVariableKey', e.target.value)} 
-              className="property-input" 
+            <VariableSelector
+              value={(element.props.cardPriceVariableKey as string) || 'item.price'}
+              onChange={(val) => handleChange('cardPriceVariableKey', val)}
               placeholder="item.price"
+              filterCategories={['product_item']}
             />
           </div>
           
@@ -1421,12 +1567,11 @@ const PropertyEditor: React.FC<PropertyEditorProps> = ({ element, onUpdateElemen
 
               <div className="property-item">
                 <label className="property-label">Değer Değişkeni</label>
-                <input 
-                  type="text" 
-                  value={(row.valueKey as string) || ''} 
-                  onChange={(e) => handleRowChange(index, 'valueKey', e.target.value)} 
-                  className="property-input" 
+                <VariableSelector
+                  value={(row.valueKey as string) || ''}
+                  onChange={(val) => handleRowChange(index, 'valueKey', val)}
                   placeholder="order.subtotal"
+                  filterCategories={['order_summary', 'address', 'order', 'payment']}
                 />
                 <small style={{ color: '#666', fontSize: '10px' }}>Çıktıda: [[{String(row.valueKey || 'order.subtotal')}]]</small>
               </div>

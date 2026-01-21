@@ -78,6 +78,51 @@ export const TEMPLATE_VARIABLES: TemplateVariableCategories = {
       { key: 'aktivasyon_linki', label: 'Aktivasyon Linki', example: 'https://...' },
       { key: 'özel_mesaj', label: 'Özel Mesaj', example: 'Teşekkür ederiz!' },
     ]
+  },
+  // Ürün listesi için özel değişkenler (repeat içinde kullanılacak)
+  product_item: {
+    label: 'Ürün Satırı (Tekrar)',
+    icon: '🔄',
+    variables: [
+      { key: 'item.image_url', label: 'Ürün Resmi URL', example: 'https://cdn.site.com/urun.jpg' },
+      { key: 'item.name', label: 'Ürün Adı', example: '3 İplik Şardonsuz Sweatshirt' },
+      { key: 'item.details', label: 'Ürün Detayları', example: 'Adet: 1 - Beden: L' },
+      { key: 'item.quantity', label: 'Ürün Adedi', example: '2' },
+      { key: 'item.price', label: 'Birim Fiyat', example: '150,00 TL' },
+      { key: 'item.total', label: 'Toplam Fiyat', example: '300,00 TL' },
+      { key: 'item.sku', label: 'Stok Kodu', example: 'SKU-12345' },
+      { key: 'item.variant', label: 'Varyant', example: 'Mavi / XL' },
+      { key: 'item.discount', label: 'İndirim', example: '-50,00 TL' },
+    ]
+  },
+  // Sipariş özeti değişkenleri
+  order_summary: {
+    label: 'Sipariş Özeti',
+    icon: '📋',
+    variables: [
+      { key: 'order.subtotal', label: 'Ara Toplam', example: '299,99 TL' },
+      { key: 'order.discount', label: 'İndirim', example: '-135,00 TL' },
+      { key: 'order.shipping', label: 'Kargo Ücreti', example: '15,00 TL' },
+      { key: 'order.tax', label: 'KDV', example: '45,00 TL' },
+      { key: 'order.total', label: 'Genel Toplam', example: '225,00 TL' },
+      { key: 'order.paid', label: 'Ödenen Tutar', example: '225,00 TL' },
+      { key: 'order.remaining', label: 'Kalan Tutar', example: '0,00 TL' },
+    ]
+  },
+  // Adres değişkenleri
+  address: {
+    label: 'Adres Bilgileri',
+    icon: '📍',
+    variables: [
+      { key: 'address.title', label: 'Adres Başlığı', example: 'Ev Adresi' },
+      { key: 'address.name', label: 'Ad Soyad', example: 'Ahmet Yılmaz' },
+      { key: 'address.line1', label: 'Adres Satırı 1', example: 'Atatürk Cad. No:123' },
+      { key: 'address.line2', label: 'Adres Satırı 2', example: 'Daire: 5' },
+      { key: 'address.city', label: 'İlçe/Şehir', example: 'Kadıköy / İstanbul' },
+      { key: 'address.zip', label: 'Posta Kodu', example: '34710' },
+      { key: 'address.country', label: 'Ülke', example: 'Türkiye' },
+      { key: 'address.phone', label: 'Telefon', example: '0532 123 4567' },
+    ]
   }
 }
 
