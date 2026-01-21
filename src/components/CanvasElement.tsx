@@ -383,6 +383,12 @@ const CanvasElement: React.FC<CanvasElementComponentProps> = ({
         const productColumns = p.columns as Array<Record<string, unknown>>
         const displayMode = (p.displayMode as string) || 'card'
         
+        // Değişken key'leri için varsayılan değerler
+        const imgVarKey = (p.cardImgVariableKey as string) || 'item.image_url'
+        const titleVarKey = (p.cardTitleVariableKey as string) || 'item.name'
+        const subtitleVarKey = (p.cardSubtitleVariableKey as string) || 'item.details'
+        const priceVarKey = (p.cardPriceVariableKey as string) || 'item.price'
+        
         // KART GÖRÜNÜMÜ
         if (displayMode === 'card') {
           return (
@@ -390,22 +396,6 @@ const CanvasElement: React.FC<CanvasElementComponentProps> = ({
               padding: p.padding as string,
               width: p.tableWidth as string
             }}>
-              {/* Repeatable indicator badge */}
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                marginBottom: '8px',
-                padding: '6px 10px',
-                backgroundColor: '#e3f2fd',
-                borderRadius: '4px',
-                fontSize: '11px',
-                color: '#1565c0'
-              }}>
-                <span style={{ fontSize: '14px' }}>🔄</span>
-                <span><strong>Tekrarlanabilir Element</strong> - Backend'de <code style={{ backgroundColor: '#bbdefb', padding: '2px 4px', borderRadius: '2px' }}>[[{String(p.repeatKey)}]]</code> array'ine göre çoğaltılır</span>
-              </div>
-
               {/* Tek kart önizlemesi - sadece placeholder'lar */}
               <div style={{
                 display: 'flex',
@@ -436,7 +426,7 @@ const CanvasElement: React.FC<CanvasElementComponentProps> = ({
                     padding: '4px',
                     wordBreak: 'break-all'
                   }}>
-                    [[{String(p.cardImgVariableKey)}]]
+                    [[{imgVarKey}]]
                   </span>
                 </div>
                 
@@ -453,7 +443,7 @@ const CanvasElement: React.FC<CanvasElementComponentProps> = ({
                     borderRadius: '4px',
                     border: '1px dashed #ffb74d'
                   }}>
-                    [[{String(p.cardTitleVariableKey)}]]
+                    [[{titleVarKey}]]
                   </div>
                   
                   {/* Alt bilgi Placeholder */}
@@ -466,7 +456,7 @@ const CanvasElement: React.FC<CanvasElementComponentProps> = ({
                     borderRadius: '4px',
                     border: '1px dashed #81c784'
                   }}>
-                    [[{String(p.cardSubtitleVariableKey)}]]
+                    [[{subtitleVarKey}]]
                   </div>
                   
                   {/* Fiyat Placeholder */}
@@ -479,23 +469,9 @@ const CanvasElement: React.FC<CanvasElementComponentProps> = ({
                     borderRadius: '4px',
                     border: '1px dashed #f48fb1'
                   }}>
-                    [[{String(p.cardPriceVariableKey)}]]
+                    [[{priceVarKey}]]
                   </div>
                 </div>
-              </div>
-              
-              {/* More rows indicator */}
-              <div style={{
-                marginTop: '8px',
-                padding: '8px',
-                textAlign: 'center',
-                color: '#9e9e9e',
-                fontSize: '12px',
-                fontStyle: 'italic',
-                backgroundColor: '#fafafa',
-                borderRadius: '4px'
-              }}>
-                ⋮ Her ürün için bu kart tekrarlanacak ⋮
               </div>
             </div>
           )
@@ -507,22 +483,6 @@ const CanvasElement: React.FC<CanvasElementComponentProps> = ({
             padding: p.padding as string,
             width: p.tableWidth as string
           }}>
-            {/* Repeatable indicator badge */}
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              marginBottom: '8px',
-              padding: '6px 10px',
-              backgroundColor: '#e3f2fd',
-              borderRadius: '4px',
-              fontSize: '11px',
-              color: '#1565c0'
-            }}>
-              <span style={{ fontSize: '14px' }}>🔄</span>
-              <span><strong>Tekrarlanabilir Element</strong> - Backend'de <code style={{ backgroundColor: '#bbdefb', padding: '2px 4px', borderRadius: '2px' }}>[[{String(p.repeatKey)}]]</code> array'ine göre çoğaltılır</span>
-            </div>
-            
             <table style={{
               width: '100%',
               borderCollapse: 'collapse',
@@ -545,7 +505,7 @@ const CanvasElement: React.FC<CanvasElementComponentProps> = ({
                         borderBottom: `2px solid ${p.tableBorderColor as string}`,
                         width: col.width as string
                       }}>
-                        {String(col.label)}
+                        {(col.label as string) || 'Kolon'}
                       </th>
                     ))}
                   </tr>
@@ -581,7 +541,7 @@ const CanvasElement: React.FC<CanvasElementComponentProps> = ({
                           padding: '4px',
                           wordBreak: 'break-all'
                         }}>
-                          [[{String(col.variableKey)}]]
+                          [[{(col.variableKey as string) || 'item.image_url'}]]
                         </div>
                       ) : (
                         <span style={{
@@ -592,23 +552,11 @@ const CanvasElement: React.FC<CanvasElementComponentProps> = ({
                           border: '1px dashed #90caf9',
                           fontSize: '11px'
                         }}>
-                          [[{String(col.variableKey)}]]
+                          [[{(col.variableKey as string) || 'item.value'}]]
                         </span>
                       )}
                     </td>
                   ))}
-                </tr>
-                {/* More rows indicator */}
-                <tr style={{ backgroundColor: '#fafafa' }}>
-                  <td colSpan={productColumns.length} style={{
-                    padding: '8px',
-                    textAlign: 'center',
-                    color: '#9e9e9e',
-                    fontSize: '12px',
-                    fontStyle: 'italic'
-                  }}>
-                    ⋮ Her ürün için bu satır tekrarlanacak ⋮
-                  </td>
                 </tr>
               </tbody>
             </table>
@@ -674,7 +622,7 @@ const CanvasElement: React.FC<CanvasElementComponentProps> = ({
                         textAlign: 'left'
                       }}
                     >
-                      {String(p.title) || 'Sipariş Özeti'}
+                      {(p.title as string) || 'Sipariş Özeti'}
                     </th>
                   </tr>
                 </thead>
@@ -693,7 +641,7 @@ const CanvasElement: React.FC<CanvasElementComponentProps> = ({
                       textAlign: (p.labelAlign as 'left' | 'center' | 'right') || 'left',
                       ...getLabelStyle(row.labelStyle as string)
                     }}>
-                      {String(row.label)}
+                      {(row.label as string) || 'Etiket'}
                     </td>
                     {/* Değer (Sağ kolon) */}
                     <td style={{
@@ -714,7 +662,7 @@ const CanvasElement: React.FC<CanvasElementComponentProps> = ({
                         border: '1px dashed #81c784',
                         fontSize: '11px'
                       }}>
-                        [[{String(row.valueKey)}]]
+                        [[{(row.valueKey as string) || 'variable.key'}]]
                       </span>
                     </td>
                   </tr>

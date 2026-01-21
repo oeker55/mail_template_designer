@@ -42,8 +42,8 @@ function getNestedValue(obj, path) {
 
 /**
  * Tekrarlanabilir elementleri (product_row) işler
- * <!-- REPEAT_START:key:alias --> ve <!-- REPEAT_END:key --> arasındaki
- * içeriği array'deki her item için çoğaltır
+ * data-repeat-start="key" ve data-repeat-item="alias" attribute'larını kullanarak
+ * section içindeki data-repeat-row="true" satırını her item için çoğaltır
  * 
  * @param {string} template - HTML şablonu
  * @param {object} data - Veri objesi (array'leri içerir)
@@ -52,9 +52,9 @@ function getNestedValue(obj, path) {
 function processRepeaters(template, data) {
   let result = template;
   
-  // Tüm repeater bloklarını bul
-  // Format: <!-- REPEAT_START:arrayKey:itemAlias -->...<!-- REPEAT_END:arrayKey -->
-  const repeaterRegex = /<!-- REPEAT_START:(\w+):(\w+) -->([\s\S]*?)<!-- REPEAT_END:\1 -->/g;
+  // data-repeat-start attribute'u olan section'ları bul
+  // Format: <section data-repeat-start="arrayKey" data-repeat-item="itemAlias" ...>
+  const repeaterRegex = /<section[^>]*data-repeat-start="(\w+)"[^>]*data-repeat-item="(\w+)"[^>]*>([\s\S]*?)<\/section>/gi;
   
   result = result.replace(repeaterRegex, (match, arrayKey, itemAlias, content) => {
     const items = data[arrayKey];
@@ -64,17 +64,20 @@ function processRepeaters(template, data) {
       return ''; // Array yoksa boş döndür
     }
     
+    // data-repeat-row="true" olan elementi bul
+    const rowRegex = /(<(?:table|tr)[^>]*data-repeat-row="true"[^>]*>[\s\S]*?<\/(?:table|tr)>)/gi;
+    const rowMatch = content.match(rowRegex);
+    
+    if (!rowMatch) {
+      console.warn('data-repeat-row elementi bulunamadı');
+      return match;
+    }
+    
+    const rowTemplate = rowMatch[0];
+    
     // Her item için satırı tekrarla
     const rows = items.map((item, index) => {
-      // Satır içeriğini al (REPEAT_ROW_START/END arasındaki kısım)
-      const rowMatch = content.match(/<!-- REPEAT_ROW_START -->([\s\S]*?)<!-- REPEAT_ROW_END -->/);
-      
-      if (!rowMatch) {
-        console.warn('REPEAT_ROW_START/END bulunamadı');
-        return content;
-      }
-      
-      let rowContent = rowMatch[1];
+      let rowContent = rowTemplate;
       
       // [[alias.property]] formatındaki değişkenleri değiştir
       const aliasRegex = new RegExp(`\\[\\[${itemAlias}\\.([^\\]]+)\\]\\]`, 'g');
@@ -83,17 +86,27 @@ function processRepeaters(template, data) {
         return value !== undefined ? value : m;
       });
       
-      // Alternatif satır rengi için index'i ekle (opsiyonel)
-      if (index % 2 === 1) {
-        // Çift satırlar için arkaplan rengi değiştirilebilir
-        // rowContent = rowContent.replace(/background-color:\s*#ffffff/gi, 'background-color: #fafafa');
-      }
-      
       return rowContent;
     });
     
-    return rows.join('\n');
+    // Orijinal section'ı tekrarlanan satırlarla değiştir
+    // Section dışı HTML yapısını koru
+    const sectionStart = match.substring(0, match.indexOf('>') + 1);
+    const sectionEnd = '</section>';
+    
+    // data-repeat-* attribute'larını temizle
+    const cleanSectionStart = sectionStart
+      .replace(/\s*data-repeat-start="[^"]*"/gi, '')
+      .replace(/\s*data-repeat-item="[^"]*"/gi, '');
+    
+    // Satır dışı içeriği koru (header gibi)
+    const headerContent = content.replace(rowRegex, '');
+    
+    return cleanSectionStart + headerContent + rows.join('\n') + sectionEnd;
   });
+  
+  // data-repeat-row attribute'larını temizle
+  result = result.replace(/\s*data-repeat-row="[^"]*"/gi, '');
   
   return result;
 }

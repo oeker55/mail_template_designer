@@ -124,11 +124,14 @@ export function replaceVariables(template: string, data: EmailTemplateData): str
 
 /**
  * Tekrarlanabilir elementleri (product_row) işler
+ * data-repeat-start="key" ve data-repeat-item="alias" attribute'larını kullanarak
+ * section içindeki data-repeat-row="true" satırını her item için çoğaltır
  */
 export function processRepeaters(template: string, data: EmailTemplateData): string {
   let result = template;
   
-  const repeaterRegex = /<!-- REPEAT_START:(\w+):(\w+) -->([\s\S]*?)<!-- REPEAT_END:\1 -->/g;
+  // data-repeat-start attribute'u olan section'ları bul
+  const repeaterRegex = /<section[^>]*data-repeat-start="(\w+)"[^>]*data-repeat-item="(\w+)"[^>]*>([\s\S]*?)<\/section>/gi;
   
   result = result.replace(repeaterRegex, (
     match: string, 
@@ -143,15 +146,19 @@ export function processRepeaters(template: string, data: EmailTemplateData): str
       return '';
     }
     
-    const rows = items.map((item: Record<string, unknown>, index: number) => {
-      const rowMatch = content.match(/<!-- REPEAT_ROW_START -->([\s\S]*?)<!-- REPEAT_ROW_END -->/);
-      
-      if (!rowMatch) {
-        console.warn('REPEAT_ROW_START/END bulunamadı');
-        return content;
-      }
-      
-      let rowContent = rowMatch[1];
+    // data-repeat-row="true" olan elementi bul
+    const rowRegex = /(<(?:table|tr)[^>]*data-repeat-row="true"[^>]*>[\s\S]*?<\/(?:table|tr)>)/gi;
+    const rowMatch = content.match(rowRegex);
+    
+    if (!rowMatch) {
+      console.warn('data-repeat-row elementi bulunamadı');
+      return match;
+    }
+    
+    const rowTemplate = rowMatch[0];
+    
+    const rows = items.map((item: Record<string, unknown>) => {
+      let rowContent = rowTemplate;
       
       const aliasRegex = new RegExp(`\\[\\[${itemAlias}\\.([^\\]]+)\\]\\]`, 'g');
       rowContent = rowContent.replace(aliasRegex, (m: string, prop: string) => {
@@ -162,8 +169,19 @@ export function processRepeaters(template: string, data: EmailTemplateData): str
       return rowContent;
     });
     
-    return rows.join('\n');
+    // Section'ı temizle ve satırları ekle
+    const sectionStart = match.substring(0, match.indexOf('>') + 1);
+    const sectionEnd = '</section>';
+    const cleanSectionStart = sectionStart
+      .replace(/\s*data-repeat-start="[^"]*"/gi, '')
+      .replace(/\s*data-repeat-item="[^"]*"/gi, '');
+    const headerContent = content.replace(rowRegex, '');
+    
+    return cleanSectionStart + headerContent + rows.join('\n') + sectionEnd;
   });
+  
+  // data-repeat-row attribute'larını temizle
+  result = result.replace(/\s*data-repeat-row="[^"]*"/gi, '');
   
   return result;
 }

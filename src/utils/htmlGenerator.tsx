@@ -370,16 +370,17 @@ const renderElement = (element: CanvasElement): React.ReactNode => {
       // KART GÖRÜNÜMÜ için HTML
       if (productDisplayMode === 'card') {
         return (
-          <Section style={{ padding: p.padding as string }}>
-            {/* Repeater başlangıç yorumu - Backend bu yorumu arayacak */}
-            {`<!-- REPEAT_START:${repeatKey}:${itemAlias} -->`}
-            {`<!-- REPEAT_ROW_START -->`}
-            
+          <Section 
+            style={{ padding: p.padding as string }}
+            data-repeat-start={repeatKey}
+            data-repeat-item={itemAlias}
+          >
             {/* Outlook uyumlu tablo tabanlı kart yapısı */}
             <table
               role="presentation"
               cellPadding="0"
               cellSpacing="0"
+              data-repeat-row="true"
               style={{
                 width: '100%',
                 backgroundColor: (p.cardBgColor as string) || '#ffffff',
@@ -463,18 +464,17 @@ const renderElement = (element: CanvasElement): React.ReactNode => {
                 </td>
               </tr>
             </table>
-            
-            {`<!-- REPEAT_ROW_END -->`}
-            {`<!-- REPEAT_END:${repeatKey} -->`}
           </Section>
         )
       }
       
       // TABLO GÖRÜNÜMÜ için HTML
       return (
-        <Section style={{ padding: p.padding as string }}>
-          {/* Repeater başlangıç yorumu - Backend bu yorumu arayacak */}
-          {`<!-- REPEAT_START:${repeatKey}:${itemAlias} -->`}
+        <Section 
+          style={{ padding: p.padding as string }}
+          data-repeat-start={repeatKey}
+          data-repeat-item={itemAlias}
+        >
           
           <table
             role="presentation"
@@ -514,9 +514,7 @@ const renderElement = (element: CanvasElement): React.ReactNode => {
             
             {/* Ürün Satırı - Bu kısım backend'de her item için tekrarlanacak */}
             <tbody>
-              {/* Satır başlangıç yorumu */}
-              {`<!-- REPEAT_ROW_START -->`}
-              <tr style={{ backgroundColor: (p.rowBgColor as string) || '#ffffff' }}>
+              <tr data-repeat-row="true" style={{ backgroundColor: (p.rowBgColor as string) || '#ffffff' }}>
                 {productColumns.map((col, colIdx) => (
                   <td
                     key={colIdx}
@@ -563,13 +561,8 @@ const renderElement = (element: CanvasElement): React.ReactNode => {
                   </td>
                 ))}
               </tr>
-              {/* Satır bitiş yorumu */}
-              {`<!-- REPEAT_ROW_END -->`}
             </tbody>
           </table>
-          
-          {/* Repeater bitiş yorumu */}
-          {`<!-- REPEAT_END:${repeatKey} -->`}
         </Section>
       )
 

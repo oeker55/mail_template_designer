@@ -866,26 +866,9 @@ const PropertyEditor: React.FC<PropertyEditorProps> = ({ element, onUpdateElemen
         <span className="divider-icon">🔄</span>
         <span className="divider-text">Tekrarlama Ayarları</span>
       </div>
-      
-      <div className="property-info-box" style={{ 
-        backgroundColor: '#e3f2fd', 
-        padding: '12px', 
-        borderRadius: '8px', 
-        marginBottom: '16px',
-        fontSize: '12px',
-        lineHeight: '1.6'
-      }}>
-        <p style={{ margin: '0 0 8px 0', fontWeight: 'bold', color: '#1565c0' }}>
-          ℹ️ Tekrarlanabilir Element
-        </p>
-        <p style={{ margin: 0, color: '#333' }}>
-          Bu element, e-posta gönderilirken backend tarafından belirlenen <strong>repeatKey</strong> array'ine göre otomatik olarak çoğaltılır. 
-          Her satır için <strong>repeatItemAlias</strong> kullanarak değişkenlere erişebilirsiniz.
-        </p>
-      </div>
 
       <div className="property-item">
-        <label className="property-label">🔑 Array Key (repeatKey)</label>
+        <label className="property-label">Array Key</label>
         <input 
           type="text" 
           value={(element.props.repeatKey as string) || 'order_items'} 
@@ -893,13 +876,10 @@ const PropertyEditor: React.FC<PropertyEditorProps> = ({ element, onUpdateElemen
           className="property-input" 
           placeholder="order_items, products, cart_items"
         />
-        <small style={{ color: '#666', fontSize: '11px', display: 'block', marginTop: '4px' }}>
-          Backend'den gelecek array adı (örn: order_items, products)
-        </small>
       </div>
 
       <div className="property-item">
-        <label className="property-label">📝 Item Alias (repeatItemAlias)</label>
+        <label className="property-label">Item Alias</label>
         <input 
           type="text" 
           value={(element.props.repeatItemAlias as string) || 'item'} 
@@ -907,9 +887,6 @@ const PropertyEditor: React.FC<PropertyEditorProps> = ({ element, onUpdateElemen
           className="property-input" 
           placeholder="item, product"
         />
-        <small style={{ color: '#666', fontSize: '11px', display: 'block', marginTop: '4px' }}>
-          Kolonlarda kullanılacak alias (örn: item.name, item.price)
-        </small>
       </div>
 
       {/* KART MODU AYARLARI */}
