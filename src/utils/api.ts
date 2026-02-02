@@ -35,16 +35,33 @@ api.interceptors.response.use(
 // Template API'leri
 export const templateAPI = {
   /**
-   * Firma koduna göre tüm template'leri listele
-   * @param fcode - Firma kodu
+   * Tüm template'leri listele (opsiyonel fcode ile filtreleme)
+   * @param fcode - Firma kodu (opsiyonel)
    * @returns Template listesi
    */
-  getAll: async (fcode: string): Promise<Template[]> => {
+  getAll: async (fcode?: string): Promise<Template[]> => {
     try {
-      const response = await api.get<Template[]>('/templates', { params: { fcode } })
+      const params = fcode ? { fcode } : {}
+      const response = await api.get<Template[]>('/templates', { params })
       return response.data
     } catch (error) {
       console.error('Templates getAll error:', error)
+      throw error
+    }
+  },
+
+  /**
+   * scode ve subjectId ile template getir
+   * @param scode - Sabit kod
+   * @param subjectId - Konu id
+   * @returns Template verisi
+   */
+  getBySubject: async (scode: string, subjectId: string): Promise<Template> => {
+    try {
+      const response = await api.get<Template>('/templates/by-subject', { params: { scode, subjectId } })
+      return response.data
+    } catch (error) {
+      console.error('Template getBySubject error:', error)
       throw error
     }
   },

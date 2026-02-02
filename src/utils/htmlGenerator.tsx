@@ -399,7 +399,7 @@ const renderElement = (element: CanvasElement): React.ReactNode => {
                   }}
                 >
                   {Boolean(p.cardImgLinkEnabled) ? (
-                    <Link href={`[[${(p.cardImgLinkVariableKey as string) || 'item.url'}]]`} style={{ display: 'block' }}>
+                    <Link href={Boolean(p.cardImgLinkIsStatic) ? (p.cardImgLinkStaticUrl as string) || '' : `[[${(p.cardImgLinkVariableKey as string) || 'item.url'}]]`} style={{ display: 'block' }}>
                       <Img
                         src={`[[${(p.cardImgVariableKey as string) || 'item.image_url'}]]`}
                         alt="Ürün"

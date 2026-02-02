@@ -3,126 +3,92 @@ import { templateAPI } from '../utils/api'
 import { TemplateListProps, Template } from '../types'
 import './TemplateList.css'
 
+// Sabit konu listesi (id, scode, subjectId, title)
+const SUBJECTS = [
+  { id: 1, scode: 'FATURA_ONIZLEME', subjectId: 'fatura-onizleme', title: 'Fatura Önizleme' },
+  { id: 2, scode: 'YENI_KULLANICI_BILGILENDIRME', subjectId: 'yeni-kullanici-bilgilendirme', title: 'Sistem Yeni Kullanıcı Bilgilendirmesi' },
+  { id: 3, scode: 'SIFRE_HATIRLATMA', subjectId: 'sifre-hatirlatma', title: 'Sistem Kullanıcı Şifre Hatırlatma' },
+  { id: 4, scode: 'YENI_SIPARIS', subjectId: 'yeni-siparis', title: 'Yeni Gelen Sipariş Bildirimi' },
+  { id: 5, scode: 'ODEME_ONAY_BEKLEYEN', subjectId: 'odeme-onay-bekleyen', title: 'Ödeme Onayı Bekleyen Sipariş Bildirimi' },
+  { id: 6, scode: 'KAPIDA_ODEME_BEKLEYEN', subjectId: 'kapida-odeme-bekleyen', title: 'Kapıda Ödeme Onayı Beklenen Sipariş Bildirimi' },
+  { id: 7, scode: 'KAPIDA_ODEME_ONAYLANAN', subjectId: 'kapida-odeme-onaylanan', title: 'Kapıda Ödeme Onayı Alınan Sipariş Bildirimi' },
+  { id: 8, scode: 'TEDARIK_BASLADI', subjectId: 'tedarik-basladi', title: 'Tedariği Başlatılan Sipariş Bildirimi' },
+  { id: 9, scode: 'TEDARIK_EKSIK_URUN', subjectId: 'tedarik-eksik-urun', title: 'Tedariği Sırasında Eksik Ürün Çıkan Sipariş Bildirimi' },
+  { id: 10, scode: 'EKSIK_URUN_ULASILAMAYAN', subjectId: 'eksik-urun-ulasilamayan', title: 'Eksik Ürün Sebebi İle Aranan ve Ulaşılamayan Müşteriye Bildirim' },
+  { id: 11, scode: 'KAPIDA_ODEME_ULASILAMAYAN', subjectId: 'kapida-odeme-ulasilamayan', title: 'Kapıda Ödeme Sebebi İle Aranan ve Ulaşılamayan Müşteriye Bildirim' },
+  { id: 12, scode: 'ODEME_SONRADAN_ONAY', subjectId: 'odeme-sonradan-onay', title: 'Ödemesi Sonradan Onaylanan Siparişin Bildirimi' },
+  { id: 13, scode: 'IPTAL_SIPARIS', subjectId: 'iptal-siparis', title: 'İptal Siparişin Bildirimi' },
+  { id: 14, scode: 'IPTAL_ODEME_IADE', subjectId: 'iptal-odeme-iade', title: 'İptal sonucu Ödeme Çıkarılacağının Bildirimi' },
+  { id: 15, scode: 'IBAN_TALEP', subjectId: 'iban-talep', title: 'Ödeme İçin IBAN Hesabı Bekleniyorsa IBAN Talep Bildirimi' },
+  { id: 16, scode: 'TEDARIK_TAMAMLANDI', subjectId: 'tedarik-tamamlandi', title: 'Ürünlerin Tedariği Tamamlandığında Bildirim' },
+  { id: 17, scode: 'FATURA_KESILDI', subjectId: 'fatura-kesildi', title: 'Siparişin Faturası Kesildiğinde Bildirim' },
+  { id: 18, scode: 'SON_KONTROL_TAMAMLANDI', subjectId: 'son-kontrol-tamamlandi', title: 'Siparişin Son Kontrolü Tamamlandığında Bildirim' },
+  { id: 19, scode: 'KARGOYA_TESLIM', subjectId: 'kargoya-teslim', title: 'Sipariş Kargoya Teslim Edildiğinde Bildirim' },
+  { id: 20, scode: 'IADE_GELDI', subjectId: 'iade-geldi', title: 'Siparişin İadesi Geldiğinde Bildirim' },
+  { id: 21, scode: 'IADE_KREDI_KARTI', subjectId: 'iade-kredi-karti', title: 'Siparişin İadesi Tamamlandığında ve Geri Ödemesi Kredi Kartına İade İse' },
+  { id: 22, scode: 'EKSIK_URUN_ALTERNATIF', subjectId: 'eksik-urun-alternatif', title: 'Eksik Ürün Alternatif Ürün Gönderimi' },
+  { id: 23, scode: 'IADE_ULASILAMAYAN', subjectId: 'iade-ulasilamayan', title: 'İade İşlemi İçin Aranıp Ulaşamadığında Bildirim' },
+  { id: 24, scode: 'IADE_IBAN', subjectId: 'iade-iban', title: 'Siparişin İadesi Tamamlandığında ve Geri Ödemesi IBAN Hesabına İade İse' },
+  { id: 25, scode: 'IADE_HEDIYE_CEKI', subjectId: 'iade-hediye-ceki', title: 'Siparişin İadesi Tamamlandığında ve Geri Ödemesi Hediye Çeki Olarak Tanımlandıysa' },
+  { id: 26, scode: 'IADE_BAKIYE', subjectId: 'iade-bakiye', title: 'Siparişin İadesi Tamamlandığında ve Geri Ödemesi Bakiyesine Yüklendiyse' },
+  { id: 27, scode: 'BEKLEYEN_ODEME_TAMAMLANDI', subjectId: 'bekleyen-odeme-tamamlandi', title: 'Bekleyen Ödemenin Tamamlanması Anında' },
+  { id: 28, scode: 'EKSIK_URUN_IPTAL', subjectId: 'eksik-urun-iptal', title: 'Eksik Ürün Sebebi ile Aranan ve Ulaşılamadığından İptal Edilen Sipariş Bildirimi' },
+  { id: 29, scode: 'BAKIYE_KULLANILDI', subjectId: 'bakiye-kullanildi', title: 'Siparişte Bakiye Kullanıldığında Gönder' },
+  { id: 30, scode: 'SIFREMI_UNUTTUM', subjectId: 'sifremi-unuttum', title: 'Şifremi Unuttum' },
+  { id: 31, scode: 'KAPIDA_ODEME_SMS', subjectId: 'kapida-odeme-sms', title: 'Kapıda Ödeme SMS Onayı' },
+  { id: 32, scode: 'UYELIKSIZ_ALISVERIS', subjectId: 'uyeliksiz-alisveris', title: 'Üyeliksiz Alışveriş Bildirimi' },
+  { id: 33, scode: 'ILETISIM_FORMU_CEVAP', subjectId: 'iletisim-formu-cevap', title: 'İletişim Formuna Cevap Verildiğinde' },
+  { id: 34, scode: 'SIPARIS_KAPIDA_NAKIT', subjectId: 'siparis-kapida-nakit', title: 'Yeni Gelen Sipariş Bildirimi, Kapıda Ödeme - Nakit' },
+  { id: 35, scode: 'SIPARIS_KAPIDA_POS', subjectId: 'siparis-kapida-pos', title: 'Yeni Gelen Sipariş Bildirimi, Kapıda Ödeme - Pos' },
+  { id: 36, scode: 'SIPARIS_KREDI_KARTI', subjectId: 'siparis-kredi-karti', title: 'Yeni Gelen Sipariş Bildirimi, Kredi Kartı' },
+  { id: 37, scode: 'SIPARIS_HAVALE', subjectId: 'siparis-havale', title: 'Yeni Gelen Sipariş Bildirimi, Havale' },
+  { id: 38, scode: 'SIPARIS_UCRETSIZ_TESLIMAT', subjectId: 'siparis-ucretsiz-teslimat', title: 'Yeni Gelen Sipariş Bildirimi, Ücretsiz Teslimat' },
+  { id: 39, scode: 'MUSTERI_IADE_TALEP', subjectId: 'musteri-iade-talep', title: 'Müşteri Tarafından Oluşturulan İade Talep Bildirimi' },
+  { id: 40, scode: 'MUSTERI_IADE_IPTAL', subjectId: 'musteri-iade-iptal', title: 'Müşteri Tarafından Oluşturulan İade Talep İptali Bildirimi' },
+  { id: 41, scode: 'PERSONEL_IADE_IPTAL', subjectId: 'personel-iade-iptal', title: 'Personel Tarafından Müşteri İade Talep İptali' },
+  { id: 42, scode: 'ACILMADAN_IADE', subjectId: 'acilmadan-iade', title: 'Açılmadan Gelen İade Teslim Alındığında' },
+  { id: 43, scode: 'MUSTERI_IADE_TESLIM', subjectId: 'musteri-iade-teslim', title: 'Müşteriden Gelen İade Teslim Alındığında' },
+]
+
 const TemplateList: React.FC<TemplateListProps> = ({ onEdit, onCreate }) => {
   const [templates, setTemplates] = useState<Template[]>([])
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
-  const [fcode, setFcode] = useState<string>('DEMO_COMPANY')
 
   useEffect(() => {
     loadTemplates()
-  }, [fcode])
+  }, [])
 
   const loadTemplates = async () => {
     try {
       setLoading(true)
       setError(null)
-      
-      // API'den template listesini çek
-      const data = await templateAPI.getAll(fcode)
+      // Tüm template'leri çek
+      const data = await templateAPI.getAll()
       setTemplates(data || [])
-    } catch (error) {
-      console.error('Template yüklenirken hata:', error)
-      setError('Template listesi yüklenirken bir hata oluştu. Lütfen API servisinin çalıştığından emin olun.')
+    } catch (err) {
+      console.error('Template yüklenirken hata:', err)
+      setError('Template listesi yüklenirken bir hata oluştu.')
       setTemplates([])
     } finally {
       setLoading(false)
     }
   }
 
-  const handleDelete = async (id: string) => {
-    if (!window.confirm('Bu template\'i silmek istediğinizden emin misiniz?')) {
-      return
-    }
-    
-    try {
-      await templateAPI.delete(id)
-      // Silme başarılı, listeyi yenile
-      loadTemplates()
-    } catch (error) {
-      console.error('Silme hatası:', error)
-      alert('Template silinirken bir hata oluştu')
-    }
+  // Belirli bir subject için template var mı?
+  const findTemplateBySubject = (scode: string, subjectId: string) => {
+    return templates.find(t => t.scode === scode && t.subjectId === subjectId)
   }
 
   const handleRefresh = () => {
     loadTemplates()
   }
 
-  // HTML olarak indir
-  const downloadHTML = async (templateId: string, templateName: string) => {
-    try {
-      const template = await templateAPI.getById(templateId)
-      if (!template.html_content) {
-        alert('Bu template için HTML içeriği bulunamadı')
-        return
-      }
-      
-      const blob = new Blob([template.html_content], { type: 'text/html' })
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = `${templateName.replace(/\s+/g, '_')}.html`
-      document.body.appendChild(a)
-      a.click()
-      document.body.removeChild(a)
-      URL.revokeObjectURL(url)
-    } catch (error) {
-      console.error('HTML indirme hatası:', error)
-      alert('HTML indirilirken bir hata oluştu')
-    }
-  }
-
-  // JSON olarak indir
-  const downloadJSON = async (templateId: string, templateName: string) => {
-    try {
-      const template = await templateAPI.getById(templateId)
-      
-      const jsonData = {
-        name: template.name,
-        fcode: template.fcode,
-        elements_json: template.elements_json,
-        exportedAt: new Date().toISOString()
-      }
-      
-      const blob = new Blob([JSON.stringify(jsonData, null, 2)], { type: 'application/json' })
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = `${templateName.replace(/\s+/g, '_')}_template.json`
-      document.body.appendChild(a)
-      a.click()
-      document.body.removeChild(a)
-      URL.revokeObjectURL(url)
-    } catch (error) {
-      console.error('JSON indirme hatası:', error)
-      alert('JSON indirilirken bir hata oluştu')
-    }
-  }
-
-  if (loading) {
-    return (
-      <div className="template-list-container">
-        <div className="loading">
-          <div className="loading-spinner"></div>
-          <p>Yükleniyor...</p>
-        </div>
-      </div>
-    )
-  }
-
   return (
-    <div className="template-list-container">
+    <div className="template-list-subjects">
       <div className="template-list-header">
-        <h2>Email Şablonları</h2>
+        <h2>Email Konuları</h2>
         <div className="header-actions">
-          <input
-            type="text"
-            placeholder="Firma Kodu"
-            value={fcode}
-            onChange={(e) => setFcode(e.target.value)}
-            className="fcode-input"
-          />
           <button
             className="btn btn-secondary"
             onClick={handleRefresh}
@@ -134,96 +100,57 @@ const TemplateList: React.FC<TemplateListProps> = ({ onEdit, onCreate }) => {
             </svg>
             Yenile
           </button>
-          <button
-            className="btn btn-primary"
-            onClick={onCreate}
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M12 5v14M5 12h14"/>
-            </svg>
-            Yeni Şablon
-          </button>
         </div>
       </div>
 
-      {error && (
+      {loading ? (
+        <div className="loading">
+          <div className="loading-spinner"></div>
+          <p>Yükleniyor...</p>
+        </div>
+      ) : error ? (
         <div className="error-message">
           <p>{error}</p>
           <button className="btn btn-secondary" onClick={handleRefresh}>
             Tekrar Dene
           </button>
         </div>
-      )}
-
-      <div className="template-grid">
-        {templates.map((template) => (
-          <div key={template._id || template.id} className="template-card">
-            <div className="template-card-header">
-              <h3>{template.name}</h3>
-              <span className="fcode-badge">{template.fcode}</span>
-            </div>
-            <div className="template-card-body">
-              <p className="template-date">
-                Oluşturulma: {new Date(template.createdAt || template.created_at || '').toLocaleDateString('tr-TR')}
-              </p>
-              <p className="template-date">
-                Güncelleme: {new Date(template.updatedAt || template.updated_at || '').toLocaleDateString('tr-TR')}
-              </p>
-              {template.html_content && (
-                <p className="template-status">HTML mevcut</p>
-              )}
-            </div>
-            <div className="template-card-actions">
-              <button
-                className="btn btn-edit"
-                onClick={() => onEdit(template._id || template.id || '')}
-              >
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
-                  <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                </svg>
-                Düzenle
-              </button>
-              <button
-                className="btn btn-download"
-                onClick={() => downloadHTML(template._id || template.id || '', template.name)}
-                title="HTML olarak indir"
-              >
-                HTML
-              </button>
-              <button
-                className="btn btn-download"
-                onClick={() => downloadJSON(template._id || template.id || '', template.name)}
-                title="JSON olarak indir"
-              >
-                JSON
-              </button>
-              <button
-                className="btn btn-delete"
-                onClick={() => handleDelete(template._id || template.id || '')}
-              >
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6h14"/>
-                </svg>
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {!error && templates.length === 0 && (
-        <div className="empty-state">
-          <p>"{fcode}" firma kodu için henüz şablon oluşturulmamış</p>
-          <button
-            className="btn btn-primary"
-            onClick={onCreate}
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M12 5v14M5 12h14"/>
-            </svg>
-            İlk Şablonu Oluştur
-          </button>
-        </div>
+      ) : (
+        <table className="subject-table">
+          <thead>
+            <tr>
+              <th style={{width: 50}}>ID</th>
+              <th>Konu Başlığı</th>
+              <th style={{width: 130}}>Durum</th>
+              <th style={{width: 120}}>Aksiyon</th>
+            </tr>
+          </thead>
+          <tbody>
+            {SUBJECTS.map(subject => {
+              const template = findTemplateBySubject(subject.scode, subject.subjectId)
+              return (
+                <tr key={subject.id} className={template ? 'has-template' : 'no-template'}>
+                  <td>{subject.id}</td>
+                  <td>{subject.title}</td>
+                  <td>
+                    {template ? (
+                      <span className="status-ready">Tasarım Var</span>
+                    ) : (
+                      <span className="status-missing">Tasarım Yok</span>
+                    )}
+                  </td>
+                  <td>
+                    {template ? (
+                      <button className="btn-edit" onClick={() => onEdit(template.id || template._id!)}>Düzenle</button>
+                    ) : (
+                      <button className="btn-add" onClick={() => onCreate()}>Ekle</button>
+                    )}
+                  </td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
       )}
     </div>
   )

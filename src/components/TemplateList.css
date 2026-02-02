@@ -1,3 +1,94 @@
+/* Sabit Konu Listesi Tablosu */
+.template-list-subjects {
+  padding: 32px 0;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.template-list-subjects h2 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 24px;
+  color: var(--text-primary, #222);
+}
+
+.subject-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.subject-table th, .subject-table td {
+  padding: 12px 16px;
+  text-align: left;
+}
+.subject-table th {
+  background: #f7f7fa;
+  font-size: 13px;
+  color: #666;
+  font-weight: 500;
+  border-bottom: 1px solid #ececf0;
+}
+.subject-table tr {
+  border-bottom: 1px solid #ececf0;
+}
+.subject-table tr:last-child {
+  border-bottom: none;
+}
+.subject-table td {
+  font-size: 14px;
+  color: #222;
+}
+.status-ready {
+  display: inline-block;
+  background: #e6f7e6;
+  color: #1a7f37;
+  border-radius: 12px;
+  padding: 2px 12px;
+  font-size: 13px;
+  font-weight: 500;
+}
+.status-missing {
+  display: inline-block;
+  background: #fff2e6;
+  color: #b26a00;
+  border-radius: 12px;
+  padding: 2px 12px;
+  font-size: 13px;
+  font-weight: 500;
+}
+.btn-edit, .btn-add {
+  padding: 6px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-right: 6px;
+  transition: background 0.15s;
+}
+.btn-edit {
+  background: #e6f0ff;
+  color: #1a4fb7;
+}
+.btn-edit:hover {
+  background: #d0e3ff;
+}
+.btn-add {
+  background: #e6ffe6;
+  color: #1a7f37;
+}
+.btn-add:hover {
+  background: #c8f7c5;
+}
+.subject-table tr.has-template {
+  background: #f8fcff;
+}
+.subject-table tr.no-template {
+  background: #fff;
+}
 /* Template List - Professional Design */
 .template-list-container {
   padding: 24px 32px;

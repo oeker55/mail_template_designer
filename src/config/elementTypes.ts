@@ -315,7 +315,9 @@ export const ELEMENT_TYPES: Record<string, ElementTypeConfig> = {
       cardImgBorderRadius: 4,
       cardImgVariableKey: 'item.image_url',
       cardImgLinkEnabled: false,
+      cardImgLinkIsStatic: false,
       cardImgLinkVariableKey: 'item.url',
+      cardImgLinkStaticUrl: '',
       
       // Başlık (ürün adı)
       cardTitleVariableKey: 'item.name',

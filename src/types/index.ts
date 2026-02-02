@@ -304,6 +304,8 @@ export interface Template {
   id?: string
   name: string
   fcode: string
+  scode?: string // Sabit kod
+  subjectId?: string // Konu id
   elements_json: CanvasElement[] | string
   html_content?: string
   createdAt?: string

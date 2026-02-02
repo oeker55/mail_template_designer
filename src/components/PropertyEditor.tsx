@@ -936,15 +936,42 @@ const PropertyEditor: React.FC<PropertyEditorProps> = ({ element, onUpdateElemen
           </div>
           
           {Boolean(element.props.cardImgLinkEnabled) && (
-            <div className="property-item">
-              <label className="property-label">Link Değişkeni</label>
-              <VariableSelector
-                value={(element.props.cardImgLinkVariableKey as string) || 'item.url'}
-                onChange={(val) => handleChange('cardImgLinkVariableKey', val)}
-                placeholder="item.url"
-                filterCategories={['product_item']}
-              />
-            </div>
+            <>
+              <div className="property-item">
+                <label className="property-label" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <input 
+                    type="checkbox" 
+                    checked={Boolean(element.props.cardImgLinkIsStatic)} 
+                    onChange={(e) => handleChange('cardImgLinkIsStatic', e.target.checked)}
+                    style={{ width: '16px', height: '16px' }}
+                  />
+                  Sabit Link Kullan
+                </label>
+              </div>
+              
+              {Boolean(element.props.cardImgLinkIsStatic) ? (
+                <div className="property-item">
+                  <label className="property-label">Sabit Link URL</label>
+                  <input 
+                    type="text" 
+                    value={(element.props.cardImgLinkStaticUrl as string) || ''}
+                    onChange={(e) => handleChange('cardImgLinkStaticUrl', e.target.value)}
+                    placeholder="https://example.com"
+                    className="property-input"
+                  />
+                </div>
+              ) : (
+                <div className="property-item">
+                  <label className="property-label">Link Değişkeni</label>
+                  <VariableSelector
+                    value={(element.props.cardImgLinkVariableKey as string) || 'item.url'}
+                    onChange={(val) => handleChange('cardImgLinkVariableKey', val)}
+                    placeholder="item.url"
+                    filterCategories={['product_item']}
+                  />
+                </div>
+              )}
+            </>
           )}
 
           <div className="property-section-divider">
