@@ -304,8 +304,9 @@ export interface Template {
   id?: string
   name: string
   fcode: string
-  scode?: string // Sabit kod
-  subjectId?: string // Konu id
+  scode: string // Sabit kod (firma bazlı)
+  subjectId: string // Konu id (SUBJECTS listesindeki id)
+  title: string // Konu başlığı
   elements_json: CanvasElement[] | string
   html_content?: string
   createdAt?: string
@@ -352,6 +353,9 @@ export interface TemplateVariableCategories {
 export interface TemplateData {
   name: string
   fcode: string
+  scode: string
+  subjectId: string
+  title: string
   elements_json: CanvasElement[]
   html_content?: string
 }
@@ -396,13 +400,27 @@ export interface PropertyEditorProps {
 }
 
 export interface TemplateEditorProps {
-  templateId: string
+  subjectId: string // Konu id (SUBJECTS listesindeki id)
+  scode: string // Firma sabit kodu (window.emailSettings.scode)
+  title: string // Konu başlığı
   onBack: () => void
 }
 
 export interface TemplateListProps {
-  onEdit: (id: string) => void
-  onCreate: () => void
+  onEdit: (subjectId: string, scode: string, title: string) => void
+  onCreate: (subjectId: string, scode: string, title: string) => void
+}
+
+// ASP tarafından window'a eklenen email ayarları
+export interface EmailSettings {
+  scode: string
+}
+
+// Global window tipini genişlet
+declare global {
+  interface Window {
+    emailSettings?: EmailSettings
+  }
 }
 
 // Drag and Drop Types

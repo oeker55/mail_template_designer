@@ -11,14 +11,14 @@ import presetTemplatesData from '../data/presetTemplates.json'
 import { TemplateEditorProps, CanvasElement, LocalTemplate, PresetTemplate, Template } from '../types'
 import './TemplateEditor.css'
 
-const TemplateEditor: React.FC<TemplateEditorProps> = ({ templateId, onBack }) => {
-  const [templateName, setTemplateName] = useState<string>('Yeni Template')
-  const [fcode, setFcode] = useState<string>('DEMO_COMPANY')
+const TemplateEditor: React.FC<TemplateEditorProps> = ({ subjectId, scode, title, onBack }) => {
+  const [templateName, setTemplateName] = useState<string>(title || 'Yeni Template')
   const [testEmail, setTestEmail] = useState<string>('oeker55@outlook.com')
   const [elements, setElements] = useState<CanvasElement[]>([])
   const [selectedElement, setSelectedElement] = useState<CanvasElement | null>(null)
   const [saving, setSaving] = useState<boolean>(false)
-  const [currentTemplateId, setCurrentTemplateId] = useState<string>(templateId)
+  const [loading, setLoading] = useState<boolean>(true)
+  const [existingTemplateId, setExistingTemplateId] = useState<string | null>(null)
   const [savedTemplates, setSavedTemplates] = useState<LocalTemplate[]>([])
   const [showSavedTemplates, setShowSavedTemplates] = useState<boolean>(false)
   const [showPresetTemplates, setShowPresetTemplates] = useState<boolean>(false)
@@ -26,14 +26,46 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ templateId, onBack }) =
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
-    if (templateId && templateId !== 'new') {
-      loadTemplate(templateId)
-    }
+    // Template'i yükle (scode + subjectId ile)
+    loadTemplateBySubject()
     // LocalStorage'dan kayıtlı şablonları yükle
     loadSavedTemplates()
     // Hazır şablonları yükle
     loadPresetTemplates()
-  }, [templateId])
+  }, [subjectId, scode])
+
+  const loadTemplateBySubject = async () => {
+    try {
+      setLoading(true)
+      // scode ve subjectId ile template'i çek
+      const template: Template = await templateAPI.getBySubject(scode, subjectId)
+      
+      if (template) {
+        setTemplateName(template.title || title)
+        setExistingTemplateId(template._id || template.id || null)
+        
+        // elements_json alanı string ise parse et, değilse direkt kullan
+        const elementsData = typeof template.elements_json === 'string' 
+          ? JSON.parse(template.elements_json) 
+          : template.elements_json
+        
+        setElements(elementsData || [])
+      } else {
+        // Template yoksa boş başla
+        setTemplateName(title)
+        setExistingTemplateId(null)
+        setElements([])
+      }
+    } catch (error) {
+      // 404 veya hata durumunda yeni template olarak başla
+      console.log('Template bulunamadı, yeni olarak başlanıyor:', error)
+      setTemplateName(title)
+      setExistingTemplateId(null)
+      setElements([])
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const loadPresetTemplates = () => {
     try {
@@ -54,7 +86,6 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ templateId, onBack }) =
       }
     }
     
-    setTemplateName(template.name)
     setElements(template.elements || [])
     setSelectedElement(null)
     setShowPresetTemplates(false)
@@ -74,16 +105,11 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ templateId, onBack }) =
 
   // Şablonu LocalStorage'a kaydet
   const saveToLocalStorage = () => {
-    if (!templateName.trim()) {
-      alert('Lütfen şablon adı girin')
-      return
-    }
-
     try {
       const templateData: LocalTemplate = {
-        id: `template-${Date.now()}`,
-        name: templateName,
-        fcode: fcode,
+        id: `template-${scode}-${subjectId}-${Date.now()}`,
+        name: `${title} (${scode})`,
+        fcode: scode,
         elements: elements,
         savedAt: new Date().toISOString()
       }
@@ -91,21 +117,17 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ templateId, onBack }) =
       const saved = localStorage.getItem('emailTemplates')
       const templates: LocalTemplate[] = saved ? JSON.parse(saved) : []
       
-      // Aynı isimde varsa güncelle, yoksa ekle
-      const existingIndex = templates.findIndex(t => t.name === templateName)
+      // Aynı scode+subjectId varsa güncelle, yoksa ekle
+      const existingIndex = templates.findIndex(t => t.name === templateData.name)
       if (existingIndex >= 0) {
-        if (confirm(`"${templateName}" adlı şablon zaten var. Üzerine yazılsın mı?`)) {
-          templates[existingIndex] = templateData
-        } else {
-          return
-        }
+        templates[existingIndex] = templateData
       } else {
         templates.push(templateData)
       }
 
       localStorage.setItem('emailTemplates', JSON.stringify(templates))
       setSavedTemplates(templates)
-      alert('Şablon başarıyla kaydedildi!')
+      alert('Şablon başarıyla yerel olarak kaydedildi!')
     } catch (error) {
       console.error('Şablon kaydetme hatası:', error)
       alert('Şablon kaydedilirken hata oluştu')
@@ -120,8 +142,6 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ templateId, onBack }) =
       }
     }
     
-    setTemplateName(template.name)
-    setFcode(template.fcode || 'DEMO_COMPANY')
     setElements(template.elements || [])
     setSelectedElement(null)
     setShowSavedTemplates(false)
@@ -149,7 +169,9 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ templateId, onBack }) =
   const exportToJSON = () => {
     const templateData = {
       name: templateName,
-      fcode: fcode,
+      scode: scode,
+      subjectId: subjectId,
+      title: title,
       elements: elements,
       exportedAt: new Date().toISOString()
     }
@@ -158,7 +180,7 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ templateId, onBack }) =
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = `${templateName.replace(/\s+/g, '_')}_template.json`
+    a.download = `${scode}_${subjectId}_template.json`
     document.body.appendChild(a)
     a.click()
     document.body.removeChild(a)
@@ -176,7 +198,7 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ templateId, onBack }) =
         const result = e.target?.result
         if (typeof result !== 'string') return
         
-        const templateData = JSON.parse(result) as { name?: string; fcode?: string; elements?: CanvasElement[] }
+        const templateData = JSON.parse(result) as { elements?: CanvasElement[] }
         
         if (elements.length > 0) {
           if (!confirm('Mevcut çalışmanız kaybolacak. Devam etmek istiyor musunuz?')) {
@@ -184,8 +206,6 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ templateId, onBack }) =
           }
         }
 
-        setTemplateName(templateData.name || 'İçe Aktarılan Şablon')
-        setFcode(templateData.fcode || 'DEMO_COMPANY')
         setElements(templateData.elements || [])
         setSelectedElement(null)
         alert('Şablon başarıyla içe aktarıldı!')
@@ -198,28 +218,6 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ templateId, onBack }) =
     
     // Input'u sıfırla
     event.target.value = ''
-  }
-
-  const loadTemplate = async (templateId: string) => {
-    try {
-      // API'den template'i çek
-      const template: Template = await templateAPI.getById(templateId)
-      
-      setTemplateName(template.name)
-      setFcode(template.fcode)
-      // MongoDB _id kullan
-      setCurrentTemplateId(template._id || template.id || '')
-      
-      // elements_json alanı string ise parse et, değilse direkt kullan
-      const elementsData = typeof template.elements_json === 'string' 
-        ? JSON.parse(template.elements_json) 
-        : template.elements_json
-      
-      setElements(elementsData || [])
-    } catch (error) {
-      console.error('Template yüklenirken hata:', error)
-      alert('Template yüklenemedi. API servisinin çalıştığından emin olun.')
-    }
   }
 
   const handleAddElement = (elementType: string) => {
@@ -268,40 +266,33 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ templateId, onBack }) =
   }
 
   const handleSave = async () => {
-    if (!templateName.trim()) {
-      alert('Lütfen template adı girin')
-      return
-    }
-
-    if (!fcode.trim()) {
-      alert('Lütfen firma kodu girin')
-      return
-    }
-
     try {
       setSaving(true)
       
       // HTML generate et (async)
       const html = await generateEmailHTML(elements, templateName)
       
-      // Template verisi - hem JSON hem HTML kaydedilecek
+      // Template verisi - scode, subjectId, title ile kaydet
       const templateData = {
         name: templateName,
-        fcode: fcode,
+        fcode: scode, // Geriye uyumluluk için
+        scode: scode,
+        subjectId: subjectId,
+        title: title,
         elements_json: elements, // JSON olarak elementleri kaydet (düzenleme için)
         html_content: html // HTML olarak da kaydet (mail gönderme için)
       }
 
       let savedTemplate: Template
-      if (currentTemplateId && currentTemplateId !== 'new') {
+      if (existingTemplateId) {
         // Mevcut template'i güncelle
-        savedTemplate = await templateAPI.update(currentTemplateId, templateData)
+        savedTemplate = await templateAPI.update(existingTemplateId, templateData)
         alert('Template başarıyla güncellendi!')
       } else {
         // Yeni template oluştur
         savedTemplate = await templateAPI.create(templateData)
         // MongoDB _id kullan
-        setCurrentTemplateId(savedTemplate._id || savedTemplate.id || '')
+        setExistingTemplateId(savedTemplate._id || savedTemplate.id || null)
         alert('Template başarıyla kaydedildi!')
       }
       
@@ -351,24 +342,30 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ templateId, onBack }) =
     }
   }
 
+  if (loading) {
+    return (
+      <div className="template-editor-loading">
+        <div className="loading-spinner"></div>
+        <p>Template yükleniyor...</p>
+      </div>
+    )
+  }
+
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="template-editor">
         <div className="editor-header">
           <div className="editor-header-left">
+            <div className="editor-info">
+              <span className="editor-scode-badge">{scode}</span>
+              <span className="editor-subject-id">#{subjectId}</span>
+            </div>
             <input
               type="text"
               value={templateName}
               onChange={(e) => setTemplateName(e.target.value)}
               className="template-name-input"
               placeholder="Template Adı"
-            />
-            <input
-              type="text"
-              value={fcode}
-              onChange={(e) => setFcode(e.target.value)}
-              className="fcode-input-small"
-              placeholder="Firma Kodu"
             />
             <input
               type="email"
@@ -485,7 +482,7 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ templateId, onBack }) =
                 <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/>
                 <path d="M17 21v-8H7v8M7 3v5h8"/>
               </svg>
-              {saving ? 'Kaydediliyor...' : 'Kaydet'}
+              {saving ? 'Kaydediliyor...' : (existingTemplateId ? 'Güncelle' : 'Kaydet')}
             </button>
             <button 
               className="btn btn-secondary" 

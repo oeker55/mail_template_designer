@@ -3,38 +3,59 @@ import TemplateList from './components/TemplateList'
 import TemplateEditor from './components/TemplateEditor'
 import './App.css'
 
+interface EditorState {
+  subjectId: string
+  scode: string
+  title: string
+}
+
 function App() {
-  const [templateId, setTemplateId] = useState<string | null>(null)
+  const [editorState, setEditorState] = useState<EditorState | null>(null)
 
   useEffect(() => {
-    // URL'den templateId'yi oku
+    // URL'den subjectId'yi oku (URL param adı templateId ama değeri subjectId)
     const params = new URLSearchParams(window.location.search)
-    const id = params.get('templateId')
-    if (id) {
-      setTemplateId(id)
+    const subjectId = params.get('templateId')
+    const title = params.get('title') || ''
+    
+    // ASP'den gelen scode
+    const scode = window.emailSettings?.scode || 'DEFAULT'
+    
+    if (subjectId) {
+      setEditorState({ subjectId, scode, title })
     }
 
     // Browser back/forward butonlarını dinle
     const handlePopState = () => {
       const params = new URLSearchParams(window.location.search)
-      setTemplateId(params.get('templateId'))
+      const subjectId = params.get('templateId')
+      const title = params.get('title') || ''
+      const scode = window.emailSettings?.scode || 'DEFAULT'
+      
+      if (subjectId) {
+        setEditorState({ subjectId, scode, title })
+      } else {
+        setEditorState(null)
+      }
     }
 
     window.addEventListener('popstate', handlePopState)
     return () => window.removeEventListener('popstate', handlePopState)
   }, [])
 
-  const handleNavigate = (id: string | null) => {
-    if (id) {
+  const handleNavigate = (subjectId: string | null, scode?: string, title?: string) => {
+    if (subjectId && scode && title) {
       const url = new URL(window.location.href)
-      url.searchParams.set('templateId', id)
+      url.searchParams.set('templateId', subjectId)
+      url.searchParams.set('title', title)
       window.history.pushState({}, '', url)
-      setTemplateId(id)
+      setEditorState({ subjectId, scode, title })
     } else {
       const url = new URL(window.location.href)
       url.searchParams.delete('templateId')
+      url.searchParams.delete('title')
       window.history.pushState({}, '', url)
-      setTemplateId(null)
+      setEditorState(null)
     }
   }
 
@@ -54,22 +75,24 @@ function App() {
               e.preventDefault()
               handleNavigate(null)
             }}
-            className={!templateId ? 'active' : ''}
+            className={!editorState ? 'active' : ''}
           >
             Şablonlar
           </a>
         </nav>
       </header>
       <main>
-        {templateId ? (
+        {editorState ? (
           <TemplateEditor 
-            templateId={templateId} 
+            subjectId={editorState.subjectId}
+            scode={editorState.scode}
+            title={editorState.title}
             onBack={() => handleNavigate(null)} 
           />
         ) : (
           <TemplateList 
-            onEdit={(id: string) => handleNavigate(id)}
-            onCreate={() => handleNavigate('new')}
+            onEdit={(subjectId: string, scode: string, title: string) => handleNavigate(subjectId, scode, title)}
+            onCreate={(subjectId: string, scode: string, title: string) => handleNavigate(subjectId, scode, title)}
           />
         )}
       </main>

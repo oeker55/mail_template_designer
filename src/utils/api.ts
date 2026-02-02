@@ -51,6 +51,21 @@ export const templateAPI = {
   },
 
   /**
+   * scode'a göre tüm templateleri getir
+   * @param scode - Firma sabit kodu
+   * @returns Template listesi
+   */
+  getAllByScode: async (scode: string): Promise<Template[]> => {
+    try {
+      const response = await api.get<Template[]>('/templates/by-scode', { params: { scode } })
+      return response.data
+    } catch (error) {
+      console.error('Templates getAllByScode error:', error)
+      throw error
+    }
+  },
+
+  /**
    * scode ve subjectId ile template getir
    * @param scode - Sabit kod
    * @param subjectId - Konu id
