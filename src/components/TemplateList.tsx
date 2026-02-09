@@ -55,8 +55,9 @@ const TemplateList: React.FC<TemplateListProps> = ({ onEdit, onCreate }) => {
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
   
-  // ASP den gelen scode degerini al (window.emailSettings.scode)
+  // ASP den gelen scode ve fcode degerlerini al
   const scode = window.emailSettings?.scode || 'DEFAULT'
+  const fcode = window.emailSettings?.fcode || 'DEMO'
 
   useEffect(() => {
     loadTemplates()
@@ -92,7 +93,8 @@ const TemplateList: React.FC<TemplateListProps> = ({ onEdit, onCreate }) => {
       <div className="template-list-header">
         <h2>Email Konulari</h2>
         <div className="header-info">
-          <span className="scode-badge">Firma: {scode}</span>
+          <span className="scode-badge">Firma: {fcode}</span>
+          <span className="scode-badge" style={{marginLeft: 8, background: '#6c757d'}}>{scode}</span>
         </div>
         <div className="header-actions">
           <button
@@ -147,9 +149,9 @@ const TemplateList: React.FC<TemplateListProps> = ({ onEdit, onCreate }) => {
                   </td>
                   <td>
                     {template ? (
-                      <button className="btn-edit" onClick={() => onEdit(subject.id, scode, subject.title)}>Duzenle</button>
+                      <button className="btn-edit" onClick={() => onEdit(subject.id, scode, fcode, subject.title)}>Duzenle</button>
                     ) : (
-                      <button className="btn-add" onClick={() => onCreate(subject.id, scode, subject.title)}>Ekle</button>
+                      <button className="btn-add" onClick={() => onCreate(subject.id, scode, fcode, subject.title)}>Ekle</button>
                     )}
                   </td>
                 </tr>

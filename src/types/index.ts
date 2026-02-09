@@ -402,18 +402,21 @@ export interface PropertyEditorProps {
 export interface TemplateEditorProps {
   subjectId: string // Konu id (SUBJECTS listesindeki id)
   scode: string // Firma sabit kodu (window.emailSettings.scode)
+  fcode: string // Firma kodu (window.emailSettings.fcode)
   title: string // Konu başlığı
   onBack: () => void
 }
 
 export interface TemplateListProps {
-  onEdit: (subjectId: string, scode: string, title: string) => void
-  onCreate: (subjectId: string, scode: string, title: string) => void
+  onEdit: (subjectId: string, scode: string, fcode: string, title: string) => void
+  onCreate: (subjectId: string, scode: string, fcode: string, title: string) => void
 }
 
 // ASP tarafından window'a eklenen email ayarları
 export interface EmailSettings {
   scode: string
+  fcode: string
+  apiUrl?: string
 }
 
 // Global window tipini genişlet

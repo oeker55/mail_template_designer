@@ -3,10 +3,12 @@
 Response.CodePage = 65001
 Response.CharSet = "UTF-8"
 
-' Firma kodu - bu değer sizin sisteminizden gelecek
-Dim scode
+' Firma kodları - bu değerler sizin sisteminizden gelecek
+Dim scode, fcode
 scode = Request.QueryString("scode")
-If scode = "" Then scode = "DEMO_FIRMA"
+fcode = Request.QueryString("fcode")
+If scode = "" Then scode = "DEMO_SCODE"
+If fcode = "" Then fcode = "DEMO_FIRMA"
 
 ' API URL - Backend servisinizin adresi
 Dim apiUrl
@@ -20,7 +22,7 @@ apiUrl = "http://localhost:5000/api"
     <title>Email Template Designer</title>
     
     <!-- Build edilen CSS dosyası -->
-    <link rel="stylesheet" href="/email-designer/assets/index-BaW9nlTE.css">
+    <link rel="stylesheet" href="/email-designer/assets/index-DC7351UO.css">
     
     <style>
         /* Sayfa yüklenirken gösterilecek loading */
@@ -69,6 +71,7 @@ apiUrl = "http://localhost:5000/api"
         // Bu değerler ASP tarafından set ediliyor
         window.emailSettings = {
             scode: '<%=scode%>',
+            fcode: '<%=fcode%>',
             apiUrl: '<%=apiUrl%>'
         };
         
@@ -77,7 +80,7 @@ apiUrl = "http://localhost:5000/api"
     </script>
 
     <!-- Build edilen JS dosyaları -->
-    <script type="module" crossorigin src="/email-designer/assets/index-Bo4Bcrp-.js"></script>
+    <script type="module" crossorigin src="/email-designer/assets/index-CPVzGejp.js"></script>
     
     <script>
         // Sayfa yüklendiğinde loading'i gizle

@@ -6,6 +6,7 @@ import './App.css'
 interface EditorState {
   subjectId: string
   scode: string
+  fcode: string
   title: string
 }
 
@@ -18,11 +19,12 @@ function App() {
     const subjectId = params.get('templateId')
     const title = params.get('title') || ''
     
-    // ASP'den gelen scode
+    // ASP'den gelen scode ve fcode
     const scode = window.emailSettings?.scode || 'DEFAULT'
+    const fcode = window.emailSettings?.fcode || 'DEMO'
     
     if (subjectId) {
-      setEditorState({ subjectId, scode, title })
+      setEditorState({ subjectId, scode, fcode, title })
     }
 
     // Browser back/forward butonlarını dinle
@@ -31,9 +33,10 @@ function App() {
       const subjectId = params.get('templateId')
       const title = params.get('title') || ''
       const scode = window.emailSettings?.scode || 'DEFAULT'
+      const fcode = window.emailSettings?.fcode || 'DEMO'
       
       if (subjectId) {
-        setEditorState({ subjectId, scode, title })
+        setEditorState({ subjectId, scode, fcode, title })
       } else {
         setEditorState(null)
       }
@@ -43,13 +46,13 @@ function App() {
     return () => window.removeEventListener('popstate', handlePopState)
   }, [])
 
-  const handleNavigate = (subjectId: string | null, scode?: string, title?: string) => {
-    if (subjectId && scode && title) {
+  const handleNavigate = (subjectId: string | null, scode?: string, fcode?: string, title?: string) => {
+    if (subjectId && scode && fcode && title) {
       const url = new URL(window.location.href)
       url.searchParams.set('templateId', subjectId)
       url.searchParams.set('title', title)
       window.history.pushState({}, '', url)
-      setEditorState({ subjectId, scode, title })
+      setEditorState({ subjectId, scode, fcode, title })
     } else {
       const url = new URL(window.location.href)
       url.searchParams.delete('templateId')
@@ -86,13 +89,14 @@ function App() {
           <TemplateEditor 
             subjectId={editorState.subjectId}
             scode={editorState.scode}
+            fcode={editorState.fcode}
             title={editorState.title}
             onBack={() => handleNavigate(null)} 
           />
         ) : (
           <TemplateList 
-            onEdit={(subjectId: string, scode: string, title: string) => handleNavigate(subjectId, scode, title)}
-            onCreate={(subjectId: string, scode: string, title: string) => handleNavigate(subjectId, scode, title)}
+            onEdit={(subjectId: string, scode: string, fcode: string, title: string) => handleNavigate(subjectId, scode, fcode, title)}
+            onCreate={(subjectId: string, scode: string, fcode: string, title: string) => handleNavigate(subjectId, scode, fcode, title)}
           />
         )}
       </main>

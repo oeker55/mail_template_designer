@@ -11,7 +11,7 @@ import presetTemplatesData from '../data/presetTemplates.json'
 import { TemplateEditorProps, CanvasElement, LocalTemplate, PresetTemplate, Template } from '../types'
 import './TemplateEditor.css'
 
-const TemplateEditor: React.FC<TemplateEditorProps> = ({ subjectId, scode, title, onBack }) => {
+const TemplateEditor: React.FC<TemplateEditorProps> = ({ subjectId, scode, fcode, title, onBack }) => {
   const [templateName, setTemplateName] = useState<string>(title || 'Yeni Template')
   const [testEmail, setTestEmail] = useState<string>('oeker55@outlook.com')
   const [elements, setElements] = useState<CanvasElement[]>([])
@@ -108,8 +108,8 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ subjectId, scode, title
     try {
       const templateData: LocalTemplate = {
         id: `template-${scode}-${subjectId}-${Date.now()}`,
-        name: `${title} (${scode})`,
-        fcode: scode,
+        name: `${title} (${fcode})`,
+        fcode: fcode,
         elements: elements,
         savedAt: new Date().toISOString()
       }
@@ -275,7 +275,7 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ subjectId, scode, title
       // Template verisi - scode, subjectId, title ile kaydet
       const templateData = {
         name: templateName,
-        fcode: scode, // Geriye uyumluluk için
+        fcode: fcode,
         scode: scode,
         subjectId: subjectId,
         title: title,
@@ -357,6 +357,7 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ subjectId, scode, title
         <div className="editor-header">
           <div className="editor-header-left">
             <div className="editor-info">
+              <span className="editor-fcode-badge">{fcode}</span>
               <span className="editor-scode-badge">{scode}</span>
               <span className="editor-subject-id">#{subjectId}</span>
             </div>
