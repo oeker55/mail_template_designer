@@ -14,6 +14,7 @@ import './TemplateEditor.css'
 const TemplateEditor: React.FC<TemplateEditorProps> = ({ subjectId, scode, fcode, title, onBack }) => {
   const [templateName, setTemplateName] = useState<string>(title || 'Yeni Template')
   const [testEmail, setTestEmail] = useState<string>('oeker55@outlook.com')
+  const [showTestEmailPopup, setShowTestEmailPopup] = useState<boolean>(false)
   const [elements, setElements] = useState<CanvasElement[]>([])
   const [selectedElement, setSelectedElement] = useState<CanvasElement | null>(null)
   const [saving, setSaving] = useState<boolean>(false)
@@ -320,6 +321,7 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ subjectId, scode, fcode
       await mailAPI.sendTest(html, testEmail, `Test: ${templateName}`)
 
       alert('Test maili başarıyla gönderildi!')
+      setShowTestEmailPopup(false)
     } catch (error) {
       console.error('Mail gönderme hatası:', error)
       alert('Mail gönderilirken bir hata oluştu')
@@ -368,19 +370,11 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ subjectId, scode, fcode
               className="template-name-input"
               placeholder="Template Adı"
             />
-            <input
-              type="email"
-              value={testEmail}
-              onChange={(e) => setTestEmail(e.target.value)}
-              className="fcode-input-small"
-              placeholder="Test Email"
-              style={{ width: '180px', marginLeft: '8px' }}
-            />
           </div>
           <div className="editor-header-right">
             {/* Hazır Şablonlar Butonu */}
             <div className="preset-templates-wrapper">
-              <button 
+              {/* <button 
                 className="btn btn-preset" 
                 onClick={() => setShowPresetTemplates(!showPresetTemplates)}
                 title="Hazır şablonları göster"
@@ -392,10 +386,10 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ subjectId, scode, fcode
                   <rect x="3" y="14" width="7" height="7"/>
                 </svg>
                 Hazır Şablonlar
-              </button>
+              </button> */}
               
               {/* Hazır Şablonlar Modal/Dropdown */}
-              {showPresetTemplates && (
+              {/* {showPresetTemplates && (
                 <div className="preset-templates-modal">
                   <div className="preset-templates-header">
                     <span>Hazır E-posta Şablonları</span>
@@ -467,7 +461,7 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ subjectId, scode, fcode
                     </div>
                   )}
                 </div>
-              )}
+              )} */}
             </div>
             
             <span className="header-divider"></span>
@@ -485,7 +479,7 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ subjectId, scode, fcode
               </svg>
               {saving ? 'Kaydediliyor...' : (existingTemplateId ? 'Güncelle' : 'Kaydet')}
             </button>
-            <button 
+           {/* <button 
               className="btn btn-secondary" 
               onClick={saveToLocalStorage}
               title="Şablonu tarayıcıya kaydet"
@@ -494,8 +488,8 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ subjectId, scode, fcode
                 <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/>
               </svg>
               Yerel Kaydet
-            </button>
-            <div className="local-templates-wrapper">
+            </button> */}
+            {/* <div className="local-templates-wrapper">
               <button 
                 className="btn btn-secondary" 
                 onClick={() => setShowSavedTemplates(!showSavedTemplates)}
@@ -506,10 +500,10 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ subjectId, scode, fcode
                   <path d="M9 22V12h6v10"/>
                 </svg>
                 Yerel ({savedTemplates.length})
-              </button>
+              </button> */}
               
               {/* Kayıtlı Şablonlar Dropdown */}
-              {showSavedTemplates && (
+              {/* {showSavedTemplates && (
                 <div className="local-templates-dropdown">
                   <div className="local-templates-header">
                     <span>Yerelde Kayıtlı Şablonlar</span>
@@ -554,8 +548,8 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ subjectId, scode, fcode
                   )}
                 </div>
               )}
-            </div>
-            <button 
+            </div> */}
+            {/* <button 
               className="btn btn-secondary" 
               onClick={exportToJSON}
               title="JSON olarak dışa aktar"
@@ -564,8 +558,8 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ subjectId, scode, fcode
                 <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
               </svg>
               Dışa Aktar
-            </button>
-            <button 
+            </button> */}
+            {/* <button 
               className="btn btn-secondary" 
               onClick={() => fileInputRef.current?.click()}
               title="JSON dosyasından içe aktar"
@@ -581,7 +575,7 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ subjectId, scode, fcode
               accept=".json"
               onChange={importFromJSON}
               style={{ display: 'none' }}
-            />
+            /> */}
             <span style={{ borderLeft: '1px solid var(--border-medium)', margin: '0 8px', height: '20px' }}></span>
             <button className="btn btn-preview" onClick={handlePreview}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -592,13 +586,13 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ subjectId, scode, fcode
             </button>
             <button 
               className="btn btn-save" 
-              onClick={handleSendTestMail}
+              onClick={() => setShowTestEmailPopup(true)}
               disabled={saving}
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
               </svg>
-              {saving ? 'Gönderiliyor...' : 'Test Gönder'}
+              Test Gönder
             </button>
             <button className="btn btn-cancel" onClick={onBack}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -609,6 +603,49 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ subjectId, scode, fcode
           </div>
         </div>
         
+        {/* Test Email Popup */}
+        {showTestEmailPopup && (
+          <div className="test-email-popup-overlay" onClick={() => setShowTestEmailPopup(false)}>
+            <div className="test-email-popup" onClick={(e) => e.stopPropagation()}>
+              <div className="test-email-popup-header">
+                <h3>Test Email Gönder</h3>
+                <button 
+                  className="test-email-popup-close"
+                  onClick={() => setShowTestEmailPopup(false)}
+                >
+                  ✕
+                </button>
+              </div>
+              <div className="test-email-popup-body">
+                <label htmlFor="test-email-input">Email Adresi</label>
+                <input
+                  id="test-email-input"
+                  type="email"
+                  value={testEmail}
+                  onChange={(e) => setTestEmail(e.target.value)}
+                  className="test-email-input"
+                  placeholder="ornek@email.com"
+                  autoFocus
+                />
+              </div>
+              <div className="test-email-popup-footer">
+                <button 
+                  className="btn btn-cancel"
+                  onClick={() => setShowTestEmailPopup(false)}
+                >
+                  İptal
+                </button>
+                <button 
+                  className="btn btn-save"
+                  onClick={handleSendTestMail}
+                  disabled={saving || !testEmail.trim()}
+                >
+                  {saving ? 'Gönderiliyor...' : 'Gönder'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className="editor-content">
           <ElementPalette onAddElement={handleAddElement} />

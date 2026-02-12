@@ -7,11 +7,8 @@ Response.CharSet = "UTF-8"
 Dim scode, fcode
 scode = Request.QueryString("scode")
 fcode = Request.QueryString("fcode")
-If scode = "" Then scode = "DEMO_SCODE"
-If fcode = "" Then fcode = "DEMO_FIRMA"
-
-' API URL - Backend servisinizin adresi
-Dim apiUrl
+If scode = "" Then scode = "LOCAL_MAGAZA"
+If fcode = "" Then fcode = "LOCAL_FIRMA"
 apiUrl = "http://localhost:5000/api"
 %>
 <!DOCTYPE html>

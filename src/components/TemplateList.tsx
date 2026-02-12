@@ -56,8 +56,8 @@ const TemplateList: React.FC<TemplateListProps> = ({ onEdit, onCreate }) => {
   const [error, setError] = useState<string | null>(null)
   
   // ASP den gelen scode ve fcode degerlerini al
-  const scode = window.emailSettings?.scode || 'DEFAULT'
-  const fcode = window.emailSettings?.fcode || 'DEMO'
+    const scode = window.emailSettings?.scode || 'LOCAL_MAGAZA'
+    const fcode = window.emailSettings?.fcode || 'LOCAL_FIRMA'
 
   useEffect(() => {
     loadTemplates()
@@ -93,8 +93,10 @@ const TemplateList: React.FC<TemplateListProps> = ({ onEdit, onCreate }) => {
       <div className="template-list-header">
         <h2>Email Konulari</h2>
         <div className="header-info">
-          <span className="scode-badge">Firma: {fcode}</span>
-          <span className="scode-badge" style={{marginLeft: 8, background: '#6c757d'}}>{scode}</span>
+          <span className="fcode-label">Firma:</span>
+          <span className="fcode-value">{fcode}</span>
+          <span className="scode-label">Mağaza:</span>
+          <span className="scode-value">{scode}</span>
         </div>
         <div className="header-actions">
           <button
@@ -128,7 +130,7 @@ const TemplateList: React.FC<TemplateListProps> = ({ onEdit, onCreate }) => {
           <thead>
             <tr>
               <th style={{width: 50}}>ID</th>
-              <th>Konu Basligi</th>
+              <th>Konu Başlığı</th>
               <th style={{width: 130}}>Durum</th>
               <th style={{width: 120}}>Aksiyon</th>
             </tr>
@@ -142,14 +144,14 @@ const TemplateList: React.FC<TemplateListProps> = ({ onEdit, onCreate }) => {
                   <td>{subject.title}</td>
                   <td>
                     {template ? (
-                      <span className="status-ready">Tasarim Var</span>
+                      <span className="status-ready">Tasarım Var</span>
                     ) : (
-                      <span className="status-missing">Tasarim Yok</span>
+                      <span className="status-missing">Tasarım Yok</span>
                     )}
                   </td>
                   <td>
                     {template ? (
-                      <button className="btn-edit" onClick={() => onEdit(subject.id, scode, fcode, subject.title)}>Duzenle</button>
+                      <button className="btn-edit" onClick={() => onEdit(subject.id, scode, fcode, subject.title)}>Düzenle</button>
                     ) : (
                       <button className="btn-add" onClick={() => onCreate(subject.id, scode, fcode, subject.title)}>Ekle</button>
                     )}

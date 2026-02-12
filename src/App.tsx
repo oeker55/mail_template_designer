@@ -20,8 +20,8 @@ function App() {
     const title = params.get('title') || ''
     
     // ASP'den gelen scode ve fcode
-    const scode = window.emailSettings?.scode || 'DEFAULT'
-    const fcode = window.emailSettings?.fcode || 'DEMO'
+      const scode = window.emailSettings?.scode || 'LOCAL_MAGAZA'
+      const fcode = window.emailSettings?.fcode || 'LOCAL_FIRMA'
     
     if (subjectId) {
       setEditorState({ subjectId, scode, fcode, title })
@@ -32,8 +32,8 @@ function App() {
       const params = new URLSearchParams(window.location.search)
       const subjectId = params.get('templateId')
       const title = params.get('title') || ''
-      const scode = window.emailSettings?.scode || 'DEFAULT'
-      const fcode = window.emailSettings?.fcode || 'DEMO'
+        const scode = window.emailSettings?.scode || 'LOCAL_MAGAZA'
+        const fcode = window.emailSettings?.fcode || 'LOCAL_FIRMA'
       
       if (subjectId) {
         setEditorState({ subjectId, scode, fcode, title })

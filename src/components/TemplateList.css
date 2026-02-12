@@ -58,6 +58,7 @@
   padding: 2px 12px;
   font-size: 13px;
   font-weight: 500;
+  white-space: nowrap;
 }
 .btn-edit, .btn-add {
   padding: 6px 16px;
@@ -232,16 +233,6 @@
   margin-bottom: 8px;
 }
 
-.fcode-badge {
-  display: inline-block;
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-  color: white;
-  padding: 3px 10px;
-  border-radius: 12px;
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.3px;
-}
 
 .template-card-body {
   padding: 16px;
@@ -326,4 +317,10 @@
   color: var(--accent);
   margin-top: 6px;
   font-weight: 500;
+}
+
+.fcode-label,.scode-label {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-left: 16px;
 }
