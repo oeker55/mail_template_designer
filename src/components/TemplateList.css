@@ -320,7 +320,14 @@
 }
 
 .fcode-label,.scode-label {
-  font-size: 11px;
-  color: var(--text-secondary);
+  font-size: 15px;
+  color: #2958b6;
   margin-left: 16px;
+}
+.fcode-value,.scode-value {
+    background-color: #ab4646;
+    padding: 2px 8px;
+    border-radius: 3px;
+    color: #fff;
+    margin-left: 2px;
 }

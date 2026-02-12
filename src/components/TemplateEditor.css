@@ -26,12 +26,12 @@
 .template-name-input {
   font-size: 13px;
   font-weight: 500;
-  padding: 8px 12px;
+  padding: 4px 12px;
   border: 1px solid var(--border-medium);
   border-radius: var(--radius-md);
   background: var(--bg-tertiary);
   transition: all var(--transition-fast);
-  min-width: 260px;
+  text-align: center;
   color: var(--text-primary);
 }
 

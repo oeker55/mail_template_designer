@@ -363,13 +363,14 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ subjectId, scode, fcode
               <span className="editor-scode-badge">{scode}</span>
               <span className="editor-subject-id">#{subjectId}</span>
             </div>
-            <input
+            {/* <input
               type="text"
               value={templateName}
               onChange={(e) => setTemplateName(e.target.value)}
               className="template-name-input"
               placeholder="Template Adı"
-            />
+            /> */}
+            <span className='template-name-input'> {templateName}</span>
           </div>
           <div className="editor-header-right">
             {/* Hazır Şablonlar Butonu */}
