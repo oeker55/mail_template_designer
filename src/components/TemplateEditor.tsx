@@ -7,7 +7,7 @@ import PropertyEditor from './PropertyEditor'
 import { ELEMENT_TYPES } from '../config/elementTypes'
 import { generateEmailHTML } from '../utils/htmlGenerator'
 import { templateAPI, mailAPI } from '../utils/api'
-import presetTemplatesData from '../data/presetTemplates.json'
+// import presetTemplatesData from '../data/presetTemplates.json'
 import { TemplateEditorProps, CanvasElement, LocalTemplate, PresetTemplate, Template } from '../types'
 import './TemplateEditor.css'
 
@@ -20,19 +20,19 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ subjectId, scode, fcode
   const [saving, setSaving] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(true)
   const [existingTemplateId, setExistingTemplateId] = useState<string | null>(null)
-  const [savedTemplates, setSavedTemplates] = useState<LocalTemplate[]>([])
-  const [showSavedTemplates, setShowSavedTemplates] = useState<boolean>(false)
-  const [showPresetTemplates, setShowPresetTemplates] = useState<boolean>(false)
-  const [presetTemplates, setPresetTemplates] = useState<PresetTemplate[]>([])
-  const fileInputRef = useRef<HTMLInputElement>(null)
+  // const [savedTemplates, setSavedTemplates] = useState<LocalTemplate[]>([])
+  // const [showSavedTemplates, setShowSavedTemplates] = useState<boolean>(false)
+  // const [showPresetTemplates, setShowPresetTemplates] = useState<boolean>(false)
+  // const [presetTemplates, setPresetTemplates] = useState<PresetTemplate[]>([])
+  // const fileInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     // Template'i yükle (scode + subjectId ile)
     loadTemplateBySubject()
     // LocalStorage'dan kayıtlı şablonları yükle
-    loadSavedTemplates()
+    // loadSavedTemplates()
     // Hazır şablonları yükle
-    loadPresetTemplates()
+    // loadPresetTemplates()
   }, [subjectId, scode])
 
   const loadTemplateBySubject = async () => {
@@ -68,158 +68,158 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ subjectId, scode, fcode
     }
   }
 
-  const loadPresetTemplates = () => {
-    try {
-      // JSON dosyasından hazır şablonları yükle
-      const data = presetTemplatesData as { templates: PresetTemplate[] }
-      setPresetTemplates(data.templates || [])
-    } catch (error) {
-      console.error('Hazır şablonlar yüklenirken hata:', error)
-      setPresetTemplates([])
-    }
-  }
+  // const loadPresetTemplates = () => {
+  //   try {
+  //     // JSON dosyasından hazır şablonları yükle
+  //     const data = presetTemplatesData as { templates: PresetTemplate[] }
+  //     setPresetTemplates(data.templates || [])
+  //   } catch (error) {
+  //     console.error('Hazır şablonlar yüklenirken hata:', error)
+  //     setPresetTemplates([])
+  //   }
+  // }
 
   // Hazır şablonu yükle
-  const loadPresetTemplate = (template: PresetTemplate) => {
-    if (elements.length > 0) {
-      if (!confirm('Mevcut çalışmanız kaybolacak. Devam etmek istiyor musunuz?')) {
-        return
-      }
-    }
+  // const loadPresetTemplate = (template: PresetTemplate) => {
+  //   if (elements.length > 0) {
+  //     if (!confirm('Mevcut çalışmanız kaybolacak. Devam etmek istiyor musunuz?')) {
+  //       return
+  //     }
+  //   }
     
-    setElements(template.elements || [])
-    setSelectedElement(null)
-    setShowPresetTemplates(false)
-    alert(`"${template.name}" hazır şablonu yüklendi!`)
-  }
+  //   setElements(template.elements || [])
+  //   setSelectedElement(null)
+  //   setShowPresetTemplates(false)
+  //   alert(`"${template.name}" hazır şablonu yüklendi!`)
+  // }
 
-  const loadSavedTemplates = () => {
-    try {
-      const saved = localStorage.getItem('emailTemplates')
-      if (saved) {
-        setSavedTemplates(JSON.parse(saved))
-      }
-    } catch (error) {
-      console.error('Kayıtlı şablonlar yüklenirken hata:', error)
-    }
-  }
+  // const loadSavedTemplates = () => {
+  //   try {
+  //     const saved = localStorage.getItem('emailTemplates')
+  //     if (saved) {
+  //       setSavedTemplates(JSON.parse(saved))
+  //     }
+  //   } catch (error) {
+  //     console.error('Kayıtlı şablonlar yüklenirken hata:', error)
+  //   }
+  // }
 
   // Şablonu LocalStorage'a kaydet
-  const saveToLocalStorage = () => {
-    try {
-      const templateData: LocalTemplate = {
-        id: `template-${scode}-${subjectId}-${Date.now()}`,
-        name: `${title} (${fcode})`,
-        fcode: fcode,
-        elements: elements,
-        savedAt: new Date().toISOString()
-      }
+  // const saveToLocalStorage = () => {
+  //   try {
+  //     const templateData: LocalTemplate = {
+  //       id: `template-${scode}-${subjectId}-${Date.now()}`,
+  //       name: `${title} (${fcode})`,
+  //       fcode: fcode,
+  //       elements: elements,
+  //       savedAt: new Date().toISOString()
+  //     }
 
-      const saved = localStorage.getItem('emailTemplates')
-      const templates: LocalTemplate[] = saved ? JSON.parse(saved) : []
+  //     const saved = localStorage.getItem('emailTemplates')
+  //     const templates: LocalTemplate[] = saved ? JSON.parse(saved) : []
       
-      // Aynı scode+subjectId varsa güncelle, yoksa ekle
-      const existingIndex = templates.findIndex(t => t.name === templateData.name)
-      if (existingIndex >= 0) {
-        templates[existingIndex] = templateData
-      } else {
-        templates.push(templateData)
-      }
+  //     // Aynı scode+subjectId varsa güncelle, yoksa ekle
+  //     const existingIndex = templates.findIndex(t => t.name === templateData.name)
+  //     if (existingIndex >= 0) {
+  //       templates[existingIndex] = templateData
+  //     } else {
+  //       templates.push(templateData)
+  //     }
 
-      localStorage.setItem('emailTemplates', JSON.stringify(templates))
-      setSavedTemplates(templates)
-      alert('Şablon başarıyla yerel olarak kaydedildi!')
-    } catch (error) {
-      console.error('Şablon kaydetme hatası:', error)
-      alert('Şablon kaydedilirken hata oluştu')
-    }
-  }
+  //     localStorage.setItem('emailTemplates', JSON.stringify(templates))
+  //     setSavedTemplates(templates)
+  //     alert('Şablon başarıyla yerel olarak kaydedildi!')
+  //   } catch (error) {
+  //     console.error('Şablon kaydetme hatası:', error)
+  //     alert('Şablon kaydedilirken hata oluştu')
+  //   }
+  // }
 
   // LocalStorage'dan şablon yükle
-  const loadFromLocalStorage = (template: LocalTemplate) => {
-    if (elements.length > 0) {
-      if (!confirm('Mevcut çalışmanız kaybolacak. Devam etmek istiyor musunuz?')) {
-        return
-      }
-    }
+  // const loadFromLocalStorage = (template: LocalTemplate) => {
+  //   if (elements.length > 0) {
+  //     if (!confirm('Mevcut çalışmanız kaybolacak. Devam etmek istiyor musunuz?')) {
+  //       return
+  //     }
+  //   }
     
-    setElements(template.elements || [])
-    setSelectedElement(null)
-    setShowSavedTemplates(false)
-    alert(`"${template.name}" şablonu yüklendi!`)
-  }
+  //   setElements(template.elements || [])
+  //   setSelectedElement(null)
+  //   setShowSavedTemplates(false)
+  //   alert(`"${template.name}" şablonu yüklendi!`)
+  // }
 
   // LocalStorage'dan şablon sil
-  const deleteFromLocalStorage = (templateId: string) => {
-    if (!confirm('Bu şablonu silmek istediğinize emin misiniz?')) {
-      return
-    }
+  // const deleteFromLocalStorage = (templateId: string) => {
+  //   if (!confirm('Bu şablonu silmek istediğinize emin misiniz?')) {
+  //     return
+  //   }
 
-    try {
-      const saved = localStorage.getItem('emailTemplates')
-      const templates: LocalTemplate[] = saved ? JSON.parse(saved) : []
-      const filtered = templates.filter(t => t.id !== templateId)
-      localStorage.setItem('emailTemplates', JSON.stringify(filtered))
-      setSavedTemplates(filtered)
-    } catch (error) {
-      console.error('Şablon silme hatası:', error)
-    }
-  }
+  //   try {
+  //     const saved = localStorage.getItem('emailTemplates')
+  //     const templates: LocalTemplate[] = saved ? JSON.parse(saved) : []
+  //     const filtered = templates.filter(t => t.id !== templateId)
+  //     localStorage.setItem('emailTemplates', JSON.stringify(filtered))
+  //     setSavedTemplates(filtered)
+  //   } catch (error) {
+  //     console.error('Şablon silme hatası:', error)
+  //   }
+  // }
 
   // JSON olarak dışa aktar
-  const exportToJSON = () => {
-    const templateData = {
-      name: templateName,
-      scode: scode,
-      subjectId: subjectId,
-      title: title,
-      elements: elements,
-      exportedAt: new Date().toISOString()
-    }
+  // const exportToJSON = () => {
+  //   const templateData = {
+  //     name: templateName,
+  //     scode: scode,
+  //     subjectId: subjectId,
+  //     title: title,
+  //     elements: elements,
+  //     exportedAt: new Date().toISOString()
+  //   }
 
-    const blob = new Blob([JSON.stringify(templateData, null, 2)], { type: 'application/json' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `${scode}_${subjectId}_template.json`
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
-    URL.revokeObjectURL(url)
-  }
+  //   const blob = new Blob([JSON.stringify(templateData, null, 2)], { type: 'application/json' })
+  //   const url = URL.createObjectURL(blob)
+  //   const a = document.createElement('a')
+  //   a.href = url
+  //   a.download = `${scode}_${subjectId}_template.json`
+  //   document.body.appendChild(a)
+  //   a.click()
+  //   document.body.removeChild(a)
+  //   URL.revokeObjectURL(url)
+  // }
 
   // JSON'dan içe aktar
-  const importFromJSON = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-    if (!file) return
+  // const importFromJSON = (event: ChangeEvent<HTMLInputElement>) => {
+  //   const file = event.target.files?.[0]
+  //   if (!file) return
 
-    const reader = new FileReader()
-    reader.onload = (e) => {
-      try {
-        const result = e.target?.result
-        if (typeof result !== 'string') return
+  //   const reader = new FileReader()
+  //   reader.onload = (e) => {
+  //     try {
+  //       const result = e.target?.result
+  //       if (typeof result !== 'string') return
         
-        const templateData = JSON.parse(result) as { elements?: CanvasElement[] }
+  //       const templateData = JSON.parse(result) as { elements?: CanvasElement[] }
         
-        if (elements.length > 0) {
-          if (!confirm('Mevcut çalışmanız kaybolacak. Devam etmek istiyor musunuz?')) {
-            return
-          }
-        }
+  //       if (elements.length > 0) {
+  //         if (!confirm('Mevcut çalışmanız kaybolacak. Devam etmek istiyor musunuz?')) {
+  //           return
+  //         }
+  //       }
 
-        setElements(templateData.elements || [])
-        setSelectedElement(null)
-        alert('Şablon başarıyla içe aktarıldı!')
-      } catch (error) {
-        console.error('JSON parse hatası:', error)
-        alert('Geçersiz şablon dosyası')
-      }
-    }
-    reader.readAsText(file)
+  //       setElements(templateData.elements || [])
+  //       setSelectedElement(null)
+  //       alert('Şablon başarıyla içe aktarıldı!')
+  //     } catch (error) {
+  //       console.error('JSON parse hatası:', error)
+  //       alert('Geçersiz şablon dosyası')
+  //     }
+  //   }
+  //   reader.readAsText(file)
     
-    // Input'u sıfırla
-    event.target.value = ''
-  }
+  //   // Input'u sıfırla
+  //   event.target.value = ''
+  // }
 
   const handleAddElement = (elementType: string) => {
     const elementTypeUpper = elementType.toUpperCase()
