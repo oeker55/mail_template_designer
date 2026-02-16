@@ -66,6 +66,21 @@ export const templateAPI = {
   },
 
   /**
+   * scode'a göre sadece mevcut subject ID'leri getir (performans için)
+   * @param scode - Firma sabit kodu
+   * @returns Subject ID listesi
+   */
+  getSubjectIdsByScode: async (scode: string): Promise<string[]> => {
+    try {
+      const response = await api.get<string[]>('/templates/subject-ids', { params: { scode } })
+      return response.data
+    } catch (error) {
+      console.error('Templates getSubjectIdsByScode error:', error)
+      throw error
+    }
+  },
+
+  /**
    * scode ve subjectId ile template getir
    * @param scode - Sabit kod
    * @param subjectId - Konu id

@@ -5,9 +5,10 @@ import { EMAIL_SUBJECTS } from '../config/subjects'
 import './TemplateList.css'
 
 const TemplateList: React.FC<TemplateListProps> = ({ onEdit, onCreate }) => {
-  const [templates, setTemplates] = useState<Template[]>([])
+  const [existingSubjectIds, setExistingSubjectIds] = useState<string[]>([])
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
+  const [searchTerm, setSearchTerm] = useState<string>('')
   
   // ASP den gelen scode ve fcode degerlerini al
     const scode = window.emailSettings?.scode || 'LOCAL_MAGAZA'
@@ -21,22 +22,28 @@ const TemplateList: React.FC<TemplateListProps> = ({ onEdit, onCreate }) => {
     try {
       setLoading(true)
       setError(null)
-      // scode ile bu firmaya ait templateleri cek
-      const data = await templateAPI.getAllByScode(scode)
-      setTemplates(data || [])
+      // Sadece mevcut subject ID'leri çek (performans için)
+      const subjectIds = await templateAPI.getSubjectIdsByScode(scode)
+      setExistingSubjectIds(subjectIds || [])
     } catch (err) {
       console.error('Template yuklenirken hata:', err)
       setError('Template listesi yuklenirken bir hata olustu.')
-      setTemplates([])
+      setExistingSubjectIds([])
     } finally {
       setLoading(false)
     }
   }
 
   // Belirli bir subject icin template var mi? (subjectId ile eslestir)
-  const findTemplateBySubjectId = (subjectId: string) => {
-    return templates.find(t => t.subjectId === subjectId)
+  const hasTemplate = (subjectId: string) => {
+    return existingSubjectIds.includes(subjectId)
   }
+
+  // Arama terimine göre konuları filtrele
+  const filteredSubjects = EMAIL_SUBJECTS.filter(subject => {
+    if (!searchTerm.trim()) return true
+    return subject.title.toLowerCase().includes(searchTerm.toLowerCase())
+  })
 
   const handleRefresh = () => {
     loadTemplates()
@@ -66,7 +73,13 @@ const TemplateList: React.FC<TemplateListProps> = ({ onEdit, onCreate }) => {
           </button>
         </div>
       </div>
-
+        <input
+            type="text"
+            className="search-input"
+            placeholder="Konu ara..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
       {loading ? (
         <div className="loading">
           <div className="loading-spinner"></div>
@@ -90,29 +103,37 @@ const TemplateList: React.FC<TemplateListProps> = ({ onEdit, onCreate }) => {
             </tr>
           </thead>
           <tbody>
-            {EMAIL_SUBJECTS.map(subject => {
-              const template = findTemplateBySubjectId(subject.id)
-              return (
-                <tr key={subject.id} className={template ? 'has-template' : 'no-template'}>
-                  <td>{subject.id}</td>
-                  <td>{subject.title}</td>
-                  <td>
-                    {template ? (
-                      <span className="status-ready">Tasarım Var</span>
-                    ) : (
-                      <span className="status-missing">Tasarım Yok</span>
-                    )}
-                  </td>
-                  <td>
-                    {template ? (
-                      <button className="btn-edit" onClick={() => onEdit(subject.id, scode, fcode, subject.title)}>Düzenle</button>
-                    ) : (
-                      <button className="btn-add" onClick={() => onCreate(subject.id, scode, fcode, subject.title)}>Ekle</button>
-                    )}
-                  </td>
-                </tr>
-              )
-            })}
+            {filteredSubjects.length === 0 ? (
+              <tr>
+                <td colSpan={4} style={{textAlign: 'center', padding: '20px', color: '#999'}}>
+                  Arama sonucu bulunamadı
+                </td>
+              </tr>
+            ) : (
+              filteredSubjects.map(subject => {
+                const templateExists = hasTemplate(subject.id)
+                return (
+                  <tr key={subject.id} className={templateExists ? 'has-template' : 'no-template'}>
+                    <td>{subject.id}</td>
+                    <td>{subject.title}</td>
+                    <td>
+                      {templateExists ? (
+                        <span className="status-ready">Tasarım Var</span>
+                      ) : (
+                        <span className="status-missing">Tasarım Yok</span>
+                      )}
+                    </td>
+                    <td>
+                      {templateExists ? (
+                        <button className="btn-edit" onClick={() => onEdit(subject.id, scode, fcode, subject.title)}>Düzenle</button>
+                      ) : (
+                        <button className="btn-add" onClick={() => onCreate(subject.id, scode, fcode, subject.title)}>Ekle</button>
+                      )}
+                    </td>
+                  </tr>
+                )
+              })
+            )}
           </tbody>
         </table>
       )}
