@@ -1684,6 +1684,14 @@ const PropertyEditor: React.FC<PropertyEditorProps> = ({ element, onUpdateElemen
             + Yeni Satır Ekle
           </button>
         </div>
+
+        {/* Dış Boşluk */}
+        <div className="property-section-divider">
+          <span className="divider-icon">↔️</span>
+          <span className="divider-text">Dış Boşluk</span>
+        </div>
+
+        <SpacingInput label="Dış Boşluk (Margin)" icon="↔️" values={{ top: (element.props.marginTop as number) || 0, right: (element.props.marginRight as number) || 0, bottom: (element.props.marginBottom as number) || 0, left: (element.props.marginLeft as number) || 0 }} onChange={(side, value) => handleChange(`margin${side.charAt(0).toUpperCase() + side.slice(1)}`, value)} />
       </>
     )
   }

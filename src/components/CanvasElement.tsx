@@ -118,7 +118,7 @@ const CanvasElement: React.FC<CanvasElementComponentProps> = ({
               lineHeight: (p.lineHeight as number) || 1.5,
               margin: getMargin(p),
               padding: getPadding(p),
-              whiteSpace: 'pre-wrap'
+              // whiteSpace: 'pre-wrap'
             }}
             dangerouslySetInnerHTML={{ __html: p.content as string }}
           />
@@ -596,7 +596,8 @@ const CanvasElement: React.FC<CanvasElementComponentProps> = ({
         
         return (
           <div style={{ 
-            width: (p.tableWidth as string) || '100%'
+            width: (p.tableWidth as string) || '100%',
+            margin: getMargin(p)
           }}>
             <table style={{
               width: '100%',
@@ -654,16 +655,18 @@ const CanvasElement: React.FC<CanvasElementComponentProps> = ({
                       textAlign: (p.valueAlign as 'left' | 'center' | 'right') || 'right',
                       ...getValueStyle(row.valueStyle as string, row.valueColor as string, row.valueFontSize as number)
                     }}>
-                      <span style={{ 
-                        display: 'inline-block',
-                        padding: '4px 8px',
-                        backgroundColor: '#e8f5e9',
-                        borderRadius: '4px',
-                        border: '1px dashed #81c784',
-                        fontSize: '11px'
-                      }}>
-                        [[{(row.valueKey as string) || 'variable.key'}]]
-                      </span>
+                      {row.valueKey && String(row.valueKey).trim() !== '' ? (
+                        <span style={{ 
+                          display: 'inline-block',
+                          padding: '4px 8px',
+                          backgroundColor: '#e8f5e9',
+                          borderRadius: '4px',
+                          border: '1px dashed #81c784',
+                          fontSize: '11px'
+                        }}>
+                          [[{(row.valueKey as string)}]]
+                        </span>
+                      ) : null}
                     </td>
                   </tr>
                 ))}

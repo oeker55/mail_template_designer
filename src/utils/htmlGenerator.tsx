@@ -659,8 +659,19 @@ const renderElement = (element: CanvasElement): React.ReactNode => {
         return style
       }
       
+      // Margin hesapla
+      const infoMarginTop = (p.marginTop as number) || 0
+      const infoMarginRight = (p.marginRight as number) || 0
+      const infoMarginBottom = (p.marginBottom as number) || 0
+      const infoMarginLeft = (p.marginLeft as number) || 0
+
       return (
-        <Section>
+        <Section style={{ 
+          paddingTop: infoMarginTop + 'px',
+          paddingRight: infoMarginRight + 'px', 
+          paddingBottom: infoMarginBottom + 'px',
+          paddingLeft: infoMarginLeft + 'px'
+        }}>
           <table
             role="presentation"
             cellPadding="0"
@@ -731,9 +742,11 @@ const renderElement = (element: CanvasElement): React.ReactNode => {
                       fontFamily: 'Arial, Helvetica, sans-serif'
                     }}
                   >
-                    <Text style={getInfoValueStyle(row)}>
-                      {`[[${(row.valueKey as string) || 'variable.key'}]]`}
-                    </Text>
+                    {row.valueKey && String(row.valueKey).trim() !== '' ? (
+                      <Text style={getInfoValueStyle(row)}>
+                        {`[[${(row.valueKey as string)}]]`}
+                      </Text>
+                    ) : null}
                   </td>
                 </tr>
               ))}

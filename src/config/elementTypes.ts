@@ -448,6 +448,12 @@ export const ELEMENT_TYPES: Record<string, ElementTypeConfig> = {
       valueColor: '#333333',
       valueAlign: 'right',
       
+      // Margin (4 yönlü)
+      marginTop: 0,
+      marginRight: 0,
+      marginBottom: 10,
+      marginLeft: 0,
+      
       // Satırlar
       rows: [
         {
