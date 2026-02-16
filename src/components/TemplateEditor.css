@@ -659,3 +659,135 @@
     opacity: 1;
   }
 }
+
+/* ==================== Template Not Found ==================== */
+.template-not-found {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-primary);
+  padding: 40px;
+}
+
+.template-not-found-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 460px;
+  width: 100%;
+  padding: 48px 40px;
+  background: var(--bg-secondary);
+  border-radius: 16px;
+  border: 1px solid var(--border-light);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+  animation: slideUp 0.4s ease;
+}
+
+.template-not-found-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: #fef2f2;
+  margin-bottom: 24px;
+  color: #b91c1c;
+}
+
+.template-not-found-title {
+  margin: 0 0 8px 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.template-not-found-desc {
+  margin: 0 0 24px 0;
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.template-not-found-desc strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.template-not-found-details {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  background: var(--bg-primary);
+  border-radius: 10px;
+  border: 1px solid var(--border-light);
+  overflow: hidden;
+  margin-bottom: 28px;
+}
+
+.template-not-found-detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.template-not-found-detail-item:last-child {
+  border-bottom: none;
+}
+
+.template-not-found-detail-item .detail-label {
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.template-not-found-detail-item .detail-value {
+  font-size: 13px;
+  color: var(--text-primary);
+  font-weight: 600;
+  font-family: 'SFMono-Regular', Consolas, monospace;
+}
+
+.template-not-found-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.template-not-found-actions .btn {
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+
+.template-not-found-actions .btn-primary {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+}
+
+.template-not-found-actions .btn-primary:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.template-not-found-actions .btn-cancel {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-medium);
+}
+
+.template-not-found-actions .btn-cancel:hover {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}

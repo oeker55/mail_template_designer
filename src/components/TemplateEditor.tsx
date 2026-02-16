@@ -19,6 +19,7 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ subjectId, scode, fcode
   const [selectedElement, setSelectedElement] = useState<CanvasElement | null>(null)
   const [saving, setSaving] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(true)
+  const [templateNotFound, setTemplateNotFound] = useState<boolean>(false)
   const [existingTemplateId, setExistingTemplateId] = useState<string | null>(null)
   // const [savedTemplates, setSavedTemplates] = useState<LocalTemplate[]>([])
   // const [showSavedTemplates, setShowSavedTemplates] = useState<boolean>(false)
@@ -44,6 +45,7 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ subjectId, scode, fcode
       if (template) {
         setTemplateName(template.title || title)
         setExistingTemplateId(template._id || template.id || null)
+        setTemplateNotFound(false)
         
         // elements_json alanı string ise parse et, değilse direkt kullan
         const elementsData = typeof template.elements_json === 'string' 
@@ -52,16 +54,18 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ subjectId, scode, fcode
         
         setElements(elementsData || [])
       } else {
-        // Template yoksa boş başla
+        // Template yoksa bulunamadı
         setTemplateName(title)
         setExistingTemplateId(null)
+        setTemplateNotFound(true)
         setElements([])
       }
     } catch (error) {
-      // 404 veya hata durumunda yeni template olarak başla
-      console.log('Template bulunamadı, yeni olarak başlanıyor:', error)
+      // 404 veya hata durumunda bulunamadı göster
+      console.log('Template bulunamadı:', error)
       setTemplateName(title)
       setExistingTemplateId(null)
+      setTemplateNotFound(true)
       setElements([])
     } finally {
       setLoading(false)
@@ -649,20 +653,67 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ subjectId, scode, fcode
         )}
 
         <div className="editor-content">
-          <ElementPalette onAddElement={handleAddElement} />
-          
-          <Canvas
-            elements={elements}
-            selectedElement={selectedElement}
-            onSelectElement={setSelectedElement}
-            onDeleteElement={handleDeleteElement}
-            onReorderElements={handleReorderElements}
-          />
-          
-          <PropertyEditor
-            element={selectedElement}
-            onUpdateElement={handleUpdateElement}
-          />
+          {templateNotFound ? (
+            <div className="template-not-found">
+              <div className="template-not-found-card">
+                <div className="template-not-found-icon">
+                  <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                    <line x1="1" y1="1" x2="23" y2="23" strokeWidth="2" stroke="#e74c3c"/>
+                  </svg>
+                </div>
+                <h2 className="template-not-found-title">Şablon Bulunamadı</h2>
+                <p className="template-not-found-desc">
+                  <strong>#{subjectId}</strong> numaralı konu için <strong>{scode}</strong> mağazasında kayıtlı bir şablon bulunamadı.
+                </p>
+                <div className="template-not-found-details">
+                  <div className="template-not-found-detail-item">
+                    <span className="detail-label">Mağaza Kodu</span>
+                    <span className="detail-value">{scode}</span>
+                  </div>
+                  <div className="template-not-found-detail-item">
+                    <span className="detail-label">Firma Kodu</span>
+                    <span className="detail-value">{fcode}</span>
+                  </div>
+                  <div className="template-not-found-detail-item">
+                    <span className="detail-label">Konu ID</span>
+                    <span className="detail-value">#{subjectId}</span>
+                  </div>
+                  {title && (
+                    <div className="template-not-found-detail-item">
+                      <span className="detail-label">Başlık</span>
+                      <span className="detail-value">{title}</span>
+                    </div>
+                  )}
+                </div>
+                <div className="template-not-found-actions">
+                  <button className="btn btn-cancel" onClick={onBack}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M19 12H5M12 19l-7-7 7-7"/>
+                    </svg>
+                    Şablon Listesine Dön
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <>
+              <ElementPalette onAddElement={handleAddElement} />
+              
+              <Canvas
+                elements={elements}
+                selectedElement={selectedElement}
+                onSelectElement={setSelectedElement}
+                onDeleteElement={handleDeleteElement}
+                onReorderElements={handleReorderElements}
+              />
+              
+              <PropertyEditor
+                element={selectedElement}
+                onUpdateElement={handleUpdateElement}
+              />
+            </>
+          )}
         </div>
       </div>
     </DndProvider>
