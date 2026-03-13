@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, ChangeEvent } from 'react'
+import React, { useState, useEffect } from 'react'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import ElementPalette from './ElementPalette'
@@ -10,7 +10,7 @@ import { templateAPI, mailAPI } from '../utils/api'
 import { TemplateEditorProps, CanvasElement, Template } from '../types'
 import './TemplateEditor.css'
 
-const TemplateEditor: React.FC<TemplateEditorProps> = ({ subjectId, scode, fcode, title, onBack }) => {
+const TemplateEditor: React.FC<TemplateEditorProps> = ({ subjectId, scode, fcode, title, isCreateMode, onBack }) => {
   const [templateName, setTemplateName] = useState<string>(title || 'Yeni Template')
   const [testEmail, setTestEmail] = useState<string>('oeker55@outlook.com')
   const [showTestEmailPopup, setShowTestEmailPopup] = useState<boolean>(false)
@@ -22,8 +22,18 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ subjectId, scode, fcode
   const [existingTemplateId, setExistingTemplateId] = useState<string | null>(null)
 
   useEffect(() => {
+    if (isCreateMode) {
+      setTemplateName(title || 'Yeni Template')
+      setExistingTemplateId(null)
+      setTemplateNotFound(false)
+      setElements([])
+      setSelectedElement(null)
+      setLoading(false)
+      return
+    }
+
     loadTemplateBySubject()
-  }, [subjectId, scode])
+  }, [isCreateMode, subjectId, scode, title])
 
   const loadTemplateBySubject = async () => {
     try {

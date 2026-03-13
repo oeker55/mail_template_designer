@@ -8,55 +8,56 @@ interface EditorState {
   scode: string
   fcode: string
   title: string
+  isCreateMode: boolean
+}
+
+const getEditorStateFromUrl = (): EditorState | null => {
+  const params = new URLSearchParams(window.location.search)
+  const subjectId = params.get('templateId')
+  const title = params.get('title') || ''
+  const isCreateMode = params.get('mode') === 'create'
+  const scode = window.emailSettings?.scode || 'LOCAL_MAGAZA'
+  const fcode = window.emailSettings?.fcode || 'LOCAL_FIRMA'
+
+  if (!subjectId) {
+    return null
+  }
+
+  return { subjectId, scode, fcode, title, isCreateMode }
 }
 
 function App() {
   const [editorState, setEditorState] = useState<EditorState | null>(null)
 
   useEffect(() => {
-    // URL'den subjectId'yi oku (URL param adı templateId ama değeri subjectId)
-    const params = new URLSearchParams(window.location.search)
-    const subjectId = params.get('templateId')
-    const title = params.get('title') || ''
-    
-    // ASP'den gelen scode ve fcode
-      const scode = window.emailSettings?.scode || 'LOCAL_MAGAZA'
-      const fcode = window.emailSettings?.fcode || 'LOCAL_FIRMA'
-    
-    if (subjectId) {
-      setEditorState({ subjectId, scode, fcode, title })
-    }
+    setEditorState(getEditorStateFromUrl())
 
     // Browser back/forward butonlarını dinle
     const handlePopState = () => {
-      const params = new URLSearchParams(window.location.search)
-      const subjectId = params.get('templateId')
-      const title = params.get('title') || ''
-        const scode = window.emailSettings?.scode || 'LOCAL_MAGAZA'
-        const fcode = window.emailSettings?.fcode || 'LOCAL_FIRMA'
-      
-      if (subjectId) {
-        setEditorState({ subjectId, scode, fcode, title })
-      } else {
-        setEditorState(null)
-      }
+      setEditorState(getEditorStateFromUrl())
     }
 
     window.addEventListener('popstate', handlePopState)
     return () => window.removeEventListener('popstate', handlePopState)
   }, [])
 
-  const handleNavigate = (subjectId: string | null, scode?: string, fcode?: string, title?: string) => {
+  const handleNavigate = (subjectId: string | null, scode?: string, fcode?: string, title?: string, isCreateMode: boolean = false) => {
     if (subjectId && scode && fcode && title) {
       const url = new URL(window.location.href)
       url.searchParams.set('templateId', subjectId)
       url.searchParams.set('title', title)
+      if (isCreateMode) {
+        url.searchParams.set('mode', 'create')
+      } else {
+        url.searchParams.delete('mode')
+      }
       window.history.pushState({}, '', url)
-      setEditorState({ subjectId, scode, fcode, title })
+      setEditorState({ subjectId, scode, fcode, title, isCreateMode })
     } else {
       const url = new URL(window.location.href)
       url.searchParams.delete('templateId')
       url.searchParams.delete('title')
+      url.searchParams.delete('mode')
       window.history.pushState({}, '', url)
       setEditorState(null)
     }
@@ -91,12 +92,13 @@ function App() {
             scode={editorState.scode}
             fcode={editorState.fcode}
             title={editorState.title}
+            isCreateMode={editorState.isCreateMode}
             onBack={() => handleNavigate(null)} 
           />
         ) : (
           <TemplateList 
-            onEdit={(subjectId: string, scode: string, fcode: string, title: string) => handleNavigate(subjectId, scode, fcode, title)}
-            onCreate={(subjectId: string, scode: string, fcode: string, title: string) => handleNavigate(subjectId, scode, fcode, title)}
+            onEdit={(subjectId: string, scode: string, fcode: string, title: string) => handleNavigate(subjectId, scode, fcode, title, false)}
+            onCreate={(subjectId: string, scode: string, fcode: string, title: string) => handleNavigate(subjectId, scode, fcode, title, true)}
           />
         )}
       </main>

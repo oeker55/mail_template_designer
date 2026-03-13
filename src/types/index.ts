@@ -404,6 +404,7 @@ export interface TemplateEditorProps {
   scode: string // Firma sabit kodu (window.emailSettings.scode)
   fcode: string // Firma kodu (window.emailSettings.fcode)
   title: string // Konu başlığı
+  isCreateMode: boolean
   onBack: () => void
 }
 
