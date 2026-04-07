@@ -1,0 +1,73 @@
+/* ===== Shared UI Form Component Styles ===== */
+
+/* ColorInput */
+.color-input-wrapper {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.property-color-input {
+  width: 40px;
+  height: 32px;
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  padding: 2px;
+}
+
+.property-color-text {
+  flex: 1;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+/* Section Divider */
+.property-section-divider {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 16px 0 12px 0;
+  padding: 8px 0;
+  border-top: 1px solid var(--border-light);
+}
+
+.property-section-divider .divider-icon {
+  font-size: 14px;
+}
+
+.property-section-divider .divider-text {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Checkbox with Label */
+.checkbox-with-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.checkbox-with-label .property-checkbox {
+  margin: 0;
+}
+
+.checkbox-with-label .checkbox-description {
+  font-size: 11px;
+  color: var(--text-muted);
+  flex: 1;
+}
+
+/* Inline row for side-by-side inputs */
+.property-row {
+  display: flex;
+  gap: 8px;
+}
+
+.property-row > .property-item {
+  flex: 1;
+}

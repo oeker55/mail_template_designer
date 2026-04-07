@@ -16,6 +16,7 @@ import {
   Column
 } from '@react-email/components'
 import { CanvasElement } from '../types'
+import { ElementPropsBase, getMargin, getPadding, getColumnPadding, getColumnMargin } from './spacing'
 
 // React Email kullanarak mail-safe HTML generator
 export const generateEmailHTML = async (elements: CanvasElement[], templateName: string = 'Email Template'): Promise<string> => {
@@ -47,36 +48,10 @@ export const generateEmailHTML = async (elements: CanvasElement[], templateName:
   }
 }
 
-// Helper function types
-interface ElementPropsBase {
-  margin?: string
-  padding?: string
-  marginTop?: number
-  marginRight?: number
-  marginBottom?: number
-  marginLeft?: number
-  paddingTop?: number
-  paddingRight?: number
-  paddingBottom?: number
-  paddingLeft?: number
-  [key: string]: unknown
-}
-
 // Element'i React Email component'ine çevir
 const renderElement = (element: CanvasElement): React.ReactNode => {
   const { type, props } = element
   const p = props as ElementPropsBase
-  
-  // Margin ve Padding helper fonksiyonları
-  const getMargin = (p: ElementPropsBase): string => {
-    if (p.margin) return p.margin as string
-    return `${p.marginTop || 0}px ${p.marginRight || 0}px ${p.marginBottom || 0}px ${p.marginLeft || 0}px`
-  }
-  
-  const getPadding = (p: ElementPropsBase): string => {
-    if (p.padding && p.padding !== '0') return p.padding as string
-    return `${p.paddingTop || 0}px ${p.paddingRight || 0}px ${p.paddingBottom || 0}px ${p.paddingLeft || 0}px`
-  }
   
   switch (type) {
     case 'text':
@@ -123,23 +98,14 @@ const renderElement = (element: CanvasElement): React.ReactNode => {
         const colType = (col.type || 'text') as string
         
         // Kolon için margin/padding helper
-        const getColPadding = (c: Record<string, unknown>, prefix: string = ''): string => {
-          const pre = prefix ? prefix : ''
-          return `${c[pre + 'paddingTop'] || c[pre + 'PaddingTop'] || 0}px ${c[pre + 'paddingRight'] || c[pre + 'PaddingRight'] || 0}px ${c[pre + 'paddingBottom'] || c[pre + 'PaddingBottom'] || 0}px ${c[pre + 'paddingLeft'] || c[pre + 'PaddingLeft'] || 0}px`
-        }
-        
-        const getColMargin = (c: Record<string, unknown>, prefix: string = ''): string => {
-          const pre = prefix ? prefix : ''
-          return `${c[pre + 'marginTop'] || c[pre + 'MarginTop'] || 0}px ${c[pre + 'marginRight'] || c[pre + 'MarginRight'] || 0}px ${c[pre + 'marginBottom'] || c[pre + 'MarginBottom'] || 0}px ${c[pre + 'marginLeft'] || c[pre + 'MarginLeft'] || 0}px`
-        }
         
         if (colType === 'image') {
           const imgBgColor = col.imgBackgroundColor && col.imgBackgroundColor !== 'transparent' ? col.imgBackgroundColor as string : undefined
           return (
             <div style={{
               backgroundColor: imgBgColor,
-              padding: getColPadding(col, 'img'),
-              margin: getColMargin(col, 'img')
+              padding: getColumnPadding(col, 'img'),
+              margin: getColumnMargin(col, 'img')
             }}>
               <Row>
                 <Column align={(col.imgAlign as 'left' | 'center' | 'right') || 'center'}>
@@ -177,8 +143,8 @@ const renderElement = (element: CanvasElement): React.ReactNode => {
           return (
             <Text 
               style={{ 
-                margin: getColMargin(col), 
-                padding: getColPadding(col),
+                margin: getColumnMargin(col), 
+                padding: getColumnPadding(col),
                 backgroundColor: bgColor,
                 whiteSpace: 'pre-wrap',
                 fontSize: ((col.fontSize as number) || 16) + 'px',

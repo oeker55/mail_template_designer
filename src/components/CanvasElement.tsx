@@ -1,25 +1,12 @@
 import React, { useRef, useState, useEffect } from 'react'
 import { useDrag, useDrop } from 'react-dnd'
 import { CanvasElementComponentProps } from '../types'
+import { ElementPropsBase, getMargin, getPadding, getColumnPadding, getColumnMargin } from '../utils/spacing'
 import './CanvasElement.css'
 
 interface DragItem {
   id: string
   index: number
-}
-
-interface ElementPropsBase {
-  margin?: string
-  padding?: string
-  marginTop?: number
-  marginRight?: number
-  marginBottom?: number
-  marginLeft?: number
-  paddingTop?: number
-  paddingRight?: number
-  paddingBottom?: number
-  paddingLeft?: number
-  [key: string]: unknown
 }
 
 const CanvasElement: React.FC<CanvasElementComponentProps> = ({ 
@@ -92,17 +79,6 @@ const CanvasElement: React.FC<CanvasElementComponentProps> = ({
   const renderElement = (): React.ReactNode => {
     const { type, props } = element
     const p = props as ElementPropsBase
-    
-    // Margin ve Padding helper fonksiyonları
-    const getMargin = (p: ElementPropsBase): string => {
-      if (p.margin) return p.margin
-      return `${p.marginTop || 0}px ${p.marginRight || 0}px ${p.marginBottom || 0}px ${p.marginLeft || 0}px`
-    }
-    
-    const getPadding = (p: ElementPropsBase): string => {
-      if (p.padding && p.padding !== '0') return p.padding
-      return `${p.paddingTop || 0}px ${p.paddingRight || 0}px ${p.paddingBottom || 0}px ${p.paddingLeft || 0}px`
-    }
 
     switch (type) {
       case 'text':
@@ -148,25 +124,14 @@ const CanvasElement: React.FC<CanvasElementComponentProps> = ({
         const renderColumn = (col: Record<string, unknown>): React.ReactNode => {
           const colType = (col.type || 'text') as string
           
-          // Kolon için margin/padding helper
-          const getColPadding = (c: Record<string, unknown>, prefix: string = ''): string => {
-            const pre = prefix ? prefix : ''
-            return `${c[pre + 'paddingTop'] || c[pre + 'PaddingTop'] || 0}px ${c[pre + 'paddingRight'] || c[pre + 'PaddingRight'] || 0}px ${c[pre + 'paddingBottom'] || c[pre + 'PaddingBottom'] || 0}px ${c[pre + 'paddingLeft'] || c[pre + 'PaddingLeft'] || 0}px`
-          }
-          
-          const getColMargin = (c: Record<string, unknown>, prefix: string = ''): string => {
-            const pre = prefix ? prefix : ''
-            return `${c[pre + 'marginTop'] || c[pre + 'MarginTop'] || 0}px ${c[pre + 'marginRight'] || c[pre + 'MarginRight'] || 0}px ${c[pre + 'marginBottom'] || c[pre + 'MarginBottom'] || 0}px ${c[pre + 'marginLeft'] || c[pre + 'MarginLeft'] || 0}px`
-          }
-          
           if (colType === 'image') {
             const imgBgColor = col.imgBackgroundColor && col.imgBackgroundColor !== 'transparent' ? col.imgBackgroundColor as string : undefined
             return (
               <div style={{ 
                 textAlign: (col.imgAlign as 'left' | 'center' | 'right') || 'center',
                 backgroundColor: imgBgColor,
-                padding: getColPadding(col, 'img'),
-                margin: getColMargin(col, 'img')
+                padding: getColumnPadding(col, 'img'),
+                margin: getColumnMargin(col, 'img')
               }}>
                 <img 
                   src={col.src as string} 
@@ -210,8 +175,8 @@ const CanvasElement: React.FC<CanvasElementComponentProps> = ({
                   textAlign: ((col.textAlign as string) || 'left') as 'left' | 'center' | 'right' | 'justify',
                   lineHeight: (col.lineHeight as number) || 1.5,
                   backgroundColor: bgColor,
-                  padding: getColPadding(col),
-                  margin: getColMargin(col)
+                  padding: getColumnPadding(col),
+                  margin: getColumnMargin(col)
                 }}
                 dangerouslySetInnerHTML={{ __html: col.content as string }}
               />
