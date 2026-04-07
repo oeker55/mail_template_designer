@@ -1,8 +1,12 @@
 import axios, { AxiosInstance, AxiosError } from 'axios'
 import { Template, TemplateData } from '../types'
 
-// API base URL - NestJS backend (port 5000)
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
+// API base URL - use env when safe, otherwise same-origin /api proxy
+const ENV_API_URL = import.meta.env.VITE_API_URL?.trim()
+const API_BASE_URL =
+  window.location.protocol === 'https:' && ENV_API_URL?.startsWith('http://')
+    ? '/api'
+    : ENV_API_URL || '/api'
 
 const api: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,

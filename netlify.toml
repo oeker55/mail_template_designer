@@ -3,6 +3,13 @@
   command = "npm run build"
   publish = "dist"
 
+# API proxy - browser calls /api over HTTPS, Netlify forwards to backend
+[[redirects]]
+  from = "/api/*"
+  to = "http://80.225.238.243:3000/api/:splat"
+  status = 200
+  force = true
+
 # SPA routing - tüm route'ları index.html'e yönlendir
 [[redirects]]
   from = "/*"
