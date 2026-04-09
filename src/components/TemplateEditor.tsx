@@ -4,6 +4,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend'
 import ElementPalette from './ElementPalette'
 import Canvas from './Canvas'
 import PropertyEditor from './PropertyEditor'
+import AITemplateGenerator from './AITemplateGenerator'
 import { ELEMENT_TYPES } from '../config/elementTypes'
 import { generateEmailHTML } from '../utils/htmlGenerator'
 import { templateAPI, mailAPI } from '../utils/api'
@@ -14,6 +15,7 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ subjectId, scode, fcode
   const [templateName, setTemplateName] = useState<string>(title || 'Yeni Template')
   const [testEmail, setTestEmail] = useState<string>('oeker55@outlook.com')
   const [showTestEmailPopup, setShowTestEmailPopup] = useState<boolean>(false)
+  const [showAIGenerator, setShowAIGenerator] = useState<boolean>(false)
   const [elements, setElements] = useState<CanvasElement[]>([])
   const [selectedElement, setSelectedElement] = useState<CanvasElement | null>(null)
   const [saving, setSaving] = useState<boolean>(false)
@@ -114,6 +116,11 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ subjectId, scode, fcode
     newElements.splice(dragIndex, 1)
     newElements.splice(hoverIndex, 0, draggedElement)
     setElements(newElements)
+  }
+
+  const handleAIGenerated = (aiElements: CanvasElement[]) => {
+    setElements(prev => [...prev, ...aiElements])
+    setShowAIGenerator(false)
   }
 
   const handleSave = async () => {
@@ -218,6 +225,18 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ subjectId, scode, fcode
           <div className="editor-header-right">
             {/* Hazır Şablonlar Butonu */}
             
+            {/* AI ile Oluştur Butonu */}
+            <button
+              className="btn btn-ai"
+              onClick={() => setShowAIGenerator(true)}
+              title="Ekran görüntüsünden AI ile şablon oluştur"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+              </svg>
+              AI ile Oluştur
+            </button>
+
             <span className="header-divider"></span>
             
             {/* Şablon Yönetimi Butonları */}
@@ -260,6 +279,14 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ subjectId, scode, fcode
           </div>
         </div>
         
+        {/* AI Template Generator Panel */}
+        {showAIGenerator && (
+          <AITemplateGenerator
+            onGenerated={handleAIGenerated}
+            onClose={() => setShowAIGenerator(false)}
+          />
+        )}
+
         {/* Test Email Popup */}
         {showTestEmailPopup && (
           <div className="test-email-popup-overlay" onClick={() => setShowTestEmailPopup(false)}>
