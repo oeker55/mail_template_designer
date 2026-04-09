@@ -309,6 +309,7 @@ export interface Template {
   title: string // Konu başlığı
   elements_json: CanvasElement[] | string
   html_content?: string
+  custom_css?: string
   createdAt?: string
   created_at?: string
   updatedAt?: string
@@ -358,6 +359,7 @@ export interface TemplateData {
   title: string
   elements_json: CanvasElement[]
   html_content?: string
+  custom_css?: string
 }
 
 export interface MailSendData {
@@ -379,6 +381,7 @@ export interface CanvasProps {
   onSelectElement: (element: CanvasElement) => void
   onDeleteElement: (id: string) => void
   onReorderElements: (dragIndex: number, hoverIndex: number) => void
+  customCSS?: string
 }
 
 export interface CanvasElementComponentProps {

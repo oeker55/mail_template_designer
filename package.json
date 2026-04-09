@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
+    "@monaco-editor/react": "^4.7.0",
     "@react-email/components": "^1.0.1",
     "@react-email/render": "^2.0.0",
     "axios": "^1.6.0",

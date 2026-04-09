@@ -19,12 +19,13 @@ import { CanvasElement } from '../types'
 import { ElementPropsBase, getMargin, getPadding, getColumnPadding, getColumnMargin } from './spacing'
 
 // React Email kullanarak mail-safe HTML generator
-export const generateEmailHTML = async (elements: CanvasElement[], templateName: string = 'Email Template'): Promise<string> => {
+export const generateEmailHTML = async (elements: CanvasElement[], templateName: string = 'Email Template', customCSS: string = ''): Promise<string> => {
   // React Email component'i oluştur
   const EmailTemplate: React.FC = () => (
     <Html>
       <Head>
         <title>{templateName}</title>
+        {customCSS && <style dangerouslySetInnerHTML={{ __html: customCSS }} />}
       </Head>
       <Body style={{ margin: 0, padding: 0, backgroundColor: '#f5f5f5' }}>
         <Container style={{ backgroundColor: '#ffffff', maxWidth: '600px' }}>

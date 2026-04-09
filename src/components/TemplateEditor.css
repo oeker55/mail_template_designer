@@ -88,6 +88,16 @@
   border-color: var(--border-dark) !important;
 }
 
+.btn-active {
+  background: #4A90D9 !important;
+  color: white !important;
+  border: 1px solid #3a7bc8 !important;
+}
+
+.btn-active:hover {
+  background: #3a7bc8 !important;
+}
+
 .btn-save {
   background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
   color: white;

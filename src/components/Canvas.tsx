@@ -19,7 +19,8 @@ const Canvas: React.FC<CanvasProps> = ({
   selectedElement, 
   onSelectElement, 
   onDeleteElement, 
-  onReorderElements 
+  onReorderElements,
+  customCSS 
 }) => {
   const canvasRef = useRef<HTMLDivElement>(null)
 
@@ -43,6 +44,7 @@ const Canvas: React.FC<CanvasProps> = ({
           className={`canvas ${isOver ? 'canvas-dragover' : ''}`}
         >
           <div className="canvas-email-preview">
+            {customCSS && <style dangerouslySetInnerHTML={{ __html: customCSS }} />}
             {elements.length === 0 ? (
               <div className="canvas-empty">
                 <EmptyIcon />

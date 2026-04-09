@@ -1,0 +1,97 @@
+/* Code Panel - Bottom panel with live preview, HTML code, and CSS editor */
+
+.code-panel {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-secondary, #1e1e1e);
+  border-top: 2px solid var(--border-medium, #333);
+  position: relative;
+  z-index: 40;
+}
+
+/* Resize Handle */
+.code-panel-resize-handle {
+  height: 6px;
+  background: var(--bg-tertiary, #2d2d2d);
+  cursor: ns-resize;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  flex-shrink: 0;
+  transition: background 0.15s ease;
+}
+
+.code-panel-resize-handle:hover,
+.code-panel-resize-handle.active {
+  background: var(--primary, #4A90D9);
+}
+
+.resize-dots {
+  font-size: 8px;
+  color: var(--text-muted, #888);
+  letter-spacing: 2px;
+  line-height: 1;
+}
+
+.code-panel-resize-handle:hover .resize-dots,
+.code-panel-resize-handle.active .resize-dots {
+  color: white;
+}
+
+/* Tab Bar */
+.code-panel-tabs {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #1e1e1e;
+  border-bottom: 1px solid #333;
+  padding: 0 8px;
+  height: 36px;
+  flex-shrink: 0;
+}
+
+.code-panel-tabs-left {
+  display: flex;
+  gap: 2px;
+  align-items: center;
+}
+
+.code-panel-tab {
+  padding: 6px 14px;
+  border: none;
+  background: transparent;
+  color: #999;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-bottom: 2px solid transparent;
+  transition: all 0.15s ease;
+  height: 36px;
+  white-space: nowrap;
+}
+
+.code-panel-tab:hover {
+  color: #ddd;
+  background: rgba(255,255,255,0.05);
+}
+
+.code-panel-tab.active {
+  color: #fff;
+  border-bottom-color: #4A90D9;
+  background: rgba(74,144,217,0.1);
+}
+
+.tab-icon {
+  font-size: 13px;
+}
+
+/* Content */
+.code-panel-content {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}

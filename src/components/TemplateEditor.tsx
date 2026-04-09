@@ -5,6 +5,7 @@ import ElementPalette from './ElementPalette'
 import Canvas from './Canvas'
 import PropertyEditor from './PropertyEditor'
 import AITemplateGenerator from './AITemplateGenerator'
+import CodePanel from './CodePanel'
 import { ELEMENT_TYPES } from '../config/elementTypes'
 import { generateEmailHTML } from '../utils/htmlGenerator'
 import { templateAPI, mailAPI } from '../utils/api'
@@ -16,6 +17,8 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ subjectId, scode, fcode
   const [testEmail, setTestEmail] = useState<string>('oeker55@outlook.com')
   const [showTestEmailPopup, setShowTestEmailPopup] = useState<boolean>(false)
   const [showAIGenerator, setShowAIGenerator] = useState<boolean>(false)
+  const [showCodePanel, setShowCodePanel] = useState<boolean>(false)
+  const [customCSS, setCustomCSS] = useState<string>('')
   const [elements, setElements] = useState<CanvasElement[]>([])
   const [selectedElement, setSelectedElement] = useState<CanvasElement | null>(null)
   const [saving, setSaving] = useState<boolean>(false)
@@ -54,6 +57,7 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ subjectId, scode, fcode
           : template.elements_json
         
         setElements(elementsData || [])
+        setCustomCSS(template.custom_css || '')
       } else {
         // Template yoksa bulunamadı
         setTemplateName(title)
@@ -128,7 +132,7 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ subjectId, scode, fcode
       setSaving(true)
       
       // HTML generate et (async)
-      const html = await generateEmailHTML(elements, templateName)
+      const html = await generateEmailHTML(elements, templateName, customCSS)
       
       // Template verisi - scode, subjectId, title ile kaydet
       const templateData = {
@@ -138,7 +142,8 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ subjectId, scode, fcode
         subjectId: subjectId,
         title: title,
         elements_json: elements, // JSON olarak elementleri kaydet (düzenleme için)
-        html_content: html // HTML olarak da kaydet (mail gönderme için)
+        html_content: html, // HTML olarak da kaydet (mail gönderme için)
+        custom_css: customCSS // Custom CSS kaydet
       }
 
       let savedTemplate: Template
@@ -172,7 +177,7 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ subjectId, scode, fcode
       setSaving(true)
       
       // HTML generate et
-      const html = await generateEmailHTML(elements, templateName)
+      const html = await generateEmailHTML(elements, templateName, customCSS)
       
       // Test maili gönder
       await mailAPI.sendTest(html, testEmail, `Test: ${templateName}`)
@@ -189,7 +194,7 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ subjectId, scode, fcode
 
   const handlePreview = async () => {
     try {
-      const html = await generateEmailHTML(elements, templateName)
+      const html = await generateEmailHTML(elements, templateName, customCSS)
       const previewWindow = window.open('', '_blank')
       if (previewWindow) {
         previewWindow.document.write(html)
@@ -259,6 +264,13 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ subjectId, scode, fcode
                 <circle cx="12" cy="12" r="3"/>
               </svg>
               Önizle
+            </button>
+            <button className={`btn ${showCodePanel ? 'btn-active' : 'btn-preview'}`} onClick={() => setShowCodePanel(!showCodePanel)} title="Kod Editörü & Canlı Önizleme">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <polyline points="16 18 22 12 16 6"/>
+                <polyline points="8 6 2 12 8 18"/>
+              </svg>
+              Kod Editörü
             </button>
             <button 
               className="btn btn-save" 
@@ -385,6 +397,7 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ subjectId, scode, fcode
                 onSelectElement={setSelectedElement}
                 onDeleteElement={handleDeleteElement}
                 onReorderElements={handleReorderElements}
+                customCSS={customCSS}
               />
               
               <PropertyEditor
@@ -394,6 +407,16 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ subjectId, scode, fcode
             </>
           )}
         </div>
+
+        {/* Code Panel (bottom) */}
+        {showCodePanel && !templateNotFound && (
+          <CodePanel
+            elements={elements}
+            templateName={templateName}
+            customCSS={customCSS}
+            onCustomCSSChange={setCustomCSS}
+          />
+        )}
       </div>
     </DndProvider>
   )
