@@ -58,6 +58,7 @@ const renderElement = (element: CanvasElement): React.ReactNode => {
     case 'text':
       return (
         <Text
+          className={`email-text el-${element.id}`}
           style={{
             fontSize: (p.fontSize as number) + 'px',
             fontWeight: p.fontWeight as string,
@@ -77,6 +78,7 @@ const renderElement = (element: CanvasElement): React.ReactNode => {
     case 'heading':
       return (
         <Heading
+          className={`email-heading el-${element.id}`}
           as={p.as as 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'}
           style={{
             fontSize: (p.fontSize as number) + 'px',
@@ -172,11 +174,12 @@ const renderElement = (element: CanvasElement): React.ReactNode => {
       }
 
       return (
-        <Section style={{ padding: p.padding as string, backgroundColor: p.backgroundColor as string }}>
+        <Section className={`email-multi-column el-${element.id}`} style={{ padding: p.padding as string, backgroundColor: p.backgroundColor as string }}>
           <Row>
             {columns && columns.map((col, index) => (
               <Column 
-                key={index} 
+                key={index}
+                className={`email-column email-column-${(col.type as string) || 'text'}`}
                 style={{ 
                   width: col.width as string, 
                   paddingRight: index !== columns.length - 1 ? (p.gap as number) / 2 : 0,
@@ -203,12 +206,13 @@ const renderElement = (element: CanvasElement): React.ReactNode => {
       ]
 
       return (
-        <Section style={{ padding: p.padding as string, textAlign: p.align as 'left' | 'center' | 'right' }}>
+        <Section className={`email-social el-${element.id}`} style={{ padding: p.padding as string, textAlign: p.align as 'left' | 'center' | 'right' }}>
           {socialIcons.map(icon => {
             if (!p[icon.key]) return null
             return (
               <Link
                 key={icon.key}
+                className="email-social-link"
                 href={p[icon.key] as string}
                 target="_blank"
                 style={{ 
@@ -242,6 +246,7 @@ const renderElement = (element: CanvasElement): React.ReactNode => {
       
       const imgElement = (
         <Img
+          className="email-image"
           src={p.src as string}
           alt={p.alt as string}
           height={p.height as number || undefined}
@@ -251,7 +256,7 @@ const renderElement = (element: CanvasElement): React.ReactNode => {
       )
       
       return (
-        <Section style={{ 
+        <Section className={`email-image-wrapper el-${element.id}`} style={{ 
           margin: imgMargin,
           padding: imgPadding,
           backgroundColor: imgBgColor
@@ -272,8 +277,9 @@ const renderElement = (element: CanvasElement): React.ReactNode => {
     
     case 'button':
       return (
-        <Section style={{ textAlign: (p.textAlign as 'left' | 'center' | 'right') || 'center' }}>
+        <Section className={`email-button-wrapper el-${element.id}`} style={{ textAlign: (p.textAlign as 'left' | 'center' | 'right') || 'center' }}>
           <Button
+            className="email-button"
             href={p.href as string}
             style={{
               fontSize: (p.fontSize as number) + 'px',
@@ -292,6 +298,7 @@ const renderElement = (element: CanvasElement): React.ReactNode => {
     case 'link':
       return (
         <Link
+          className={`email-link el-${element.id}`}
           href={p.href as string}
           style={{
             color: p.color as string,
@@ -306,6 +313,7 @@ const renderElement = (element: CanvasElement): React.ReactNode => {
     case 'hr':
       return (
         <Hr
+          className={`email-hr el-${element.id}`}
           style={{
             borderColor: p.borderColor as string,
             margin: p.margin as string
@@ -316,6 +324,7 @@ const renderElement = (element: CanvasElement): React.ReactNode => {
     case 'section':
       return (
         <Section
+          className={`email-section el-${element.id}`}
           style={{
             backgroundColor: p.backgroundColor as string,
             padding: p.padding as string,
@@ -338,6 +347,7 @@ const renderElement = (element: CanvasElement): React.ReactNode => {
       if (productDisplayMode === 'card') {
         return (
           <Section 
+            className={`email-product-row email-product-card el-${element.id}`}
             style={{ padding: p.padding as string }}
             data-repeat-start={repeatKey}
             data-repeat-item={itemAlias}
@@ -455,6 +465,7 @@ const renderElement = (element: CanvasElement): React.ReactNode => {
       // TABLO GÖRÜNÜMÜ için HTML
       return (
         <Section 
+          className={`email-product-row email-product-table el-${element.id}`}
           style={{ padding: p.padding as string }}
           data-repeat-start={repeatKey}
           data-repeat-item={itemAlias}
@@ -633,7 +644,7 @@ const renderElement = (element: CanvasElement): React.ReactNode => {
       const infoMarginLeft = (p.marginLeft as number) || 0
 
       return (
-        <Section style={{ 
+        <Section className={`email-info-table el-${element.id}`} style={{ 
           paddingTop: infoMarginTop + 'px',
           paddingRight: infoMarginRight + 'px', 
           paddingBottom: infoMarginBottom + 'px',

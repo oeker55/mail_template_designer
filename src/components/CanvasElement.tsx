@@ -84,6 +84,7 @@ const CanvasElement: React.FC<CanvasElementComponentProps> = ({
       case 'text':
         return (
           <div
+            className={`email-text el-${element.id}`}
             style={{
               fontSize: `${p.fontSize}px`,
               fontWeight: p.fontWeight as string,
@@ -105,6 +106,7 @@ const CanvasElement: React.FC<CanvasElementComponentProps> = ({
         return React.createElement(
           HeadingTag,
           {
+            className: `email-heading el-${element.id}`,
             style: {
               fontSize: `${p.fontSize}px`,
               fontWeight: p.fontWeight as string,
@@ -195,14 +197,14 @@ const CanvasElement: React.FC<CanvasElementComponentProps> = ({
         }
 
         return (
-          <div style={{ 
+          <div className={`email-multi-column el-${element.id}`} style={{ 
             display: 'flex', 
             gap: `${p.gap}px`,
             padding: p.padding as string,
             backgroundColor: p.backgroundColor as string
           }}>
             {columns && columns.map((col, idx) => (
-              <div key={idx} style={{ 
+              <div key={idx} className={`email-column email-column-${(col.type as string) || 'text'}`} style={{ 
                 width: col.width as string, 
                 wordBreak: 'break-word',
                 ...getColumnBorderStyle(col)
@@ -223,7 +225,7 @@ const CanvasElement: React.FC<CanvasElementComponentProps> = ({
         ]
 
         return (
-          <div style={{ 
+          <div className={`email-social el-${element.id}`} style={{ 
             display: 'flex', 
             justifyContent: p.align === 'center' ? 'center' : p.align === 'right' ? 'flex-end' : 'flex-start',
             gap: `${p.gap}px`,
@@ -233,7 +235,8 @@ const CanvasElement: React.FC<CanvasElementComponentProps> = ({
               if (!p[icon.key]) return null
               return (
                 <a 
-                  key={icon.key} 
+                  key={icon.key}
+                  className="email-social-link"
                   href={p[icon.key] as string} 
                   target="_blank" 
                   rel="noopener noreferrer"
@@ -264,13 +267,14 @@ const CanvasElement: React.FC<CanvasElementComponentProps> = ({
         const imgBgColor = p.backgroundColor && p.backgroundColor !== 'transparent' ? p.backgroundColor as string : undefined
         
         return (
-          <div style={{ 
+          <div className={`email-image-wrapper el-${element.id}`} style={{ 
             textAlign: (p.textAlign as 'left' | 'center' | 'right') || 'center', 
             margin: imgMargin,
             padding: imgPadding,
             backgroundColor: imgBgColor
           }}>
             <img
+              className="email-image"
               src={p.src as string}
               alt={p.alt as string}
               height={(p.height as string) || 'auto'}
@@ -286,8 +290,9 @@ const CanvasElement: React.FC<CanvasElementComponentProps> = ({
 
       case 'button':
         return (
-          <div style={{ textAlign: (p.textAlign as 'left' | 'center' | 'right') || 'center', margin: '10px 0' }}>
+          <div className={`email-button-wrapper el-${element.id}`} style={{ textAlign: (p.textAlign as 'left' | 'center' | 'right') || 'center', margin: '10px 0' }}>
             <a
+              className="email-button"
               href={p.href as string}
               style={{
                 display: 'inline-block',
@@ -308,6 +313,7 @@ const CanvasElement: React.FC<CanvasElementComponentProps> = ({
       case 'link':
         return (
           <a
+            className={`email-link el-${element.id}`}
             href={p.href as string}
             style={{
               color: p.color as string,
@@ -322,6 +328,7 @@ const CanvasElement: React.FC<CanvasElementComponentProps> = ({
       case 'hr':
         return (
           <hr
+            className={`email-hr el-${element.id}`}
             style={{
               borderColor: p.borderColor as string,
               margin: p.margin as string,
@@ -334,6 +341,7 @@ const CanvasElement: React.FC<CanvasElementComponentProps> = ({
       case 'section':
         return (
           <div
+            className={`email-section el-${element.id}`}
             style={{
               backgroundColor: p.backgroundColor as string,
               padding: p.padding as string,
@@ -357,7 +365,7 @@ const CanvasElement: React.FC<CanvasElementComponentProps> = ({
         // KART GÖRÜNÜMÜ
         if (displayMode === 'card') {
           return (
-            <div style={{ 
+            <div className={`email-product-row email-product-card el-${element.id}`} style={{ 
               padding: p.padding as string,
               width: p.tableWidth as string
             }}>
@@ -444,7 +452,7 @@ const CanvasElement: React.FC<CanvasElementComponentProps> = ({
         
         // TABLO GÖRÜNÜMÜ
         return (
-          <div style={{ 
+          <div className={`email-product-row email-product-table el-${element.id}`} style={{ 
             padding: p.padding as string,
             width: p.tableWidth as string
           }}>
@@ -560,7 +568,7 @@ const CanvasElement: React.FC<CanvasElementComponentProps> = ({
         }
         
         return (
-          <div style={{ 
+          <div className={`email-info-table el-${element.id}`} style={{ 
             width: (p.tableWidth as string) || '100%',
             margin: getMargin(p)
           }}>
