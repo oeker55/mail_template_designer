@@ -8,6 +8,7 @@ export { default as SpacingInput } from './SpacingInput'
 export { default as SpacingControl } from './SpacingControl'
 export { default as VariableSelector } from './VariableSelector'
 export { default as RichTextEditor } from './RichTextEditor'
+export { default as MonacoPropertyEditor } from './MonacoPropertyEditor'
 
 export {
   FONT_WEIGHT_OPTIONS,

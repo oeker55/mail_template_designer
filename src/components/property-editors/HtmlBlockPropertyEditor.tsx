@@ -1,6 +1,6 @@
 import React from 'react'
 import { ElementEditorProps } from './types'
-import { ColorInput, SpacingControl } from '../ui'
+import { ColorInput, MonacoPropertyEditor, SpacingControl } from '../ui'
 
 const HtmlBlockPropertyEditor: React.FC<ElementEditorProps> = ({ element, onChange }) => {
   const p = element.props
@@ -9,12 +9,17 @@ const HtmlBlockPropertyEditor: React.FC<ElementEditorProps> = ({ element, onChan
     <>
       <div className="property-item">
         <label className="property-label">HTML</label>
-        <textarea
+        <MonacoPropertyEditor
           value={(p.html as string) || ''}
-          onChange={(e) => onChange('html', e.target.value)}
-          className="property-input property-textarea html-block-textarea"
-          spellCheck={false}
-          placeholder="<table>...</table>"
+          onChange={(value) => onChange('html', value)}
+          language="html"
+          height={320}
+          path={`html-block-${element.id}.html`}
+          className="html-block-monaco-editor"
+          options={{
+            formatOnPaste: true,
+            formatOnType: true,
+          }}
         />
         <p className="rich-text-help">Email uyumlulugu icin tablo ve inline style kullanin.</p>
       </div>

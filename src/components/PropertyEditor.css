@@ -510,6 +510,33 @@
   line-height: 1.45;
 }
 
+.monaco-property-editor {
+  width: 100%;
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.rich-text-editor .monaco-property-editor {
+  border-top-color: var(--border-light);
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+}
+
+.html-block-monaco-editor {
+  min-height: 260px;
+}
+
+.monaco-property-loading {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding: 10px;
+  color: var(--text-muted);
+  font-size: 11px;
+  background: #ffffff;
+}
+
 .rich-text-help {
   font-size: 10px;
   color: var(--text-muted);
