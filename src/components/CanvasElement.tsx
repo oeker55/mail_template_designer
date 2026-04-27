@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from 'react'
 import { useDrag, useDrop } from 'react-dnd'
 import { CanvasElementComponentProps } from '../types'
 import { ElementPropsBase, getMargin, getPadding, getColumnPadding, getColumnMargin } from '../utils/spacing'
+import InlineHtmlBlock from './InlineHtmlBlock'
 import './CanvasElement.css'
 
 interface DragItem {
@@ -15,7 +16,8 @@ const CanvasElement: React.FC<CanvasElementComponentProps> = ({
   isSelected, 
   onSelect, 
   onDelete, 
-  onReorder 
+  onReorder,
+  onUpdateElement
 }) => {
   const ref = useRef<HTMLDivElement>(null)
   const [isNew, setIsNew] = useState(true)
@@ -354,14 +356,12 @@ const CanvasElement: React.FC<CanvasElementComponentProps> = ({
 
       case 'html_block':
         return (
-          <div
-            className={`email-html-block el-${element.id}`}
-            style={{
-              backgroundColor: p.backgroundColor && p.backgroundColor !== 'transparent' ? p.backgroundColor as string : undefined,
-              margin: getMargin(p),
-              padding: getPadding(p)
-            }}
-            dangerouslySetInnerHTML={{ __html: (p.html as string) || '' }}
+          <InlineHtmlBlock
+            elementId={element.id}
+            props={p}
+            isSelected={isSelected}
+            onSelect={onSelect}
+            onHtmlChange={(html) => onUpdateElement(element.id, { html })}
           />
         )
 

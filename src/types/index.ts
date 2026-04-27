@@ -398,6 +398,7 @@ export interface CanvasProps {
   onSelectElement: (element: CanvasElement) => void
   onDeleteElement: (id: string) => void
   onReorderElements: (dragIndex: number, hoverIndex: number) => void
+  onUpdateElement: (elementId: string, newProps: Record<string, unknown>) => void
   customCSS?: string
 }
 
@@ -408,6 +409,7 @@ export interface CanvasElementComponentProps {
   onSelect: () => void
   onDelete: () => void
   onReorder: (dragIndex: number, hoverIndex: number) => void
+  onUpdateElement: (elementId: string, newProps: Record<string, unknown>) => void
 }
 
 export interface ElementPaletteProps {

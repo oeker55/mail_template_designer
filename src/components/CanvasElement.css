@@ -41,6 +41,82 @@
   width: 100%;
 }
 
+.html-inline-editor-shell {
+  position: relative;
+  width: 100%;
+}
+
+.email-html-block .html-inline-edit-target {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  cursor: text;
+}
+
+.email-html-block .html-inline-image-target {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
+}
+
+.email-html-block [contenteditable="true"] {
+  min-height: 1em;
+}
+
+.email-html-block [contenteditable="true"]:focus {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.html-inline-toolbar {
+  position: absolute;
+  z-index: 25;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  max-width: calc(100% - 16px);
+  padding: 6px;
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-sm);
+  background: var(--bg-secondary);
+  box-shadow: var(--shadow-md);
+}
+
+.html-inline-number-input,
+.html-inline-select,
+.html-inline-url-input {
+  height: 28px;
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-sm);
+  background: white;
+  color: var(--text-primary);
+  font-size: 12px;
+}
+
+.html-inline-number-input {
+  width: 58px;
+  padding: 0 6px;
+}
+
+.html-inline-select {
+  width: 78px;
+  padding: 0 4px;
+}
+
+.html-inline-url-input {
+  width: min(360px, calc(100vw - 320px));
+  min-width: 220px;
+  padding: 0 8px;
+}
+
+.html-inline-color-input {
+  width: 28px;
+  height: 28px;
+  padding: 2px;
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-sm);
+  background: white;
+  cursor: pointer;
+}
+
 .element-controls {
   position: absolute;
   top: 0px;

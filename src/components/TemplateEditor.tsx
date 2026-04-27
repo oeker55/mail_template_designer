@@ -436,6 +436,7 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ subjectId, scode, fcode
                 onSelectElement={setSelectedElement}
                 onDeleteElement={handleDeleteElement}
                 onReorderElements={handleReorderElements}
+                onUpdateElement={handleUpdateElement}
                 customCSS={customCSS}
               />
               

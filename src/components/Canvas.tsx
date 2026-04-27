@@ -20,6 +20,7 @@ const Canvas: React.FC<CanvasProps> = ({
   onSelectElement, 
   onDeleteElement, 
   onReorderElements,
+  onUpdateElement,
   customCSS 
 }) => {
   const canvasRef = useRef<HTMLDivElement>(null)
@@ -61,6 +62,7 @@ const Canvas: React.FC<CanvasProps> = ({
                   onSelect={() => onSelectElement(element)}
                   onDelete={() => onDeleteElement(element.id)}
                   onReorder={onReorderElements}
+                  onUpdateElement={onUpdateElement}
                 />
               ))
             )}
