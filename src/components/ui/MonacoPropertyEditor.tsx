@@ -9,6 +9,8 @@ interface MonacoPropertyEditorProps {
   height?: number | string
   path?: string
   className?: string
+  theme?: string
+  formatOnMount?: boolean
   onMount?: OnMount
   options?: MonacoEditor.IStandaloneEditorConstructionOptions
 }
@@ -23,6 +25,8 @@ const baseOptions: MonacoEditor.IStandaloneEditorConstructionOptions = {
   glyphMargin: false,
   folding: false,
   wordWrap: 'on',
+  formatOnPaste: true,
+  formatOnType: true,
   scrollBeyondLastLine: false,
   automaticLayout: true,
   overviewRulerLanes: 0,
@@ -44,9 +48,23 @@ const MonacoPropertyEditor: React.FC<MonacoPropertyEditorProps> = ({
   height = 160,
   path,
   className,
+  theme = 'vs-dark',
+  formatOnMount = true,
   onMount,
   options,
 }) => {
+  const handleMount: OnMount = (editor, monaco) => {
+    onMount?.(editor, monaco)
+
+    if (!formatOnMount) return
+
+    requestAnimationFrame(() => {
+      editor.getAction('editor.action.formatDocument')?.run().then(() => {
+        onChange(editor.getValue())
+      }).catch(() => undefined)
+    })
+  }
+
   return (
     <div
       className={`monaco-property-editor ${className || ''}`}
@@ -57,9 +75,9 @@ const MonacoPropertyEditor: React.FC<MonacoPropertyEditorProps> = ({
         language={language}
         path={path}
         value={value}
-        theme="light"
+        theme={theme}
         loading={<div className="monaco-property-loading">Editor yukleniyor...</div>}
-        onMount={onMount}
+        onMount={handleMount}
         onChange={(nextValue) => onChange(nextValue || '')}
         options={{
           ...baseOptions,

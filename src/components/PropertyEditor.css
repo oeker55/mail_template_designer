@@ -1,7 +1,7 @@
 /* Property Editor - Professional Design */
 .property-editor {
-  width: 300px;
-  min-width: 300px;
+  width: 400px;
+  min-width: 400px;
   background: var(--bg-secondary);
   border-left: 1px solid var(--border-light);
   display: flex;
@@ -515,7 +515,7 @@
   border: 1px solid var(--border-medium);
   border-radius: var(--radius-md);
   overflow: hidden;
-  background: #ffffff;
+  background: #1e1e1e;
 }
 
 .rich-text-editor .monaco-property-editor {
@@ -532,9 +532,9 @@
   align-items: center;
   height: 100%;
   padding: 10px;
-  color: var(--text-muted);
+  color: #9ca3af;
   font-size: 11px;
-  background: #ffffff;
+  background: #1e1e1e;
 }
 
 .rich-text-help {
