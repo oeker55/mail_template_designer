@@ -352,6 +352,19 @@ const CanvasElement: React.FC<CanvasElementComponentProps> = ({
           </div>
         )
 
+      case 'html_block':
+        return (
+          <div
+            className={`email-html-block el-${element.id}`}
+            style={{
+              backgroundColor: p.backgroundColor && p.backgroundColor !== 'transparent' ? p.backgroundColor as string : undefined,
+              margin: getMargin(p),
+              padding: getPadding(p)
+            }}
+            dangerouslySetInnerHTML={{ __html: (p.html as string) || '' }}
+          />
+        )
+
       case 'product_row':
         const productColumns = p.columns as Array<Record<string, unknown>>
         const displayMode = (p.displayMode as string) || 'card'

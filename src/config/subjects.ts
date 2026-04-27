@@ -43,4 +43,6 @@ export const EMAIL_SUBJECTS = [
   { id: '41', title: 'Personel Tarafından Müşteri İade Talep İptali' },
   { id: '42', title: 'Açılmadan Gelen İade Teslim Alındığında' },
   { id: '43', title: 'Müşteriden Gelen İade Teslim Alındığında' },
+  { id: '44', title: 'Soul Stretch Yoga Seans Daveti' },
+  { id: '45', title: 'FinBank Hoş Geldiniz' },
 ]

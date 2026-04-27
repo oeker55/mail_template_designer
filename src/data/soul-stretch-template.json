@@ -1,0 +1,27 @@
+{
+  "name": "Soul Stretch Yoga Seans Daveti",
+  "fcode": "LOCAL_FIRMA",
+  "scode": "LOCAL_MAGAZA",
+  "subjectId": "44",
+  "title": "Soul Stretch Yoga Seans Daveti",
+  "elements_json": [
+    {
+      "id": "el_soul_stretch_html_001",
+      "type": "html_block",
+      "props": {
+        "html": "<table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" style=\"width:100%;margin:0;background:#ffffff;\"><tr><td align=\"center\" style=\"padding:0;\"><img src=\"https://corp-backend.brevo.com/wp-content/uploads/2025/04/welcome1.webp\" width=\"600\" alt=\"Soul Stretch yoga email template\" style=\"display:block;width:100%;max-width:600px;height:auto;border:0;outline:none;text-decoration:none;\"></td></tr></table>",
+        "backgroundColor": "#ffffff",
+        "marginTop": 0,
+        "marginRight": 0,
+        "marginBottom": 0,
+        "marginLeft": 0,
+        "paddingTop": 0,
+        "paddingRight": 0,
+        "paddingBottom": 0,
+        "paddingLeft": 0
+      }
+    }
+  ],
+  "html_content": "<!doctype html><html><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>Soul Stretch Yoga Seans Daveti</title></head><body style=\"margin:0;padding:0;background:#f5f5f5;\"><table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" style=\"width:100%;background:#f5f5f5;margin:0;\"><tr><td align=\"center\" style=\"padding:0;\"><table role=\"presentation\" width=\"600\" cellpadding=\"0\" cellspacing=\"0\" style=\"width:600px;max-width:100%;background:#ffffff;margin:0 auto;\"><tr><td align=\"center\" style=\"padding:0;\"><img src=\"https://corp-backend.brevo.com/wp-content/uploads/2025/04/welcome1.webp\" width=\"600\" alt=\"Soul Stretch yoga email template\" style=\"display:block;width:100%;max-width:600px;height:auto;border:0;outline:none;text-decoration:none;\"></td></tr></table></td></tr></table></body></html>",
+  "custom_css": ""
+}

@@ -503,6 +503,13 @@
   line-height: 1.5;
 }
 
+.html-block-textarea {
+  min-height: 260px;
+  font-family: 'JetBrains Mono', 'Consolas', monospace;
+  font-size: 11px;
+  line-height: 1.45;
+}
+
 .rich-text-help {
   font-size: 10px;
   color: var(--text-muted);

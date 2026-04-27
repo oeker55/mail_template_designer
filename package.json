@@ -24,6 +24,8 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "seed:soul-stretch": "node seed-soul-stretch-template.js",
+    "seed:finbank": "node seed-finbank-template.js"
   }
 }

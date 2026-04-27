@@ -10,7 +10,14 @@ import { ELEMENT_TYPES } from '../config/elementTypes'
 import { generateEmailHTML } from '../utils/htmlGenerator'
 import { templateAPI, mailAPI } from '../utils/api'
 import { TemplateEditorProps, CanvasElement, Template } from '../types'
+import soulStretchTemplate from '../data/soul-stretch-template.json'
+import finbankWelcomeTemplate from '../data/finbank-welcome-template.json'
 import './TemplateEditor.css'
+
+const PRESET_TEMPLATES: Record<string, { title?: string; name?: string; elements_json: unknown; custom_css?: string }> = {
+  '44': soulStretchTemplate,
+  '45': finbankWelcomeTemplate
+}
 
 const TemplateEditor: React.FC<TemplateEditorProps> = ({ subjectId, scode, fcode, title, isCreateMode, onBack }) => {
   const [templateName, setTemplateName] = useState<string>(title || 'Yeni Template')
@@ -26,8 +33,28 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ subjectId, scode, fcode
   const [templateNotFound, setTemplateNotFound] = useState<boolean>(false)
   const [existingTemplateId, setExistingTemplateId] = useState<string | null>(null)
 
+  const loadPresetTemplate = (presetTemplate: { title?: string; name?: string; elements_json: unknown; custom_css?: string }) => {
+    const elementsData = typeof presetTemplate.elements_json === 'string'
+      ? JSON.parse(presetTemplate.elements_json)
+      : presetTemplate.elements_json
+
+    setTemplateName(presetTemplate.title || presetTemplate.name || title || 'Yeni Template')
+    setExistingTemplateId(null)
+    setTemplateNotFound(false)
+    setElements((elementsData || []) as CanvasElement[])
+    setCustomCSS(presetTemplate.custom_css || '')
+    setSelectedElement(null)
+  }
+
   useEffect(() => {
     if (isCreateMode) {
+      const presetTemplate = PRESET_TEMPLATES[subjectId]
+      if (presetTemplate) {
+        loadPresetTemplate(presetTemplate)
+        setLoading(false)
+        return
+      }
+
       setTemplateName(title || 'Yeni Template')
       setExistingTemplateId(null)
       setTemplateNotFound(false)
@@ -60,6 +87,12 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ subjectId, scode, fcode
         setCustomCSS(template.custom_css || '')
       } else {
         // Template yoksa bulunamadı
+        const presetTemplate = PRESET_TEMPLATES[subjectId]
+        if (presetTemplate) {
+          loadPresetTemplate(presetTemplate)
+          return
+        }
+
         setTemplateName(title)
         setExistingTemplateId(null)
         setTemplateNotFound(true)
@@ -68,6 +101,12 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ subjectId, scode, fcode
     } catch (error) {
       // 404 veya hata durumunda bulunamadı göster
       console.log('Template bulunamadı:', error)
+      const presetTemplate = PRESET_TEMPLATES[subjectId]
+      if (presetTemplate) {
+        loadPresetTemplate(presetTemplate)
+        return
+      }
+
       setTemplateName(title)
       setExistingTemplateId(null)
       setTemplateNotFound(true)

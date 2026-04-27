@@ -4,6 +4,8 @@ import { TemplateListProps, Template } from '../types'
 import { EMAIL_SUBJECTS } from '../config/subjects'
 import './TemplateList.css'
 
+const PRESET_SUBJECT_IDS = ['44', '45']
+
 const TemplateList: React.FC<TemplateListProps> = ({ onEdit, onCreate }) => {
   const [existingSubjectIds, setExistingSubjectIds] = useState<string[]>([])
   const [loading, setLoading] = useState<boolean>(true)
@@ -112,13 +114,16 @@ const TemplateList: React.FC<TemplateListProps> = ({ onEdit, onCreate }) => {
             ) : (
               filteredSubjects.map(subject => {
                 const templateExists = hasTemplate(subject.id)
+                const presetExists = PRESET_SUBJECT_IDS.includes(subject.id)
                 return (
-                  <tr key={subject.id} className={templateExists ? 'has-template' : 'no-template'}>
+                  <tr key={subject.id} className={templateExists || presetExists ? 'has-template' : 'no-template'}>
                     <td>{subject.id}</td>
                     <td>{subject.title}</td>
                     <td>
                       {templateExists ? (
                         <span className="status-ready">Tasarım Var</span>
+                      ) : presetExists ? (
+                        <span className="status-ready">Hazir Sablon</span>
                       ) : (
                         <span className="status-missing">Tasarım Yok</span>
                       )}

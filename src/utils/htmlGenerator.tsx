@@ -335,6 +335,19 @@ const renderElement = (element: CanvasElement): React.ReactNode => {
         </Section>
       )
 
+    case 'html_block':
+      return (
+        <div
+          className={`email-html-block el-${element.id}`}
+          style={{
+            backgroundColor: p.backgroundColor && p.backgroundColor !== 'transparent' ? p.backgroundColor as string : undefined,
+            margin: getMargin(p),
+            padding: getPadding(p)
+          }}
+          dangerouslySetInnerHTML={{ __html: (p.html as string) || '' }}
+        />
+      )
+
     case 'product_row':
       // Product Row - Tekrarlanabilir Ürün Satırı
       // Bu element backend'de repeatKey array'ine göre çoğaltılacak

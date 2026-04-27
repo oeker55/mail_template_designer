@@ -11,6 +11,7 @@ export const ICONS: Record<string, string> = {
   link: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>`,
   hr: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 12h14"/></svg>`,
   section: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>`,
+  html_block: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M8 9l-4 3 4 3"/><path d="M16 9l4 3-4 3"/><path d="M14 4l-4 16"/></svg>`,
   column: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="9" y="3" width="6" height="18" rx="1"/></svg>`,
   social: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="9"/><path d="M12 3a15.3 15.3 0 0 1 4 9 15.3 15.3 0 0 1-4 9 15.3 15.3 0 0 1-4-9 15.3 15.3 0 0 1 4-9z"/><path d="M3 12h18"/></svg>`,
   product_row: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="2" y="3" width="20" height="18" rx="2"/><path d="M2 9h20M2 15h20M8 9v12M16 9v12"/><circle cx="5" cy="12" r="1.5" fill="currentColor"/><circle cx="5" cy="18" r="1.5" fill="currentColor"/></svg>`,
@@ -258,6 +259,24 @@ export const ELEMENT_TYPES: Record<string, ElementTypeConfig> = {
       backgroundColor: 'transparent',
       padding: '20px',
       borderRadius: 0
+    }
+  },
+  HTML_BLOCK: {
+    id: 'html_block',
+    name: 'HTML Blok',
+    icon: 'html_block',
+    component: 'HtmlBlock',
+    defaultProps: {
+      html: '<table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td style="padding:16px;text-align:center;font-family:Arial,sans-serif;">HTML iceriginizi buraya ekleyin.</td></tr></table>',
+      backgroundColor: 'transparent',
+      marginTop: 0,
+      marginRight: 0,
+      marginBottom: 10,
+      marginLeft: 0,
+      paddingTop: 0,
+      paddingRight: 0,
+      paddingBottom: 0,
+      paddingLeft: 0
     }
   },
   COLUMN: {

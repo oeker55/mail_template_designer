@@ -143,6 +143,21 @@ export interface SectionProps {
   content?: string
 }
 
+export interface HtmlBlockProps {
+  html: string
+  backgroundColor: string
+  marginTop: number
+  marginRight: number
+  marginBottom: number
+  marginLeft: number
+  paddingTop: number
+  paddingRight: number
+  paddingBottom: number
+  paddingLeft: number
+  margin?: string
+  padding?: string
+}
+
 export interface ColumnProps {
   width: string
 }
@@ -262,6 +277,7 @@ export type ElementProps =
   | LinkProps 
   | HrProps 
   | SectionProps 
+  | HtmlBlockProps
   | ColumnProps 
   | SocialProps
   | ProductRowProps
@@ -277,6 +293,7 @@ export type ElementType =
   | 'link' 
   | 'hr' 
   | 'section' 
+  | 'html_block'
   | 'column' 
   | 'social'
   | 'product_row'
