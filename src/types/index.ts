@@ -188,7 +188,19 @@ export interface ProductRowColumnData {
   // Image specific
   imgWidth?: number
   imgHeight?: number
+  linkEnabled?: boolean
+  linkVariableKey?: string
 }
+
+export type ProductRowDisplayMode =
+  | 'card'
+  | 'table'
+  | 'gallery'
+  | 'compact'
+  | 'split'
+  | 'feature'
+  | 'receipt'
+  | 'poster'
 
 export interface ProductRowProps {
   // Repeater ayarları
@@ -196,6 +208,64 @@ export interface ProductRowProps {
   repeatKey: string  // Backend'de kullanılacak array key (örn: "order_items", "products")
   repeatItemAlias: string  // Her item için alias (örn: "item", "product")
   
+  // Gorunum ve kart/gorsel alanlar
+  displayMode: ProductRowDisplayMode
+  cardLayout: 'horizontal' | 'vertical'
+  cardBgColor: string
+  cardBorderColor: string
+  cardBorderRadius: number
+  cardPadding: string
+  cardGap: number
+  cardShadow: boolean
+  cardImgWidth: number
+  cardImgHeight: number
+  cardImgBorderRadius: number
+  cardImgVariableKey: string
+  cardImgLinkEnabled: boolean
+  cardImgLinkIsStatic: boolean
+  cardImgLinkVariableKey: string
+  cardImgLinkStaticUrl: string
+  cardTitleVariableKey: string
+  cardTitleFontSize: number
+  cardTitleFontWeight: string
+  cardTitleColor: string
+  cardSubtitleVariableKey: string
+  cardSubtitleFontSize: number
+  cardSubtitleColor: string
+  cardPriceVariableKey: string
+  cardPriceFontSize: number
+  cardPriceFontWeight: string
+  cardPriceColor: string
+  visualColumns: number
+  visualGap: number
+  visualTextAlign: 'left' | 'center' | 'right'
+  visualImageHeight: number
+  visualImageFit: 'cover' | 'contain'
+  visualTitleTextTransform: string
+  visualSubtitleTextTransform: string
+  visualSubtitleLetterSpacing: number
+  visualMetaVariableKey: string
+  visualQuantityVariableKey: string
+  visualSkuVariableKey: string
+  visualBadgeText: string
+  visualBadgeBgColor: string
+  visualBadgeTextColor: string
+  visualAccentColor: string
+  ctaEnabled: boolean
+  ctaText: string
+  ctaLinkVariableKey: string
+  ctaLinkIsStatic: boolean
+  ctaStaticUrl: string
+  ctaBgColor: string
+  ctaTextColor: string
+  ctaBorderColor: string
+  ctaBorderRadius: number
+  ctaFontSize: number
+  ctaFontWeight: string
+  ctaPadding: string
+  ctaLetterSpacing: number
+  ctaTextTransform: string
+
   // Tablo stilleri
   showHeader: boolean
   headerBgColor: string

@@ -354,6 +354,39 @@ export const ELEMENT_TYPES: Record<string, ElementTypeConfig> = {
       cardPriceFontSize: 15,
       cardPriceFontWeight: 'bold',
       cardPriceColor: '#f57c00',
+
+      // === GORSEL URUN MODU ORTAK AYARLARI ===
+      visualColumns: 3,
+      visualGap: 18,
+      visualTextAlign: 'left',
+      visualImageHeight: 230,
+      visualImageFit: 'cover',
+      visualTitleTextTransform: 'none',
+      visualSubtitleTextTransform: 'uppercase',
+      visualSubtitleLetterSpacing: 3,
+      visualMetaVariableKey: 'item.details',
+      visualQuantityVariableKey: 'item.quantity',
+      visualSkuVariableKey: 'item.sku',
+      visualBadgeText: 'Yeni',
+      visualBadgeBgColor: '#111111',
+      visualBadgeTextColor: '#ffffff',
+      visualAccentColor: '#e85d5d',
+
+      // CTA / buton ayarlari (galeri, vitrin, poster, split)
+      ctaEnabled: false,
+      ctaText: 'Incele',
+      ctaLinkVariableKey: 'item.url',
+      ctaLinkIsStatic: false,
+      ctaStaticUrl: '',
+      ctaBgColor: '#444444',
+      ctaTextColor: '#ffffff',
+      ctaBorderColor: '#444444',
+      ctaBorderRadius: 0,
+      ctaFontSize: 13,
+      ctaFontWeight: 'normal',
+      ctaPadding: '12px 24px',
+      ctaLetterSpacing: 2,
+      ctaTextTransform: 'uppercase',
       
       // === TABLO MODU AYARLARI ===
       // Tablo başlık stilleri

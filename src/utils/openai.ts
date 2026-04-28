@@ -201,7 +201,7 @@ ${variableDefs}
 4. Her elementin benzersiz bir id'si olsun (el_<timestamp> formatında)
 5. Logo/banner için "image" elementi kullan
 6. Sipariş bilgileri gibi 2 sütunlu alanlar için "multi_column" kullan
-7. Ürün tablo listesi için "product_row" kullan (displayMode: "table")
+7. Urun listeleri icin "product_row" kullan; tablo icin displayMode: "table", gorsel kataloglar icin "gallery", buyuk urun sunumu icin "feature", kompakt siparis satiri icin "compact"
 8. Sipariş özeti (alt toplam, vergi vs.) için "info_table" kullan
 9. Sadece JSON array döndür, başka bir şey yazma
 10. Tüm prop'ları ilgili element tipinin defaultProps yapısına uygun doldur - eksik prop bırakma`

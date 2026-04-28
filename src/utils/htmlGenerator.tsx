@@ -355,6 +355,136 @@ const renderElement = (element: CanvasElement): React.ReactNode => {
       const repeatKey = String(p.repeatKey || 'order_items')
       const itemAlias = String(p.repeatItemAlias || 'item')
       const productDisplayMode = (p.displayMode as string) || 'card'
+      const defaultVisualTextAlign = ['gallery', 'feature', 'poster'].includes(productDisplayMode) ? 'center' : 'left'
+      const visualTextAlign = ((p.visualTextAlign as 'left' | 'center' | 'right') || defaultVisualTextAlign)
+      const visualGap = (p.visualGap as number) || (p.cardGap as number) || 12
+      const visualImageHeight = (p.visualImageHeight as number) || (p.cardImgHeight as number) || 160
+      const visualImageFit = (p.visualImageFit as React.CSSProperties['objectFit']) || 'cover'
+      const titleKey = (p.cardTitleVariableKey as string) || 'item.name'
+      const subtitleKey = (p.cardSubtitleVariableKey as string) || 'item.details'
+      const priceKey = (p.cardPriceVariableKey as string) || 'item.price'
+      const imgKey = (p.cardImgVariableKey as string) || 'item.image_url'
+      const defaultCtaEnabled = ['gallery', 'split', 'feature', 'poster'].includes(productDisplayMode)
+      const ctaEnabled = typeof p.ctaEnabled === 'boolean' ? (p.ctaEnabled as boolean) : defaultCtaEnabled
+      const textTransform = (value: unknown, fallback: React.CSSProperties['textTransform'] = 'none') =>
+        (value as React.CSSProperties['textTransform']) || fallback
+      const token = (key: string) => `[[${key}]]`
+      const ctaHref = Boolean(p.ctaLinkIsStatic)
+        ? (p.ctaStaticUrl as string) || '#'
+        : token((p.ctaLinkVariableKey as string) || 'item.url')
+      const imageHref = Boolean(p.cardImgLinkIsStatic)
+        ? (p.cardImgLinkStaticUrl as string) || '#'
+        : token((p.cardImgLinkVariableKey as string) || 'item.url')
+
+      const renderProductImage = (
+        width: number,
+        height: number,
+        style: React.CSSProperties = {}
+      ) => {
+        const image = (
+          <Img
+            src={token(imgKey)}
+            alt="Urun"
+            width={width}
+            height={height}
+            style={{
+              display: 'block',
+              width: '100%',
+              maxWidth: width + 'px',
+              height: height + 'px',
+              objectFit: visualImageFit,
+              borderRadius: ((p.cardImgBorderRadius as number) || 0) + 'px',
+              border: 'none',
+              outline: 'none',
+              ...style
+            }}
+          />
+        )
+
+        if (!Boolean(p.cardImgLinkEnabled)) return image
+
+        return (
+          <Link href={imageHref} style={{ display: 'block', textDecoration: 'none' }}>
+            {image}
+          </Link>
+        )
+      }
+
+      const renderTitle = (style: React.CSSProperties = {}) => (
+        <Text style={{
+          margin: 0,
+          padding: 0,
+          fontSize: ((p.cardTitleFontSize as number) || 14) + 'px',
+          fontWeight: (p.cardTitleFontWeight as string) || 'normal',
+          color: (p.cardTitleColor as string) || '#333333',
+          fontFamily: 'Arial, Helvetica, sans-serif',
+          lineHeight: '1.25',
+          textTransform: textTransform(p.visualTitleTextTransform),
+          ...style
+        }}>
+          {token(titleKey)}
+        </Text>
+      )
+
+      const renderSubtitle = (style: React.CSSProperties = {}) => (
+        <Text style={{
+          margin: 0,
+          padding: 0,
+          fontSize: ((p.cardSubtitleFontSize as number) || 13) + 'px',
+          color: (p.cardSubtitleColor as string) || '#666666',
+          fontFamily: 'Arial, Helvetica, sans-serif',
+          lineHeight: '1.35',
+          textTransform: textTransform(p.visualSubtitleTextTransform),
+          letterSpacing: ((p.visualSubtitleLetterSpacing as number) || 0) + 'px',
+          ...style
+        }}>
+          {token(subtitleKey)}
+        </Text>
+      )
+
+      const renderPrice = (style: React.CSSProperties = {}) => (
+        <Text style={{
+          margin: 0,
+          padding: 0,
+          fontSize: ((p.cardPriceFontSize as number) || 15) + 'px',
+          fontWeight: (p.cardPriceFontWeight as string) || 'bold',
+          color: (p.cardPriceColor as string) || '#f57c00',
+          fontFamily: 'Arial, Helvetica, sans-serif',
+          lineHeight: '1.25',
+          ...style
+        }}>
+          {token(priceKey)}
+        </Text>
+      )
+
+      const renderCta = (style: React.CSSProperties = {}) => {
+        if (!ctaEnabled) return null
+
+        return (
+          <Link
+            href={ctaHref}
+            style={{
+              display: 'inline-block',
+              padding: (p.ctaPadding as string) || '12px 24px',
+              backgroundColor: (p.ctaBgColor as string) || '#444444',
+              color: (p.ctaTextColor as string) || '#ffffff',
+              border: `1px solid ${(p.ctaBorderColor as string) || (p.ctaBgColor as string) || '#444444'}`,
+              borderRadius: ((p.ctaBorderRadius as number) || 0) + 'px',
+              fontSize: ((p.ctaFontSize as number) || 13) + 'px',
+              fontWeight: (p.ctaFontWeight as string) || 'normal',
+              fontFamily: 'Arial, Helvetica, sans-serif',
+              lineHeight: '1',
+              letterSpacing: ((p.ctaLetterSpacing as number) || 0) + 'px',
+              textTransform: textTransform(p.ctaTextTransform, 'uppercase'),
+              textDecoration: 'none',
+              textAlign: 'center',
+              ...style
+            }}
+          >
+            {(p.ctaText as string) || 'Incele'}
+          </Link>
+        )
+      }
       
       // KART GÖRÜNÜMÜ için HTML
       if (productDisplayMode === 'card') {
@@ -468,6 +598,7 @@ const renderElement = (element: CanvasElement): React.ReactNode => {
                   >
                     {`[[${(p.cardPriceVariableKey as string) || 'item.price'}]]`}
                   </Text>
+                  {renderCta({ marginTop: '10px' })}
                 </td>
               </tr>
             </table>
@@ -476,6 +607,264 @@ const renderElement = (element: CanvasElement): React.ReactNode => {
       }
       
       // TABLO GÖRÜNÜMÜ için HTML
+      if (productDisplayMode === 'gallery') {
+        const columns = Math.min(Math.max(Number(p.visualColumns) || 3, 1), 4)
+        const tileWidth = `${100 / columns}%`
+
+        return (
+          <Section
+            className={`email-product-row email-product-gallery el-${element.id}`}
+            style={{ padding: p.padding as string, textAlign: 'center' }}
+            data-repeat-start={repeatKey}
+            data-repeat-item={itemAlias}
+          >
+            <table
+              role="presentation"
+              cellPadding="0"
+              cellSpacing="0"
+              data-repeat-row="true"
+              style={{
+                width: tileWidth,
+                display: 'inline-table',
+                verticalAlign: 'top',
+                marginBottom: visualGap + 'px'
+              }}
+            >
+              <tr>
+                <td style={{
+                  padding: Math.max(Math.round(visualGap / 2), 0) + 'px',
+                  textAlign: visualTextAlign,
+                  backgroundColor: (p.cardBgColor as string) || '#ffffff',
+                  border: `1px solid ${(p.cardBorderColor as string) || 'transparent'}`,
+                  borderRadius: ((p.cardBorderRadius as number) || 0) + 'px',
+                  fontFamily: 'Arial, Helvetica, sans-serif'
+                }}>
+                  {renderProductImage((p.cardImgWidth as number) || 180, visualImageHeight, {
+                    maxWidth: '100%',
+                    margin: visualTextAlign === 'center' ? '0 auto' : visualTextAlign === 'right' ? '0 0 0 auto' : '0'
+                  })}
+                  {renderTitle({ marginTop: '14px', marginBottom: '6px', fontSize: Math.max((p.cardTitleFontSize as number) || 18, 18) + 'px' })}
+                  {renderSubtitle({ marginBottom: '18px' })}
+                  {renderCta({ width: '100%', boxSizing: 'border-box' })}
+                </td>
+              </tr>
+            </table>
+          </Section>
+        )
+      }
+
+      if (productDisplayMode === 'compact') {
+        return (
+          <Section
+            className={`email-product-row email-product-compact el-${element.id}`}
+            style={{ padding: p.padding as string }}
+            data-repeat-start={repeatKey}
+            data-repeat-item={itemAlias}
+          >
+            <table
+              role="presentation"
+              cellPadding="0"
+              cellSpacing="0"
+              width="100%"
+              data-repeat-row="true"
+              style={{
+                width: (p.tableWidth as string) || '100%',
+                backgroundColor: (p.cardBgColor as string) || '#ffffff',
+                borderBottom: `1px solid ${(p.rowBorderColor as string) || (p.cardBorderColor as string) || '#eeeeee'}`
+              }}
+            >
+              <tr>
+                <td width={(p.cardImgWidth as number) || 58} style={{ padding: (p.cardPadding as string) || '10px 0', paddingRight: visualGap + 'px', verticalAlign: 'middle' }}>
+                  {renderProductImage((p.cardImgWidth as number) || 58, (p.cardImgHeight as number) || 58)}
+                </td>
+                <td style={{ padding: (p.cardPadding as string) || '10px 0', verticalAlign: 'middle', textAlign: 'left' }}>
+                  {renderTitle({ marginBottom: '4px' })}
+                  {renderSubtitle({ fontSize: ((p.cardSubtitleFontSize as number) || 12) + 'px' })}
+                </td>
+                <td style={{ padding: (p.cardPadding as string) || '10px 0', verticalAlign: 'middle', textAlign: 'right', whiteSpace: 'nowrap' }}>
+                  {renderPrice()}
+                </td>
+              </tr>
+            </table>
+          </Section>
+        )
+      }
+
+      if (productDisplayMode === 'split') {
+        return (
+          <Section
+            className={`email-product-row email-product-split el-${element.id}`}
+            style={{ padding: p.padding as string }}
+            data-repeat-start={repeatKey}
+            data-repeat-item={itemAlias}
+          >
+            <table
+              role="presentation"
+              cellPadding="0"
+              cellSpacing="0"
+              width="100%"
+              data-repeat-row="true"
+              style={{
+                width: (p.tableWidth as string) || '100%',
+                backgroundColor: (p.cardBgColor as string) || '#ffffff',
+                border: `1px solid ${(p.cardBorderColor as string) || '#eeeeee'}`,
+                borderRadius: ((p.cardBorderRadius as number) || 8) + 'px',
+                marginBottom: visualGap + 'px'
+              }}
+            >
+              <tr>
+                <td width="45%" style={{ verticalAlign: 'top' }}>
+                  {renderProductImage(260, visualImageHeight, { borderRadius: '0', maxWidth: '100%' })}
+                </td>
+                <td style={{ padding: (p.cardPadding as string) || '18px', verticalAlign: 'middle', textAlign: visualTextAlign }}>
+                  {renderSubtitle({ marginBottom: '8px', color: (p.visualAccentColor as string) || '#e85d5d' })}
+                  {renderTitle({ marginBottom: '10px', fontSize: Math.max((p.cardTitleFontSize as number) || 18, 18) + 'px' })}
+                  {renderPrice({ marginBottom: '18px' })}
+                  {renderCta()}
+                </td>
+              </tr>
+            </table>
+          </Section>
+        )
+      }
+
+      if (productDisplayMode === 'feature') {
+        return (
+          <Section
+            className={`email-product-row email-product-feature el-${element.id}`}
+            style={{ padding: p.padding as string, textAlign: visualTextAlign }}
+            data-repeat-start={repeatKey}
+            data-repeat-item={itemAlias}
+          >
+            <table
+              role="presentation"
+              cellPadding="0"
+              cellSpacing="0"
+              width="100%"
+              data-repeat-row="true"
+              style={{
+                width: (p.tableWidth as string) || '100%',
+                backgroundColor: (p.cardBgColor as string) || '#ffffff',
+                border: `1px solid ${(p.cardBorderColor as string) || 'transparent'}`,
+                borderRadius: ((p.cardBorderRadius as number) || 0) + 'px',
+                marginBottom: visualGap + 'px'
+              }}
+            >
+              <tr>
+                <td style={{ padding: (p.cardPadding as string) || '0', textAlign: visualTextAlign }}>
+                  {renderProductImage(600, visualImageHeight, { maxWidth: '100%' })}
+                  {renderTitle({ marginTop: '18px', marginBottom: '8px', fontSize: Math.max((p.cardTitleFontSize as number) || 22, 22) + 'px' })}
+                  {renderSubtitle({ marginBottom: '10px' })}
+                  {renderPrice({ marginBottom: '18px' })}
+                  {renderCta()}
+                </td>
+              </tr>
+            </table>
+          </Section>
+        )
+      }
+
+      if (productDisplayMode === 'receipt') {
+        return (
+          <Section
+            className={`email-product-row email-product-receipt el-${element.id}`}
+            style={{ padding: p.padding as string }}
+            data-repeat-start={repeatKey}
+            data-repeat-item={itemAlias}
+          >
+            <table
+              role="presentation"
+              cellPadding="0"
+              cellSpacing="0"
+              width="100%"
+              data-repeat-row="true"
+              style={{
+                width: (p.tableWidth as string) || '100%',
+                backgroundColor: (p.cardBgColor as string) || '#ffffff',
+                borderBottom: `1px solid ${(p.rowBorderColor as string) || '#eeeeee'}`
+              }}
+            >
+              <tr>
+                <td width="46" style={{ padding: (p.cardPadding as string) || '12px 0', verticalAlign: 'middle' }}>
+                  <table role="presentation" cellPadding="0" cellSpacing="0" style={{ width: '34px', height: '34px', backgroundColor: (p.visualAccentColor as string) || '#e85d5d', borderRadius: '17px' }}>
+                    <tr>
+                      <td align="center" valign="middle" style={{ color: '#ffffff', fontSize: '12px', fontWeight: 'bold', fontFamily: 'Arial, Helvetica, sans-serif' }}>
+                        {token((p.visualQuantityVariableKey as string) || 'item.quantity')}
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+                <td width="64" style={{ padding: (p.cardPadding as string) || '12px 0', paddingRight: '12px', verticalAlign: 'middle' }}>
+                  {renderProductImage(58, 58)}
+                </td>
+                <td style={{ padding: (p.cardPadding as string) || '12px 0', verticalAlign: 'middle', textAlign: 'left' }}>
+                  {renderTitle({ marginBottom: '4px' })}
+                  {renderSubtitle({ marginBottom: '3px', fontSize: '12px' })}
+                  <Text style={{ margin: 0, padding: 0, fontSize: '11px', color: '#888888', fontFamily: 'Arial, Helvetica, sans-serif' }}>
+                    {token((p.visualSkuVariableKey as string) || 'item.sku')}
+                  </Text>
+                </td>
+                <td style={{ padding: (p.cardPadding as string) || '12px 0', verticalAlign: 'middle', textAlign: 'right', whiteSpace: 'nowrap' }}>
+                  {renderPrice()}
+                </td>
+              </tr>
+            </table>
+          </Section>
+        )
+      }
+
+      if (productDisplayMode === 'poster') {
+        return (
+          <Section
+            className={`email-product-row email-product-poster el-${element.id}`}
+            style={{ padding: p.padding as string }}
+            data-repeat-start={repeatKey}
+            data-repeat-item={itemAlias}
+          >
+            <table
+              role="presentation"
+              cellPadding="0"
+              cellSpacing="0"
+              width="100%"
+              data-repeat-row="true"
+              style={{
+                width: (p.tableWidth as string) || '100%',
+                backgroundColor: (p.cardBgColor as string) || '#111111',
+                borderRadius: ((p.cardBorderRadius as number) || 0) + 'px',
+                marginBottom: visualGap + 'px'
+              }}
+            >
+              <tr>
+                <td style={{ padding: 0 }}>
+                  {renderProductImage(600, visualImageHeight, { maxWidth: '100%', borderRadius: '0' })}
+                </td>
+              </tr>
+              <tr>
+                <td style={{ padding: (p.cardPadding as string) || '18px', textAlign: visualTextAlign }}>
+                  <Text style={{
+                    display: 'inline-block',
+                    margin: '0 0 10px 0',
+                    padding: '6px 10px',
+                    backgroundColor: (p.visualBadgeBgColor as string) || '#111111',
+                    color: (p.visualBadgeTextColor as string) || '#ffffff',
+                    fontFamily: 'Arial, Helvetica, sans-serif',
+                    fontSize: '11px',
+                    letterSpacing: '1px',
+                    textTransform: 'uppercase'
+                  }}>
+                    {(p.visualBadgeText as string) || 'Yeni'}
+                  </Text>
+                  {renderSubtitle({ color: (p.visualAccentColor as string) || '#e85d5d', marginBottom: '8px' })}
+                  {renderTitle({ color: (p.cardTitleColor as string) || '#ffffff', marginBottom: '10px', fontSize: Math.max((p.cardTitleFontSize as number) || 22, 22) + 'px' })}
+                  {renderPrice({ marginBottom: '16px' })}
+                  {renderCta()}
+                </td>
+              </tr>
+            </table>
+          </Section>
+        )
+      }
+
       return (
         <Section 
           className={`email-product-row email-product-table el-${element.id}`}

@@ -374,6 +374,101 @@ const CanvasElement: React.FC<CanvasElementComponentProps> = ({
         const titleVarKey = (p.cardTitleVariableKey as string) || 'item.name'
         const subtitleVarKey = (p.cardSubtitleVariableKey as string) || 'item.details'
         const priceVarKey = (p.cardPriceVariableKey as string) || 'item.price'
+        const defaultVisualTextAlign = ['gallery', 'feature', 'poster'].includes(displayMode) ? 'center' : 'left'
+        const visualTextAlign = ((p.visualTextAlign as 'left' | 'center' | 'right') || defaultVisualTextAlign)
+        const visualGap = (p.visualGap as number) || (p.cardGap as number) || 12
+        const visualImageHeight = (p.visualImageHeight as number) || (p.cardImgHeight as number) || 160
+        const defaultCtaEnabled = ['gallery', 'split', 'feature', 'poster'].includes(displayMode)
+        const ctaEnabled = typeof p.ctaEnabled === 'boolean' ? (p.ctaEnabled as boolean) : defaultCtaEnabled
+        const ctaText = (p.ctaText as string) || 'Incele'
+        const titleTransform = (p.visualTitleTextTransform as React.CSSProperties['textTransform']) || 'none'
+        const subtitleTransform = (p.visualSubtitleTextTransform as React.CSSProperties['textTransform']) || 'none'
+
+        const productImagePlaceholder = (
+          width: number | string,
+          height: number | string,
+          extraStyle: React.CSSProperties = {}
+        ) => (
+          <div style={{
+            width,
+            height,
+            backgroundColor: '#f0f0f0',
+            borderRadius: `${p.cardImgBorderRadius || 4}px`,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            border: '2px dashed #ccc',
+            boxSizing: 'border-box',
+            ...extraStyle
+          }}>
+            <span style={{
+              fontSize: '10px',
+              color: '#666',
+              textAlign: 'center',
+              padding: '4px',
+              wordBreak: 'break-all'
+            }}>
+              [[{imgVarKey}]]
+            </span>
+          </div>
+        )
+
+        const productTitlePlaceholder = (extraStyle: React.CSSProperties = {}) => (
+          <div style={{
+            fontSize: `${p.cardTitleFontSize || 14}px`,
+            fontWeight: (p.cardTitleFontWeight as string) || 'normal',
+            color: (p.cardTitleColor as string) || '#333333',
+            textTransform: titleTransform,
+            lineHeight: 1.25,
+            ...extraStyle
+          }}>
+            [[{titleVarKey}]]
+          </div>
+        )
+
+        const productSubtitlePlaceholder = (extraStyle: React.CSSProperties = {}) => (
+          <div style={{
+            fontSize: `${p.cardSubtitleFontSize || 13}px`,
+            color: (p.cardSubtitleColor as string) || '#666666',
+            textTransform: subtitleTransform,
+            letterSpacing: `${(p.visualSubtitleLetterSpacing as number) || 0}px`,
+            lineHeight: 1.35,
+            ...extraStyle
+          }}>
+            [[{subtitleVarKey}]]
+          </div>
+        )
+
+        const productPricePlaceholder = (extraStyle: React.CSSProperties = {}) => (
+          <div style={{
+            fontSize: `${p.cardPriceFontSize || 15}px`,
+            fontWeight: (p.cardPriceFontWeight as string) || 'bold',
+            color: (p.cardPriceColor as string) || '#f57c00',
+            lineHeight: 1.25,
+            ...extraStyle
+          }}>
+            [[{priceVarKey}]]
+          </div>
+        )
+
+        const productCtaPlaceholder = (extraStyle: React.CSSProperties = {}) => ctaEnabled ? (
+          <div style={{
+            display: 'inline-block',
+            padding: (p.ctaPadding as string) || '12px 24px',
+            backgroundColor: (p.ctaBgColor as string) || '#444444',
+            color: (p.ctaTextColor as string) || '#ffffff',
+            border: `1px solid ${(p.ctaBorderColor as string) || (p.ctaBgColor as string) || '#444444'}`,
+            borderRadius: `${(p.ctaBorderRadius as number) || 0}px`,
+            fontSize: `${(p.ctaFontSize as number) || 13}px`,
+            fontWeight: (p.ctaFontWeight as string) || 'normal',
+            letterSpacing: `${(p.ctaLetterSpacing as number) || 0}px`,
+            textTransform: (p.ctaTextTransform as React.CSSProperties['textTransform']) || 'uppercase',
+            lineHeight: 1,
+            ...extraStyle
+          }}>
+            {ctaText}
+          </div>
+        ) : null
         
         // KART GÖRÜNÜMÜ
         if (displayMode === 'card') {
@@ -385,6 +480,7 @@ const CanvasElement: React.FC<CanvasElementComponentProps> = ({
               {/* Tek kart önizlemesi - sadece placeholder'lar */}
               <div style={{
                 display: 'flex',
+                flexDirection: (p.cardLayout as string) === 'vertical' ? 'column' : 'row',
                 alignItems: 'flex-start',
                 gap: `${p.cardGap || 12}px`,
                 padding: (p.cardPadding as string) || '12px',
@@ -417,7 +513,7 @@ const CanvasElement: React.FC<CanvasElementComponentProps> = ({
                 </div>
                 
                 {/* Ürün Bilgileri Placeholder'ları */}
-                <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ flex: 1, minWidth: 0, width: '100%', textAlign: visualTextAlign }}>
                   {/* Başlık Placeholder */}
                   <div style={{
                     fontSize: `${p.cardTitleFontSize || 14}px`,
@@ -457,6 +553,7 @@ const CanvasElement: React.FC<CanvasElementComponentProps> = ({
                   }}>
                     [[{priceVarKey}]]
                   </div>
+                  {productCtaPlaceholder({ marginTop: '8px' })}
                 </div>
               </div>
             </div>
@@ -464,6 +561,172 @@ const CanvasElement: React.FC<CanvasElementComponentProps> = ({
         }
         
         // TABLO GÖRÜNÜMÜ
+        if (displayMode === 'gallery') {
+          const previewColumns = Math.min(Math.max(Number(p.visualColumns) || 3, 1), 4)
+          return (
+            <div className={`email-product-row email-product-gallery el-${element.id}`} style={{ padding: p.padding as string, width: p.tableWidth as string }}>
+              <div style={{ display: 'grid', gridTemplateColumns: `repeat(${previewColumns}, minmax(0, 1fr))`, gap: `${visualGap}px`, textAlign: visualTextAlign }}>
+                {Array.from({ length: previewColumns }).map((_, index) => (
+                  <div key={index} style={{
+                    backgroundColor: (p.cardBgColor as string) || '#ffffff',
+                    border: `1px solid ${(p.cardBorderColor as string) || 'transparent'}`,
+                    borderRadius: `${p.cardBorderRadius || 0}px`,
+                    padding: (p.cardPadding as string) || '0',
+                    boxShadow: p.cardShadow ? '0 2px 8px rgba(0,0,0,0.12)' : 'none'
+                  }}>
+                    {productImagePlaceholder('100%', visualImageHeight)}
+                    {productTitlePlaceholder({ marginTop: '14px', marginBottom: '6px' })}
+                    {productSubtitlePlaceholder({ marginBottom: '18px' })}
+                    {productCtaPlaceholder({ width: '100%', boxSizing: 'border-box', textAlign: 'center' })}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )
+        }
+
+        if (displayMode === 'compact') {
+          return (
+            <div className={`email-product-row email-product-compact el-${element.id}`} style={{ padding: p.padding as string, width: p.tableWidth as string }}>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: `${visualGap}px`,
+                padding: (p.cardPadding as string) || '10px 0',
+                backgroundColor: (p.cardBgColor as string) || '#ffffff',
+                borderBottom: `1px solid ${(p.rowBorderColor as string) || (p.cardBorderColor as string) || '#eeeeee'}`
+              }}>
+                {productImagePlaceholder((p.cardImgWidth as number) || 58, (p.cardImgHeight as number) || 58)}
+                <div style={{ flex: 1, minWidth: 0, textAlign: 'left' }}>
+                  {productTitlePlaceholder({ marginBottom: '4px' })}
+                  {productSubtitlePlaceholder({ fontSize: `${(p.cardSubtitleFontSize as number) || 12}px` })}
+                </div>
+                {productPricePlaceholder({ textAlign: 'right', whiteSpace: 'nowrap' })}
+              </div>
+            </div>
+          )
+        }
+
+        if (displayMode === 'split') {
+          return (
+            <div className={`email-product-row email-product-split el-${element.id}`} style={{ padding: p.padding as string, width: p.tableWidth as string }}>
+              <div style={{
+                display: 'flex',
+                gap: `${visualGap}px`,
+                alignItems: 'stretch',
+                backgroundColor: (p.cardBgColor as string) || '#ffffff',
+                border: `1px solid ${(p.cardBorderColor as string) || '#eeeeee'}`,
+                borderRadius: `${p.cardBorderRadius || 8}px`,
+                overflow: 'hidden',
+                boxShadow: p.cardShadow ? '0 2px 8px rgba(0,0,0,0.12)' : 'none'
+              }}>
+                <div style={{ width: '45%', flexShrink: 0 }}>
+                  {productImagePlaceholder('100%', visualImageHeight, { borderRadius: 0, borderLeft: 'none', borderTop: 'none', borderBottom: 'none' })}
+                </div>
+                <div style={{ flex: 1, padding: (p.cardPadding as string) || '18px', textAlign: visualTextAlign }}>
+                  {productSubtitlePlaceholder({ marginBottom: '8px', color: (p.visualAccentColor as string) || '#e85d5d' })}
+                  {productTitlePlaceholder({ marginBottom: '10px', fontSize: `${Math.max((p.cardTitleFontSize as number) || 16, 18)}px` })}
+                  {productPricePlaceholder({ marginBottom: '18px' })}
+                  {productCtaPlaceholder()}
+                </div>
+              </div>
+            </div>
+          )
+        }
+
+        if (displayMode === 'feature') {
+          return (
+            <div className={`email-product-row email-product-feature el-${element.id}`} style={{ padding: p.padding as string, width: p.tableWidth as string, textAlign: visualTextAlign }}>
+              <div style={{
+                backgroundColor: (p.cardBgColor as string) || '#ffffff',
+                border: `1px solid ${(p.cardBorderColor as string) || 'transparent'}`,
+                borderRadius: `${p.cardBorderRadius || 0}px`,
+                padding: (p.cardPadding as string) || '0',
+                boxShadow: p.cardShadow ? '0 2px 8px rgba(0,0,0,0.12)' : 'none'
+              }}>
+                {productImagePlaceholder('100%', visualImageHeight)}
+                {productTitlePlaceholder({ marginTop: '18px', marginBottom: '8px', fontSize: `${Math.max((p.cardTitleFontSize as number) || 18, 22)}px` })}
+                {productSubtitlePlaceholder({ marginBottom: '10px' })}
+                {productPricePlaceholder({ marginBottom: '18px' })}
+                {productCtaPlaceholder()}
+              </div>
+            </div>
+          )
+        }
+
+        if (displayMode === 'receipt') {
+          return (
+            <div className={`email-product-row email-product-receipt el-${element.id}`} style={{ padding: p.padding as string, width: p.tableWidth as string }}>
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: '46px 64px 1fr auto',
+                gap: '12px',
+                alignItems: 'center',
+                padding: (p.cardPadding as string) || '12px 0',
+                backgroundColor: (p.cardBgColor as string) || '#ffffff',
+                borderBottom: `1px solid ${(p.rowBorderColor as string) || '#eeeeee'}`
+              }}>
+                <div style={{
+                  width: 34,
+                  height: 34,
+                  borderRadius: 17,
+                  backgroundColor: (p.visualAccentColor as string) || '#e85d5d',
+                  color: '#ffffff',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: 12,
+                  fontWeight: 'bold'
+                }}>
+                  [[{(p.visualQuantityVariableKey as string) || 'item.quantity'}]]
+                </div>
+                {productImagePlaceholder(58, 58)}
+                <div style={{ minWidth: 0, textAlign: 'left' }}>
+                  {productTitlePlaceholder({ marginBottom: '4px' })}
+                  {productSubtitlePlaceholder({ marginBottom: '3px', fontSize: '12px' })}
+                  <div style={{ fontSize: 11, color: '#888888' }}>[[{(p.visualSkuVariableKey as string) || 'item.sku'}]]</div>
+                </div>
+                {productPricePlaceholder({ textAlign: 'right', whiteSpace: 'nowrap' })}
+              </div>
+            </div>
+          )
+        }
+
+        if (displayMode === 'poster') {
+          return (
+            <div className={`email-product-row email-product-poster el-${element.id}`} style={{ padding: p.padding as string, width: p.tableWidth as string }}>
+              <div style={{
+                position: 'relative',
+                backgroundColor: (p.cardBgColor as string) || '#111111',
+                borderRadius: `${p.cardBorderRadius || 0}px`,
+                overflow: 'hidden',
+                boxShadow: p.cardShadow ? '0 2px 8px rgba(0,0,0,0.18)' : 'none'
+              }}>
+                {productImagePlaceholder('100%', visualImageHeight, { borderRadius: 0 })}
+                <div style={{
+                  position: 'absolute',
+                  top: 12,
+                  left: 12,
+                  padding: '6px 10px',
+                  backgroundColor: (p.visualBadgeBgColor as string) || '#111111',
+                  color: (p.visualBadgeTextColor as string) || '#ffffff',
+                  fontSize: 11,
+                  letterSpacing: 1,
+                  textTransform: 'uppercase'
+                }}>
+                  {(p.visualBadgeText as string) || 'Yeni'}
+                </div>
+                <div style={{ padding: (p.cardPadding as string) || '18px', textAlign: visualTextAlign }}>
+                  {productSubtitlePlaceholder({ color: (p.visualAccentColor as string) || '#e85d5d', marginBottom: '8px' })}
+                  {productTitlePlaceholder({ color: (p.cardTitleColor as string) || '#ffffff', marginBottom: '10px', fontSize: `${Math.max((p.cardTitleFontSize as number) || 18, 22)}px` })}
+                  {productPricePlaceholder({ marginBottom: '16px' })}
+                  {productCtaPlaceholder()}
+                </div>
+              </div>
+            </div>
+          )
+        }
+
         return (
           <div className={`email-product-row email-product-table el-${element.id}`} style={{ 
             padding: p.padding as string,
