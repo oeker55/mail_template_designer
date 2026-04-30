@@ -1,6 +1,18 @@
-import React, { useState, useRef, useCallback } from 'react'
+import React, { useMemo, useState, useRef, useCallback } from 'react'
 import { CanvasElement } from '../types'
-import { generateTemplateFromScreenshot, getOpenAIKey, setOpenAIKey, OPENAI_MODELS, getSelectedModel, setSelectedModel } from '../utils/openai'
+import {
+  AIProvider,
+  generateTemplateFromScreenshot,
+  getAIKey,
+  getModelsByProvider,
+  getSelectedModel,
+  getSelectedProvider,
+  MODEL_CATEGORY_LABELS,
+  PROVIDER_LABELS,
+  setAIKey,
+  setSelectedModel,
+  setSelectedProvider
+} from '../utils/openai'
 import './AITemplateGenerator.css'
 
 interface AITemplateGeneratorProps {
@@ -8,9 +20,13 @@ interface AITemplateGeneratorProps {
   onClose: () => void
 }
 
+const PROVIDERS: AIProvider[] = ['openai', 'gemini', 'groq']
+
 const AITemplateGenerator: React.FC<AITemplateGeneratorProps> = ({ onGenerated, onClose }) => {
-  const [apiKey, setApiKeyState] = useState<string>(getOpenAIKey() || '')
-  const [selectedModelId, setSelectedModelId] = useState<string>(getSelectedModel())
+  const initialProvider = getSelectedProvider()
+  const [provider, setProvider] = useState<AIProvider>(initialProvider)
+  const [apiKey, setApiKeyState] = useState<string>(getAIKey(initialProvider) || '')
+  const [selectedModelId, setSelectedModelId] = useState<string>(getSelectedModel(initialProvider))
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
@@ -19,19 +35,35 @@ const AITemplateGenerator: React.FC<AITemplateGeneratorProps> = ({ onGenerated, 
   const [isDragOver, setIsDragOver] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
+  const modelGroups = useMemo(() => {
+    const models = getModelsByProvider(provider)
+    const categories = Array.from(new Set(models.map(model => model.category)))
+
+    return categories.map(category => ({
+      category,
+      models: models.filter(model => model.category === category)
+    }))
+  }, [provider])
+
+  const handleProviderChange = (nextProvider: AIProvider) => {
+    setProvider(nextProvider)
+    setSelectedProvider(nextProvider)
+    setApiKeyState(getAIKey(nextProvider) || '')
+    setSelectedModelId(getSelectedModel(nextProvider))
+    setError('')
+  }
+
   const handleApiKeyChange = (value: string) => {
     setApiKeyState(value)
-    if (value.trim()) {
-      setOpenAIKey(value.trim())
-    }
+    setAIKey(provider, value)
   }
 
   const handleModelChange = (modelId: string) => {
     setSelectedModelId(modelId)
-    setSelectedModel(modelId)
+    setSelectedModel(modelId, provider)
   }
 
-  const processFile = (file: File) => {
+  const processFile = useCallback((file: File) => {
     if (!file.type.startsWith('image/')) {
       setError('Lütfen bir görüntü dosyası seçin (PNG, JPG, WEBP)')
       return
@@ -45,7 +77,7 @@ const AITemplateGenerator: React.FC<AITemplateGeneratorProps> = ({ onGenerated, 
     const reader = new FileReader()
     reader.onload = (e) => setImagePreview(e.target?.result as string)
     reader.readAsDataURL(file)
-  }
+  }, [])
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -57,7 +89,7 @@ const AITemplateGenerator: React.FC<AITemplateGeneratorProps> = ({ onGenerated, 
     setIsDragOver(false)
     const file = e.dataTransfer.files?.[0]
     if (file) processFile(file)
-  }, [])
+  }, [processFile])
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault()
@@ -70,7 +102,7 @@ const AITemplateGenerator: React.FC<AITemplateGeneratorProps> = ({ onGenerated, 
 
   const handleGenerate = async () => {
     if (!apiKey.trim()) {
-      setError('Lütfen OpenAI API anahtarını girin')
+      setError(`Lütfen ${PROVIDER_LABELS[provider]} API anahtarını girin`)
       return
     }
     if (!imageFile) {
@@ -78,13 +110,14 @@ const AITemplateGenerator: React.FC<AITemplateGeneratorProps> = ({ onGenerated, 
       return
     }
 
-    setOpenAIKey(apiKey.trim())
+    setAIKey(provider, apiKey.trim())
+    setSelectedModel(selectedModelId, provider)
     setLoading(true)
     setError('')
     setProgress('')
 
     try {
-      const elements = await generateTemplateFromScreenshot(imageFile, setProgress, selectedModelId)
+      const elements = await generateTemplateFromScreenshot(imageFile, setProgress, selectedModelId, provider)
       onGenerated(elements)
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Bilinmeyen hata'
@@ -110,12 +143,11 @@ const AITemplateGenerator: React.FC<AITemplateGeneratorProps> = ({ onGenerated, 
         break
       }
     }
-  }, [])
+  }, [processFile])
 
   return (
     <div className="ai-generator-overlay" onClick={onClose}>
       <div className="ai-generator-panel" onClick={(e) => e.stopPropagation()} onPaste={handlePaste}>
-        {/* Header */}
         <div className="ai-generator-header">
           <div className="ai-generator-header-left">
             <div className="ai-generator-icon">
@@ -138,28 +170,49 @@ const AITemplateGenerator: React.FC<AITemplateGeneratorProps> = ({ onGenerated, 
           </button>
         </div>
 
-        {/* Body */}
         <div className="ai-generator-body">
-          {/* API Key */}
+          <div className="ai-generator-section">
+            <label className="ai-generator-label">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z"/>
+                <path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/>
+              </svg>
+              AI Sağlayıcı
+            </label>
+            <div className="ai-provider-switch" role="tablist" aria-label="AI sağlayıcı">
+              {PROVIDERS.map(providerOption => (
+                <button
+                  key={providerOption}
+                  type="button"
+                  className={`ai-provider-option ${provider === providerOption ? 'selected' : ''}`}
+                  onClick={() => handleProviderChange(providerOption)}
+                  disabled={loading}
+                >
+                  <span className="ai-provider-dot" />
+                  {PROVIDER_LABELS[providerOption]}
+                </button>
+              ))}
+            </div>
+          </div>
+
           <div className="ai-generator-section">
             <label className="ai-generator-label">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/>
               </svg>
-              OpenAI API Anahtarı
+              {PROVIDER_LABELS[provider]} API Anahtarı
             </label>
             <input
               type="password"
               className="ai-generator-input"
               value={apiKey}
               onChange={(e) => handleApiKeyChange(e.target.value)}
-              placeholder="sk-..."
+              placeholder={provider === 'gemini' ? 'AIza...' : provider === 'groq' ? 'gsk_...' : 'sk-...'}
               autoComplete="off"
             />
             <span className="ai-generator-hint">Anahtarınız tarayıcıda yerel olarak saklanır</span>
           </div>
 
-          {/* Model Selection */}
           <div className="ai-generator-section">
             <label className="ai-generator-label">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -168,95 +221,44 @@ const AITemplateGenerator: React.FC<AITemplateGeneratorProps> = ({ onGenerated, 
               Model Seçimi
             </label>
             <div className="ai-model-list">
-              {/* Flagship */}
-              <div className="ai-model-category">Flagship — GPT-5.4 Ailesi</div>
-              {OPENAI_MODELS.filter(m => m.category === 'flagship').map((model) => (
-                <label
-                  key={model.id}
-                  className={`ai-model-option ${selectedModelId === model.id ? 'selected' : ''} ${!model.vision ? 'no-vision' : ''}`}
-                >
-                  <input
-                    type="radio"
-                    name="ai-model"
-                    value={model.id}
-                    checked={selectedModelId === model.id}
-                    onChange={() => handleModelChange(model.id)}
-                    className="ai-model-radio"
-                  />
-                  <div className="ai-model-info">
-                    <div className="ai-model-name-row">
-                      <span className="ai-model-name">{model.name}</span>
-                      {!model.vision && <span className="ai-model-no-vision-badge">Görsel yok</span>}
-                    </div>
-                    <span className="ai-model-desc">{model.description}</span>
-                  </div>
-                  <div className="ai-model-pricing">
-                    <span className="ai-model-price-in" title="1M input token">↓ {model.inputPrice}</span>
-                    <span className="ai-model-price-out" title="1M output token">↑ {model.outputPrice}</span>
-                  </div>
-                </label>
-              ))}
-              {/* Previous Gen */}
-              <div className="ai-model-category">Önceki Nesil — Hâlâ Aktif</div>
-              {OPENAI_MODELS.filter(m => m.category === 'previous').map((model) => (
-                <label
-                  key={model.id}
-                  className={`ai-model-option ${selectedModelId === model.id ? 'selected' : ''} ${!model.vision ? 'no-vision' : ''}`}
-                >
-                  <input
-                    type="radio"
-                    name="ai-model"
-                    value={model.id}
-                    checked={selectedModelId === model.id}
-                    onChange={() => handleModelChange(model.id)}
-                    className="ai-model-radio"
-                  />
-                  <div className="ai-model-info">
-                    <div className="ai-model-name-row">
-                      <span className="ai-model-name">{model.name}</span>
-                      {!model.vision && <span className="ai-model-no-vision-badge">Görsel yok</span>}
-                    </div>
-                    <span className="ai-model-desc">{model.description}</span>
-                  </div>
-                  <div className="ai-model-pricing">
-                    <span className="ai-model-price-in" title="1M input token">↓ {model.inputPrice}</span>
-                    <span className="ai-model-price-out" title="1M output token">↑ {model.outputPrice}</span>
-                  </div>
-                </label>
-              ))}
-              {/* Reasoning */}
-              <div className="ai-model-category">Reasoning Modelleri</div>
-              {OPENAI_MODELS.filter(m => m.category === 'reasoning').map((model) => (
-                <label
-                  key={model.id}
-                  className={`ai-model-option ${selectedModelId === model.id ? 'selected' : ''} ${!model.vision ? 'no-vision' : ''}`}
-                >
-                  <input
-                    type="radio"
-                    name="ai-model"
-                    value={model.id}
-                    checked={selectedModelId === model.id}
-                    onChange={() => handleModelChange(model.id)}
-                    className="ai-model-radio"
-                  />
-                  <div className="ai-model-info">
-                    <div className="ai-model-name-row">
-                      <span className="ai-model-name">{model.name}</span>
-                      {!model.vision && <span className="ai-model-no-vision-badge">Görsel yok</span>}
-                    </div>
-                    <span className="ai-model-desc">{model.description}</span>
-                  </div>
-                  <div className="ai-model-pricing">
-                    <span className="ai-model-price-in" title="1M input token">↓ {model.inputPrice}</span>
-                    <span className="ai-model-price-out" title="1M output token">↑ {model.outputPrice}</span>
-                  </div>
-                </label>
+              {modelGroups.map(group => (
+                <React.Fragment key={group.category}>
+                  <div className="ai-model-category">{MODEL_CATEGORY_LABELS[group.category]}</div>
+                  {group.models.map((model) => (
+                    <label
+                      key={model.id}
+                      className={`ai-model-option ${selectedModelId === model.id ? 'selected' : ''} ${!model.vision ? 'no-vision' : ''}`}
+                    >
+                      <input
+                        type="radio"
+                        name={`ai-model-${provider}`}
+                        value={model.id}
+                        checked={selectedModelId === model.id}
+                        onChange={() => handleModelChange(model.id)}
+                        className="ai-model-radio"
+                      />
+                      <div className="ai-model-info">
+                        <div className="ai-model-name-row">
+                          <span className="ai-model-name">{model.name}</span>
+                          {!model.vision && <span className="ai-model-no-vision-badge">Görsel yok</span>}
+                          {model.badge && <span className="ai-model-badge">{model.badge}</span>}
+                        </div>
+                        <span className="ai-model-desc">{model.description}</span>
+                      </div>
+                      {model.inputPrice && model.outputPrice && (
+                        <div className="ai-model-pricing">
+                          <span className="ai-model-price-in" title="1M input token">↓ {model.inputPrice}</span>
+                          <span className="ai-model-price-out" title="1M output token">↑ {model.outputPrice}</span>
+                        </div>
+                      )}
+                    </label>
+                  ))}
+                </React.Fragment>
               ))}
             </div>
-            <span className="ai-generator-hint">Fiyatlar 1M token başına (yaklaşık istek: ~$0.01–$0.10)</span>
+            <span className="ai-generator-hint">OpenAI, Gemini ve Groq anahtarları ayrı ayrı saklanır</span>
           </div>
 
-          {/* Image Upload */}
           <div className="ai-generator-section">
             <label className="ai-generator-label">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -266,7 +268,7 @@ const AITemplateGenerator: React.FC<AITemplateGeneratorProps> = ({ onGenerated, 
               </svg>
               Ekran Görüntüsü
             </label>
-            
+
             {imagePreview ? (
               <div className="ai-generator-preview">
                 <img src={imagePreview} alt="Yüklenen görüntü" />
@@ -302,7 +304,6 @@ const AITemplateGenerator: React.FC<AITemplateGeneratorProps> = ({ onGenerated, 
             />
           </div>
 
-          {/* Error */}
           {error && (
             <div className="ai-generator-error">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -314,7 +315,6 @@ const AITemplateGenerator: React.FC<AITemplateGeneratorProps> = ({ onGenerated, 
             </div>
           )}
 
-          {/* Progress */}
           {loading && (
             <div className="ai-generator-progress">
               <div className="ai-generator-spinner"></div>
@@ -323,7 +323,6 @@ const AITemplateGenerator: React.FC<AITemplateGeneratorProps> = ({ onGenerated, 
           )}
         </div>
 
-        {/* Footer */}
         <div className="ai-generator-footer">
           <button className="btn btn-cancel" onClick={onClose} disabled={loading}>
             İptal
